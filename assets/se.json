@@ -1,4 +1,4 @@
-{	
+{
 	"placeholder":{
 		"zh":"请输入关键字，按Enter搜索",
 		"en":"Enter the keywords and press enter to search"
@@ -10,6 +10,10 @@
 	"lang":{
 		"zh":"<span data='en'>English</span>/中文",
 		"en":"English/<span data='zh'>中文</span>"
+	},
+	"submit":{
+		"zh":"搜索",
+		"en":"Search"
 	},
 	"searches":{
 		"search":{
@@ -138,12 +142,21 @@
 			"engines":{
 				"soku":{
 					"link":"http://www.soku.com",
-					"url":"http://www.soku.com/search",
+					"url":"http://www.soku.com/v",
 					"hiddens":{},
-					"key":"q",
+					"key":"keyword",
 					"charset":"utf-8",
 					"zh":"搜酷",
 					"en":"Soku"
+				},
+				"xunlei":{
+					"link":"http://daquan.xunlei.com",
+					"url":"http://search.daquan.xunlei.com/web/search.html",
+					"hiddens":{},
+					"key":"keyword",
+					"charset":"utf-8",
+					"zh":"迅雷大全",
+					"en":"Xunlei"
 				},
 				"qiyi":{
 					"link":"http://www.iqiyi.com",
@@ -162,15 +175,6 @@
 					"charset":"utf-8",
 					"zh":"腾讯视频",
 					"en":"QQ Video"
-				},
-				"sina":{
-					"link":"http://video.sina.com.cn",
-					"url":"http://video.sina.com.cn/search/index.php",
-					"hiddens":{},
-					"key":"k",
-					"charset":"utf-8",
-					"zh":"新浪大片",
-					"en":"Sina Video"
 				},
 				"sohu":{
 					"link":"http://tv.sohu.com",
@@ -199,7 +203,9 @@
 				"baidu":{
 					"link":"http://image.baidu.com/",
 					"url":"http://image.baidu.com/i",
-					"hiddens":{},
+					"hiddens":{
+						"ie":"utf-8"
+					},
 					"key":"word",
 					"charset":"utf-8",
 					"zh":"百度图片",
@@ -279,7 +285,7 @@
 					"url":"http://iask.sina.com.cn/search_engine/search_knowledge_engine.php",
 					"hiddens":{},
 					"key":"key",
-					"charset":"utf-8",
+					"charset":"gb2312",
 					"zh":"新浪爱问",
 					"en":"Sina iAsk"
 				}
@@ -300,21 +306,29 @@
 				},
 				"baidu":{
 					"link":"http://maps.baidu.com/",
-					"url":"http://maps.baidu.com/",
-					"hiddens":{},
-					"key":"word",
+					"url":" http://map.baidu.com/",
+					"hiddens":{
+						"newmap":1,
+						"ie":"utf-8",
+						"s":"s",
+						"c":1
+					},
+					"key":"wd",
 					"charset":"utf-8",
 					"zh":"百度地图",
 					"en":"Baidu Map"
 				},
-				"nokia":{
-					"link":"http://www.google.com.hk",
-					"url":"",
-					"hiddens":{},
-					"key":"word",
-					"charset":"utf-8",
-					"zh":"诺基亚地图",
-					"en":"Nokia Map"
+				"sogou":{
+					"link":"http://map.sogou.com/",
+					"url":"http://map.sogou.com/",
+					"hiddens":{
+						"search-radio":"on",
+						"pid":"AQ9DA"
+						},
+					"key":"lq",
+					"charset":"gb2312",
+					"zh":"搜狗地图",
+					"en":"Sogou Map"
 				},
 				"gaode":{
 					"link":"http://www.google.com.hk",
@@ -402,7 +416,7 @@
 				},
 				"verycd":{
 					"link":"http://www.verycd.com",
-					"url":"http://www.verycd.com/search/entries/%s",
+					"url":"http://www.verycd.com/search/entries/s",
 					"hiddens":{},
 					"key":"q",
 					"charset":"utf-8",

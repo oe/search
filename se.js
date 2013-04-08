@@ -70,7 +70,7 @@ var cookie = {
 	setlang: function  (lang) {
 		if (undefined === lang || ('zh' !== lang && 'en' !== lang)) {
 			lang = (undefined ===window.navigator.language) ? window.navigator.browserLanguage : window.navigator.language;
-			if ('zh-CN' === lang) {
+			if ('zh-cn' === lang.toLowerCase()) {
 				return this.attr('lang','zh');
 			} else{
 				return this.attr('lang','en');
@@ -80,20 +80,20 @@ var cookie = {
 	}
 };
 //length for sug list
-var len = 0;
-var currentIndex = -1;
-var isArrorKey = false;
-var searchSug = 'baidu';
-var val = '';
-var lang = 'zh';
-var config = null;
-var currentType = '';
-var currentEngine = '';
+var len = 0,
+	currentIndex = -1,
+	isArrowKey = false,
+	searchSug = 'baidu',
+	val = '',
+	lang = 'zh',
+	config = null,
+	currentType = '',
+	currentEngine = '';
 //init
 $(function  () {
 	$('#isa').focus();
 	cookie.init();
-	init_argure();
+	init_argv();
 	init_SearchList();
 	set_sug_pos();
 	//hide sug list
@@ -104,42 +104,13 @@ $(function  () {
 	$(window).on('resize',function  () {
 		set_sug_pos();
 	});
-	// $.ctrl = function(key, callback, args){  
-	//     var isCtrl = false;  
-	//     $(document).keydown(function(e){  
-	//         if (e.which === 17)   
-	//             isCtrl = true;  
-	//         if (e.which === key.charCodeAt(0) && isCtrl === true) {  
-	//             callback.apply(this, args);  
-	//             return false;  
-	//         }  
-	//     }).keyup(function(e){  
-	//         if (e.which === 17)   
-	//             isCtrl = false;  
-	//     });  
-	// };
-	// $.ctrl('q',function  () {
-	// 	$('#isa').focus();
-	// },null);
-	// $(document).on('keydown',function  (e) {
-	// 	e = e || event;
-	// 	var isCtrl = false;
-	// 	if (e.which === 17) {
-	// 	    isCtrl = true;
-	// 	}
-	// 	// alert(e.ctrlKey);
-	// 	// var isCtrl = e.ctrlKey;
-	// 	if (isCtrl && (113 === e.which)) {
-	// 	    $('#isa').focus();
-	// 	}
-	// });
 	//placeholder behavior
-	$('#ph').on('mousedown focus select',function  () {
+	$('#ph').on('mousedown focus',function  () {
 		$('#isa').focus();
 		return false;
 	});
 	//switch lang
-	$('#switch-lang span').live('click',function  () {
+	$('#switch-lang').on('click','span',function  () {
 		var lang = $(this).attr('data');
 		cookie.setlang(lang);
 		init_SearchList();
@@ -149,18 +120,10 @@ $(function  () {
 		if ('' === $(this).val()) {
 			$('#ph').show();
 			$('#sug').hide();
-			// if ($('#isa').hasClass('delete')) {
-			// 	$('#isa').removeClass('delete');
-			// }
-			// $('#delete').removeClass('show');
 			val = '';
 		} else{
-			// $('#delete').addClass('show');
-			// if (!$('#isa').hasClass('delete')) {
-			// 	$('#isa').addClass('delete');
-			// }
 			$('#ph').hide();
-			if (!isArrorKey) {
+			if (!isArrowKey) {
 				if(val != $(this).val()){
 					val = $(this).val();
 					getSug(val);
@@ -180,21 +143,21 @@ $(function  () {
 	//input box direction key and esc key event
 	$('#isa').on('keydown',function  (event) {
 		var ret = true;
-		isArrorKey = false;
+		isArrowKey = false;
 		if (len) {
 			var newIndex = 0;
 			var text = '';
 			switch(event.keyCode){
-				case 13:
+				case 13: //enter
 					$('#search-form').submit();
 					ret = false;
 					break;
-				case 27:
+				case 27: //esc
 					$('#sug').hide();
 					ret = false;
 					break;
-				case 38:
-					isArrorKey = true;
+				case 38: //up
+					isArrowKey = true;
 					$('#sug').show();
 					$('#ph').hide();
 					newIndex = currentIndex - 1;
@@ -203,13 +166,12 @@ $(function  () {
 					}
 					$('#sug li:eq('+ currentIndex + ')').removeClass('current');
 					text = (-1 == newIndex) ? val : $('#sug li:eq('+ newIndex + ')').addClass('current').text();
-					// val = text;
 					$(this).val(text);
 					currentIndex = newIndex;
 					ret = false;
 					break;
-				case 40:
-					isArrorKey = true;
+				case 40: //down
+					isArrowKey = true;
 					$('#sug').show();
 					$('#ph').hide();
 					newIndex = currentIndex + 1;
@@ -235,7 +197,7 @@ $(function  () {
 		return ret;
 	});
 	//sug list hover event
-	$('#sug li').live('hover',function  () {
+	$('#sug').on('hover','li',function  () {
 		var newIndex = $(this).index();
 		if (newIndex === currentIndex) {
 			$(this).addClass('current');
@@ -246,31 +208,31 @@ $(function  () {
 		}
 	});
 	//sug list item click
-	$('#sug li').live('click',function  (event) {
+	$('#sug').on('click','li',function  (event) {
 		// event.stopPropagation();
 		val = $(this).html();
 		$('#isa').val(val);
-		submit_search();
+		$('#search-form').submit();
 	});
 	//switch search type
-	$('#search-cat li label').live('click',function  () {
+	$('#search-cat').on('click','li label',function  () {
 		var radio = $(this).children('input');
 		if(currentType != radio.val()){
-			$('#search-list .' + currentType + ' li.current').removeClass('current');
-			$('#search-list .' + currentType).removeClass('current');
+			$('#search-engine-list .' + currentType + ' li.current').removeClass('current');
+			$('#search-engine-list .' + currentType).removeClass('current');
 			$('#ico').removeClass('ico-' + currentType);
 			currentType = radio.val();
 			$('#ico').addClass('ico-' + currentType);
-			$('#search-list .' + currentType).addClass('current');
-			currentEngine = $('#search-list .' + currentType + ' li:eq(0)').addClass('current').attr('data');
+			$('#search-engine-list .' + currentType).addClass('current');
+			currentEngine = $('#search-engine-list .' + currentType + ' li:eq(0)').addClass('current').attr('data');
 			changeSearchEngine();
 		}
 		$('#isa').focus();
 	});
 	//switch search engine
-	$('#search-list ul li').live('click',function  () {
+	$('#search-engine-list').on('click','ul li',function  () {
 		if (currentEngine != $(this).attr('data')) {
-			$('#search-list ul li.current').removeClass('current');
+			$('#search-engine-list ul li.current').removeClass('current');
 			currentEngine = $(this).addClass('current').attr('data');
 			changeSearchEngine();
 		}
@@ -282,126 +244,117 @@ $(function  () {
 	});
 });
 //get sug list
-function getSug (str) {
-	var url = '';
-	var metod = null;
+function getSug (word) {
 	searchSug = searchSug.toLowerCase();
-	switch(searchSug){
-		case 'baidu':
-			url = 'http://suggestion.baidu.com/su?wd=' + str + '&p=3&cb=?';
-			method = parse_baidu;
-			break;
-		case 'google':
-			url = 'http://www.google.com.hk/s?hl=zh-cn&sugexp=llsin&q=' + str + '&call=?';
-			method = parse_google;
-			break;
-		case 'youdao':
-			url = 'http://www.youdao.com/tglsuggest2/tglsuggest.s?keyfrom=web.index.suggest&rn=10&h=17&query=' + str + '&o=?';
-			// url = 'http://www.youdao.com/suggest2/suggest.s?query=' + str + '&keyfrom=web.suggest&rn=10&o=?';
-			method = parse_youdao;//.updateCall;
-			break;
-		case 'baidumusic':
-			url = 'http://sug.music.baidu.com/info/suggestion?format=json&word='+ str +'&callback=?';
-			method = parse_baiduMusic;
-			break;
-		case 'bing':
-			break;
-		case 'so':
-			break;
-		case 'etao':
-			url = 'http://suggest.taobao.com/sug?area=etao&code=utf-8&q=' + str + '&callback=?';
-			method = parse_etao;
-			break;
-		case 'amazon':
-			break;
-		case '360buy':
-			break;
-		case 'soku':
-			break;
-		default:
+	word = encodeURIComponent(word);
+	if (suggestionFun[searchSug]) {
+		try{
+			suggestionFun[searchSug](word)
+		}catch(e){
 			len = 0;
-			return;
-	}
-	try{
-		$.getJSON(url,method);
-	}catch(e){
-		len = 0;
+		}
 	}
 	currentIndex = -1;
 }
-//sug list from baidu
-function parse_baidu (json) {
-	try{
-		len = json.s.length;
-		var str = '';
-		for( var i = 0; i < len; ++i){
-			str += '<li>' + json.s[i] + '</li>';
-		}
-		$('#sug').html(str);
-	}catch(e){
-		len = 0;
+var suggestionFun = {
+	'baidu': function  (word) {
+		var url = 'http://suggestion.baidu.com/su?wd=' + word + '&p=3&cb=?';
+		$.getJSON(url,function  (json) {
+			len = json.s.length;
+			var str = '';
+			for( var i = 0; i < len; ++i){
+				str += '<li>' + json.s[i] + '</li>';
+			}
+			$('#sug').html(str);
+			if (len) {
+				$('#sug').show();
+			} else{
+				$('#sug').hide();
+			}
+		});
+	},
+	'google': function  (word) {
+		var url = 'http://www.google.com.hk/s?hl=zh-cn&sugexp=llsin&q=' + word + '&call=?';
+		$.getJSON(url,function  (json) {
+			len = json.s.length;
+			var str = '';
+			for( var i = 0; i < len; ++i){
+				str += '<li>' + json.s[i] + '</li>';
+			}
+			$('#sug').html(str);
+			if (len) {
+				$('#sug').show();
+			} else{
+				$('#sug').hide();
+			}
+		});
+	},
+	'youdao': function  (word) {
+		var url = 'http://www.youdao.com/tglsuggest2/tglsuggest.s?keyfrom=web.index.suggest&rn=10&h=17&query=' + word + '&o=?';
+		$.getJSON(url,function  (json) {
+			len = json.song.length;
+			var str = '';
+			for( var i = 0; i < len; ++i){
+				str += '<li>' + json.song[i].songname +' <i>by</i> ' + json.song[i].artistname + '</li>';
+			}
+			$('#sug').html(str);
+			if (len) {
+				$('#sug').show();
+			} else{
+				$('#sug').hide();
+			}
+		});
+	},
+	'baidumusic': function  (word) {
+		var url = 'http://sug.music.baidu.com/info/suggestion?format=json&word=' + word + '&callback=?';
+		$.getJSON(url,function  (json) {
+			len = json.song.length;
+			var str = '';
+			for( var i = 0; i < len; ++i){
+				str += '<li>' + json.song[i].songname +' <i>by</i> ' + json.song[i].artistname + '</li>';
+			}
+			$('#sug').html(str);
+			if (len) {
+				$('#sug').show();
+			} else{
+				$('#sug').hide();
+			}
+		});
+	},
+	'bing': function  (word) {
+		// body...
+	},
+	'so': function  (word) {
+		// body...
+	},
+	'etao': function  (word) {
+		var url = 'http://suggest.taobao.com/sug?area=etao&code=utf-8&q=' + word + '&callback=?';
+		$.getJSON(url,function  (json) {
+			len = json.result.length;
+			var str = '';
+			for( var i = 0; i < len; ++i){
+				str += '<li>' + json.result[i][0] + '</li>';
+			}
+			$('#sug').html(str);
+			if (len) {
+				$('#sug').show();
+			} else{
+				$('#sug').hide();
+			}
+		});
+	},
+	'amazon': function  (word) {
+		// body...
+	},
+	'360buy': function  (word) {
+		// body...
+	},
+	'soku': function  (word) {
+		// body...
 	}
-	if (len) {
-		$('#sug').show();
-	} else{
-		$('#sug').hide();
-	}
-}
-//sug list from google
-function parse_google (json) {
-	try{
-		len = json.s.length;
-		var str = '';
-		for( var i = 0; i < len; ++i){
-			str += '<li>' + json.s[i] + '</li>';
-		}
-		$('#sug').html(str);
-	}catch(e){
-		len = 0;
-	}
-	if (len) {
-		$('#sug').show();
-	} else{
-		$('#sug').hide();
-	}
-}
-//parse baidu music sug list
-function parse_baiduMusic (json) {
-	try{
-		len = json.song.length;
-		var str = '';
-		for( var i = 0; i < len; ++i){
-			str += '<li>' + json.song[i].songname +' <i>by</i> ' + json.song[i].artistname + '</li>';
-		}
-		$('#sug').html(str);
-	}catch(e){
-		len = 0;
-	}
-	if (len) {
-		$('#sug').show();
-	} else{
-		$('#sug').hide();
-	}
-}
-//sug list from etao
-function parse_etao  (json) {
-	try{
-		len = json.result.length;
-		var str = '';
-		for( var i = 0; i < len; ++i){
-			str += '<li>' + json.result[i][0] + '</li>';
-		}
-		$('#sug').html(str);
-	}catch(e){
-		len = 0;
-	}
-	if (len) {
-		$('#sug').show();
-	} else{
-		$('#sug').hide();
-	}
-}
-function init_argure () {
+};
+
+function init_argv () {
 	currentType = cookie.attr('defaultType');
 	currentEngine = cookie.attr('defaultEngine');
 }
@@ -433,25 +386,27 @@ function init_SearchList () {
 		}
 		document.title = config['title'][lang];
 		$('#switch-lang').html(config['lang'][lang]);
+		$('#app-name').html(config['title'][lang]);
 		$('#ico').addClass('ico-' + currentType);
 		$('#ph').html(ph);
-		$('#search-list').html(lists);
+		$('#search-btn').text(config['submit'][lang]);
+		$('#search-engine-list').html(lists);
 		$('#search-cat').html(types);
 		var $current = null;
-		if(0 === $('#search-list .' + currentType).length){
-			$current = $('#search-list ul:eq(0)');
+		if(0 === $('#search-engine-list .' + currentType).length){
+			$current = $('#search-engine-list ul:eq(0)');
 			currentType = $current.attr('class');
 			$current.addClass('current');
 			cookie.attr('defaultType',currentType);
 		}
-		if (0 === $('#search-list .' + currentType + ' li.current').length) {
-			$current = $('#search-list .' + currentType + ' li:eq(0)');
+		if (0 === $('#search-engine-list .' + currentType + ' li.current').length) {
+			$current = $('#search-engine-list .' + currentType + ' li:eq(0)');
 			currentEngine = $current.attr('data');
 			$current.addClass('current');
 			cookie.attr('defaultEngine',currentEngine);
 		}
 		if (0 === $('#search-cat input:checked').length) {
-			
+			//TODO
 		}
 		changeSearchEngine();
 	}catch(e){

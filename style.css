@@ -15,17 +15,25 @@ body{
 }
 .search-container{
 	/*text-align: center;*/
-	margin-top: 200px;
+	margin-top: 180px;
 }
 .search-wrapper{
 	width: 640px;
 	*width: 660px ;
 	margin: 0 auto;
 }
+.app-name{
+	margin-bottom: 10px;
+	font-size: 40px;
+	font-weight: 700;
+	color: #666;
+	text-shadow: 2px 1px 4px rgba(201,201,201,.6);
+	text-align: center;
+}
 .search-form{
 	clear: both;
 	float: none;
-	margin: 0;
+	margin: 0 auto;
 	padding: 0;
 }
 .input{
@@ -38,7 +46,7 @@ body{
 	/*position: absolute;*/
 	font-size: 20px;
 	font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-	width: 520px;
+	width: 570px;
 	-webkit-box-sizing: border-box;
 	-moz-box-sizing: border-box;
 	box-sizing: border-box;   
@@ -59,9 +67,6 @@ body{
 	color: #333;
 	background-color: #FFFFCC;
 }
-.input .input-box.delete{
-	padding-right: 20px;
-}
 .hide{
 	display: none !important;
 }
@@ -72,12 +77,6 @@ body{
 	position: absolute;
 	top: 8px;
 	left: 8px;
-}
-#delete{
-	position: absolute;
-	display: none;
-	left: 500px;
-	top: 8px;
 }
 .ico{
 	height: 16px;
@@ -118,6 +117,7 @@ body{
 	-webkit-box-sizing: border-box;
 	-moz-box-sizing: border-box;
 	box-sizing: border-box;
+	width: 70px;
 	font-size: 20px;
 	padding: 3px;
 	border: 2px solid #6ab8e6;
@@ -148,18 +148,19 @@ body{
 	padding-top: 3px;
 	color: #999;
 	text-align: left;
+	pointer-events: none;
 }
 .sug{
 	border: 1px solid #999;
-	border-radius: 5px;
 	list-style-type: none;
 	margin: 0;
 	padding: 0;
 	margin-left: 30px;
-	width: 520px;
+	width: 540px;
 	position: absolute;
 	background-color: whitesmoke;
 	display: none;
+	z-index: 102;
 }
 .sug li{
 	padding: 2px 4px;
@@ -171,16 +172,16 @@ body{
 	background-color: lightblue;
 	/*text-decoration: underline;*/
 }
-.search-cat,.search-list ul{
+.search-cat,.search-engine-list ul{
 	display: none;
 	margin: 0;
 	padding: 0;
 	list-style-type: none;
 }
-.search-cat,.search-list ul.current{
+.search-cat,.search-engine-list ul.current{
 	display: block;
 }
-.search-list ul li{
+.search-engine-list ul li{
 	display: block;
 	float: left;
 	padding: 4px 10px;
@@ -190,12 +191,18 @@ body{
 	font-size: 16px;
 	cursor: pointer;
 }
-.search-list ul li.current{
+.search-engine-list ul li.current{
 	cursor: default;
 	color:#eee;
 	background-color: #6ab8e6;
 	border-radius: 4px 4px 0 0 ;
 	box-shadow:0 0 8px 2px rgba(82,168,236,0.7) !important;
+}
+.search-cat{
+	position: relative;
+	margin: 0;
+	padding: 0;
+	z-index: 100;
 }
 .search-cat li{
 	display: block;

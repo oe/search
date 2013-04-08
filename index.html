@@ -2,7 +2,7 @@
 <html lang="en-US">
 <head>
 	<meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
-	<title>综合搜索</title>
+	<title>综合搜索/Union Search</title>
 	<meta http-equiv="X-UA-Compatible" content="IE=Edge" />
 	<link rel="stylesheet" type="text/css" href="style.css" media="all">
 </head>
@@ -11,14 +11,15 @@
 		<div id="switch-lang"></div>
 		<div class="search-container">
 				<div class="search-wrapper">
-					<div class="search-list" id="search-list">
+					<div id="app-name" class="app-name">综合搜索</div>
+					<div class="search-engine-list" id="search-engine-list">
 					</div>
 					<form action="#" class="search-form" id="search-form" target="_blank" accept-charset="utf-8">
 						<div class="hide" id="hiddens"></div>
 						<div class="input">
 							<span class="ico" id="ico"></span>
 							<input type="text" class="input-box" name="q" id="isa" autocomplete="off" speech="speech" x-webkit-speech="x-webkit-speech" x-webkit-grammar="builtin:search">
-							<button class="submit" type="submit" id="submit">Search</button>
+							<button class="submit" type="submit" id="search-btn">Search</button>
 							<span class="ph" id="ph"></span>
 							<!-- <span id="delete" class="ico ico-delete"></span> -->
 						</div>
@@ -30,6 +31,9 @@
 			<ul class="sug" id="sug">
 			</ul>
 		</div>
+	<div class="footer">
+		welcome
+	</div>
 	</div>
 	<script type="text/javascript" src="jquery.min.js"></script>
 	<script type="text/javascript" src="se.js"></script>
