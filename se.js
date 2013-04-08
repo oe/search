@@ -148,10 +148,6 @@ $(function  () {
 			var newIndex = 0;
 			var text = '';
 			switch(event.keyCode){
-				case 13: //enter
-					$('#search-form').submit();
-					ret = false;
-					break;
 				case 27: //esc
 					$('#sug').hide();
 					ret = false;
