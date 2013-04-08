@@ -240,7 +240,17 @@ $(function  () {
 	});
 	//search submit
 	$('#search-form').on('submit',function  () {
-		return submit_search();
+		$('#sug').hide();
+		val = $('#isa').val();
+		if ('' === val) {
+			alert('No input!');
+			return false;
+		}else if (' ' === val) {
+			$('#link')[0].click();
+			return false;
+		} else{
+			return true;
+		}
 	});
 });
 //get sug list
@@ -417,21 +427,6 @@ function init_SearchList () {
 //set sug list position
 function set_sug_pos () {
 	$('#sug').css({'top':$('.search-form').offset().top + $('.search-form').height(),'left':$('.search-form').offset().left});
-}
-//submit form
-function submit_search () {
-	$('#sug').hide();
-	val = $('#isa').val();
-	if ('' === val) {
-		alert('No input!');
-		return false;
-	}else if (' ' === val) {
-		$('#link')[0].click();
-		return false;
-	} else{
-		return true;
-	}
-	// return false;
 }
 //change engine type
 function changeSearchEngine(){
