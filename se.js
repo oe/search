@@ -253,7 +253,19 @@ $(function  () {
 		if ('' === val) {
 			alert('No input!');
 			return false;
-		}else if (' ' === val) {
+		}else if (' ' === val || 
+			currentEngine === 'qiyi' || 
+			(currentType === 'map' && currentEngine === 'baidu')) {
+			var href;
+			if(currentEngine === 'qiyi'){
+				href = $('#search-form').attr('action') + 'q_';
+				href += encodeURIComponent(val);
+				$('#link').attr('href',href);
+			} else if(currentEngine === 'baidu') {
+				href = $('#search-form').attr('action') + '?newmap=1&ie=utf-8&s=s%26wd%3D';
+				href += encodeURIComponent(val) + '%26c%3D1';
+				$('#link').attr('href',href);
+			}
 			$('#link')[0].click();
 			return false;
 		} else{

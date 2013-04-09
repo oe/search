@@ -98,14 +98,14 @@
 					"zh":"音乐台",
 					"en":"Yinyuetai"
 				},
-				"baidu":{
-					"link":"http://music.baidu.com",
-					"url":"http://music.baidu.com/search",
+				"sogou":{
+					"link":"http://mp3.sogou.com",
+					"url":"http://mp3.sogou.com/music.so",
 					"hiddens":{},
-					"key":"key",
-					"charset":"utf-8",
-					"zh":"百度♬",
-					"en":"Baidu♬"
+					"key":"query",
+					"charset":"gb2312",
+					"zh":"搜狗♬",
+					"en":"Sogou♬"
 				},
 				"top100":{
 					"link":"http://www.top100.cn",
@@ -160,7 +160,7 @@
 				},
 				"qiyi":{
 					"link":"http://www.iqiyi.com",
-					"url":"http://so.iqiyi.com/so/q_%s_f_2",
+					"url":"http://so.iqiyi.com/so/",
 					"hiddens":{},
 					"key":"q",
 					"charset":"utf-8",
@@ -253,14 +253,16 @@
 					"zh":"百度知道",
 					"en":"Baidu Zhidao"
 				},
-				"baike":{
-					"link":"http://baike.baidu.com/search",
-					"url":"http://baike.baidu.com/search/word",
-					"hiddens":{},
-					"key":"word",
-					"charset":"gbk",
-					"zh":"百度百科",
-					"en":"Baidu Baike"
+				"zhihu":{
+					"link":"http://www.zhihu.com",
+					"url":"http://www.zhihu.com/search",
+					"hiddens":{
+						"type":"question"
+					},
+					"key":"q",
+					"charset":"utf-8",
+					"zh":"知乎",
+					"en":"Zhihu"
 				},
 				"wiki":{
 					"link":"https://zh.wikipedia.org",
@@ -279,15 +281,6 @@
 					"charset":"utf-8",
 					"zh":"谷歌问答",
 					"en":"Google Answers"
-				},
-				"sina":{
-					"link":"http://iask.sina.com.cn",
-					"url":"http://iask.sina.com.cn/search_engine/search_knowledge_engine.php",
-					"hiddens":{},
-					"key":"key",
-					"charset":"gb2312",
-					"zh":"新浪爱问",
-					"en":"Sina iAsk"
 				}
 			}
 		},
@@ -330,14 +323,17 @@
 					"zh":"搜狗地图",
 					"en":"Sogou Map"
 				},
-				"gaode":{
-					"link":"http://www.google.com.hk",
-					"url":"",
-					"hiddens":{},
-					"key":"word",
+				"soso":{
+					"link":"http://map.soso.com",
+					"url":"http://map.soso.com/",
+					"hiddens":{
+						"pid":"web.map",
+						"ie":"utf-8"
+					},
+					"key":"w",
 					"charset":"utf-8",
-					"zh":"高德地图",
-					"en":"Gaode Map"
+					"zh":"搜搜地图",
+					"en":"Soso Map"
 				}
 			}
 		},
@@ -355,8 +351,8 @@
 					"en":"Taobao"
 				},
 				"jingdong":{
-					"link":"http://www.360buy.com",
-					"url":"http://search.360buy.com/Search",
+					"link":"http://www.jd.com",
+					"url":"http://search.jd.com/Search",
 					"hiddens":{},
 					"key":"keyword",
 					"charset":"gbk",
@@ -405,7 +401,7 @@
 					"zh":"百度文库",
 					"en":"Wenku"
 				},
-				"ishare":{
+				"iShare":{
 					"link":"http://ishare.iask.sina.com.cn",
 					"url":"http://ishare.iask.sina.com.cn/search.php",
 					"hiddens":{},
@@ -413,15 +409,6 @@
 					"charset":"gb2312",
 					"zh":"爱问资料",
 					"en":"ishare"
-				},
-				"verycd":{
-					"link":"http://www.verycd.com",
-					"url":"http://www.verycd.com/search/entries/s",
-					"hiddens":{},
-					"key":"q",
-					"charset":"utf-8",
-					"zh":"VeryCD",
-					"en":"VeryCD"
 				},
 				"xlpan":{
 					"link":"http://f.xunlei.com",
@@ -440,57 +427,6 @@
 					"charset":"utf-8",
 					"zh":"网盘搜索",
 					"en":"PanSo"
-				}
-			}
-		},
-		"blog":{
-			"zh":"博客",
-			"en":"Blog",
-			"engines":{
-				"taobao":{
-					"link":"http://www.google.com.hk",
-					"url":"",
-					"hiddens":{},
-					"key":"q",
-					"charset":"utf-8",
-					"zh":"淘宝",
-					"en":"Taobao"
-				},
-				"jingdong":{
-					"link":"http://www.google.com.hk",
-					"url":"",
-					"hiddens":{},
-					"key":"q",
-					"charset":"utf-8",
-					"zh":"京东",
-					"en":"360buy"
-				},
-				"amazon":{
-					"link":"http://www.google.com.hk",
-					"url":"",
-					"hiddens":{},
-					"key":"q",
-					"charset":"utf-8",
-					"zh":"亚马逊",
-					"en":"Amazon"
-				},
-				"dangdang":{
-					"link":"http://www.google.com.hk",
-					"url":"",
-					"hiddens":{},
-					"key":"q",
-					"charset":"utf-8",
-					"zh":"当当",
-					"en":"DangDang"
-				},
-				"etao":{
-					"link":"http://www.google.com.hk",
-					"url":"",
-					"hiddens":{},
-					"key":"q",
-					"charset":"utf-8",
-					"zh":"一淘",
-					"en":"Etao"
 				}
 			}
 		}
