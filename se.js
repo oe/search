@@ -140,55 +140,67 @@ $(function  () {
 	$('#isa').on('blur',function  () {
 		$('#isa,#submit').removeClass('box-shadow');
 	});
-	//input box direction key and esc key event
+	//input box direction key and other controller key event
 	$('#isa').on('keydown',function  (event) {
-		var ret = true;
+		var ret = true,
+			newIndex = 0,
+			text = '';
 		isArrowKey = false;
-		if (len) {
-			var newIndex = 0;
-			var text = '';
-			switch(event.keyCode){
-				case 27: //esc
-					$('#sug').hide();
-					ret = false;
-					break;
-				case 38: //up
-					isArrowKey = true;
-					$('#sug').show();
-					$('#ph').hide();
-					newIndex = currentIndex - 1;
-					if (newIndex < -1 ) {
-						newIndex = len - 1;
-					}
-					$('#sug li:eq('+ currentIndex + ')').removeClass('current');
-					text = (-1 == newIndex) ? val : $('#sug li:eq('+ newIndex + ')').addClass('current').text();
-					$(this).val(text);
-					currentIndex = newIndex;
-					ret = false;
-					break;
-				case 40: //down
-					isArrowKey = true;
-					$('#sug').show();
-					$('#ph').hide();
-					newIndex = currentIndex + 1;
-					if (newIndex >= len ) {
-						newIndex = -1;
-					}
-					$('#sug li:eq('+ currentIndex + ')').removeClass('current');
-					text = (-1 == newIndex) ? val : $('#sug li:eq('+ newIndex + ')').addClass('current').text();
-					// val = text;
-					$(this).val(text);
-					currentIndex = newIndex;
-					ret = false;
-					break;
-				default:
-					break;
-			}
-		}else{
-			if (13 == event.keyCode) {
-				$('#search-form').submit();
+		switch(event.keyCode){
+			case 9: //Tab
+				var llen,index;
+				if (event.shiftKey) {
+					llen = $('#search-cat li').length;
+					index = $('#search-cat li input:checked').parents('li').index() | 0;
+					++index;
+					index %= llen;
+					$('#search-cat li:eq(' + index + ') label').click();
+					$('#isa').focus();
+				} else{
+					llen = $('.' + currentType + ' li').length;
+					index = $('.' + currentType + ' li.current').index() | 0;
+					++index;
+					index %= llen;
+					$('.' + currentType + ' li:eq(' + index + ')').click();
+				}
 				ret = false;
-			}
+				break;
+			case 27: //esc
+				$('#sug').hide();
+				ret = false;
+				break;
+			case 38: //up
+				if (!len) return ret;
+				isArrowKey = true;
+				$('#sug').show();
+				$('#ph').hide();
+				newIndex = currentIndex - 1;
+				if (newIndex < -1 ) {
+					newIndex = len - 1;
+				}
+				$('#sug li:eq('+ currentIndex + ')').removeClass('current');
+				text = (-1 == newIndex) ? val : $('#sug li:eq('+ newIndex + ')').addClass('current').text();
+				$(this).val(text);
+				currentIndex = newIndex;
+				ret = false;
+				break;
+			case 40: //down
+				if (!len) return ret;
+				isArrowKey = true;
+				$('#sug').show();
+				$('#ph').hide();
+				newIndex = currentIndex + 1;
+				if (newIndex >= len ) {
+					newIndex = -1;
+				}
+				$('#sug li:eq('+ currentIndex + ')').removeClass('current');
+				text = (-1 == newIndex) ? val : $('#sug li:eq('+ newIndex + ')').addClass('current').text();
+				$(this).val(text);
+				currentIndex = newIndex;
+				ret = false;
+				break;
+			default:
+				break;
 		}
 		return ret;
 	});
@@ -411,8 +423,9 @@ function init_SearchList () {
 			$current.addClass('current');
 			cookie.attr('defaultEngine',currentEngine);
 		}
-		if (0 === $('#search-cat input:checked').length) {
+		if (!$('#search-cat input:checked').length) {
 			//TODO
+			$('#search-cat li:eq(0) label').click();
 		}
 		changeSearchEngine();
 	}catch(e){
