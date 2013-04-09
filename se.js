@@ -83,7 +83,6 @@ var cookie = {
 var len = 0,
 	currentIndex = -1,
 	isArrowKey = false,
-	searchSug = 'baidu',
 	val = '',
 	lang = 'zh',
 	config = null,
@@ -253,8 +252,8 @@ $(function  () {
 		if ('' === val) {
 			alert('No input!');
 			return false;
-		}else if (' ' === val || 
-			currentEngine === 'qiyi' || 
+		}else if (' ' === val ||
+			currentEngine === 'qiyi' ||
 			(currentType === 'map' && currentEngine === 'baidu')) {
 			var href;
 			if(currentEngine === 'qiyi'){
@@ -275,11 +274,10 @@ $(function  () {
 });
 //get sug list
 function getSug (word) {
-	searchSug = searchSug.toLowerCase();
 	word = encodeURIComponent(word);
-	if (suggestionFun[searchSug]) {
+	if (suggestionFun[currentType]) {
 		try{
-			suggestionFun[searchSug](word)
+			suggestionFun[currentType](word);
 		}catch(e){
 			len = 0;
 		}
@@ -287,7 +285,7 @@ function getSug (word) {
 	currentIndex = -1;
 }
 var suggestionFun = {
-	'baidu': function  (word) {
+	'search': function  (word) {
 		var url = 'http://suggestion.baidu.com/su?wd=' + word + '&p=3&cb=?';
 		$.getJSON(url,function  (json) {
 			len = json.s.length;
@@ -303,8 +301,8 @@ var suggestionFun = {
 			}
 		});
 	},
-	'google': function  (word) {
-		var url = 'http://www.google.com.hk/s?hl=zh-cn&sugexp=llsin&q=' + word + '&call=?';
+	'music': function  (word) {
+		var url = 'http://nssug.baidu.com/su?wd=' + word + '&prod=mp3&cb=?';
 		$.getJSON(url,function  (json) {
 			len = json.s.length;
 			var str = '';
@@ -319,13 +317,13 @@ var suggestionFun = {
 			}
 		});
 	},
-	'youdao': function  (word) {
-		var url = 'http://www.youdao.com/tglsuggest2/tglsuggest.s?keyfrom=web.index.suggest&rn=10&h=17&query=' + word + '&o=?';
+	'video': function  (word) {
+		var url = 'http://nssug.baidu.com/su?wd=' + word + '&prod=video&cb=?';
 		$.getJSON(url,function  (json) {
-			len = json.song.length;
+			len = json.s.length;
 			var str = '';
 			for( var i = 0; i < len; ++i){
-				str += '<li>' + json.song[i].songname +' <i>by</i> ' + json.song[i].artistname + '</li>';
+				str += '<li>' + json.s[i] + '</li>';
 			}
 			$('#sug').html(str);
 			if (len) {
@@ -335,13 +333,13 @@ var suggestionFun = {
 			}
 		});
 	},
-	'baidumusic': function  (word) {
-		var url = 'http://sug.music.baidu.com/info/suggestion?format=json&word=' + word + '&callback=?';
+	'question': function  (word) {
+		var url = 'http://nssug.baidu.com/su?wd=' + word + '&prod=zhidao&cb=?';
 		$.getJSON(url,function  (json) {
-			len = json.song.length;
+			len = json.s.length;
 			var str = '';
 			for( var i = 0; i < len; ++i){
-				str += '<li>' + json.song[i].songname +' <i>by</i> ' + json.song[i].artistname + '</li>';
+				str += '<li>' + json.s[i] + '</li>';
 			}
 			$('#sug').html(str);
 			if (len) {
@@ -351,13 +349,58 @@ var suggestionFun = {
 			}
 		});
 	},
-	'bing': function  (word) {
-		// body...
+	'image': function  (word) {
+		var url = 'http://nssug.baidu.com/su?wd=' + word + '&ie=utf-8&prod=image&cb=?';
+		$.getJSON(url,function  (json) {
+			len = json.s.length;
+			var str = '';
+			for( var i = 0; i < len; ++i){
+				str += '<li>' + json.s[i] + '</li>';
+			}
+			$('#sug').html(str);
+			if (len) {
+				$('#sug').show();
+			} else{
+				$('#sug').hide();
+			}
+		});
 	},
-	'so': function  (word) {
-		// body...
+	'map': function  (word) {
+		var url = 'http://map.baidu.com/su?wd=' + word + '&ie=utf-8&cid=1&type=0&newmap=1&callback=?';
+		$.getJSON(url,function  (json) {
+			len = json.s.length;
+			var str = '',
+				sugword;
+			for( var i = 0; i < len; ++i){
+				sugword = $.trim(json.s[i].replace(/\$/g,' '));
+				sugword = $.trim(sugword.replace(/ \d*$/,''));
+				str += '<li>' + sugword + '</li>';
+			}
+			$('#sug').html(str);
+			if (len) {
+				$('#sug').show();
+			} else{
+				$('#sug').hide();
+			}
+		});
 	},
-	'etao': function  (word) {
+	'doc': function  (word) {
+		var url = 'http://nssug.baidu.com/su?wd=' + word + '&prod=wenku&oe=utf-8&cb=?';
+		$.getJSON(url,function  (json) {
+			len = json.s.length;
+			var str = '';
+			for( var i = 0; i < len; ++i){
+				str += '<li>' + json.s[i] + '</li>';
+			}
+			$('#sug').html(str);
+			if (len) {
+				$('#sug').show();
+			} else{
+				$('#sug').hide();
+			}
+		});
+	},
+	'shop': function  (word) {
 		var url = 'http://suggest.taobao.com/sug?area=etao&code=utf-8&q=' + word + '&callback=?';
 		$.getJSON(url,function  (json) {
 			len = json.result.length;
@@ -372,15 +415,6 @@ var suggestionFun = {
 				$('#sug').hide();
 			}
 		});
-	},
-	'amazon': function  (word) {
-		// body...
-	},
-	'360buy': function  (word) {
-		// body...
-	},
-	'soku': function  (word) {
-		// body...
 	}
 };
 

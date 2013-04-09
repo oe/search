@@ -4,31 +4,29 @@
 	<meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
 	<title>综合搜索/Union Search</title>
 	<meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+	<meta name="description" content="综合搜索，搜索整个互联网/An union search utility, search the whole internet.">
 	<link rel="stylesheet" type="text/css" href="style.css" media="all">
 </head>
 <body>
 	<div class="container">
 		<div id="switch-lang"></div>
 		<div class="search-container">
-				<div class="search-wrapper">
-					<div id="app-name" class="app-name">综合搜索</div>
-					<div class="search-engine-list" id="search-engine-list">
+			<div class="search-wrapper">
+				<div id="app-name" class="app-name">综合搜索</div>
+				<div class="search-engine-list" id="search-engine-list"></div>
+				<form action="#" class="search-form" id="search-form" target="_blank" accept-charset="utf-8">
+					<div class="hide" id="hiddens"></div>
+					<div class="input">
+						<span class="ico" id="ico"></span>
+						<input type="text" class="input-box" name="q" id="isa" autocomplete="off" speech="speech" x-webkit-speech="x-webkit-speech" x-webkit-grammar="builtin:search">
+						<button class="submit" type="submit" id="search-btn">Search</button>
+						<span class="ph" id="ph"></span>
 					</div>
-					<form action="#" class="search-form" id="search-form" target="_blank" accept-charset="utf-8">
-						<div class="hide" id="hiddens"></div>
-						<div class="input">
-							<span class="ico" id="ico"></span>
-							<input type="text" class="input-box" name="q" id="isa" autocomplete="off" speech="speech" x-webkit-speech="x-webkit-speech" x-webkit-grammar="builtin:search">
-							<button class="submit" type="submit" id="search-btn">Search</button>
-							<span class="ph" id="ph"></span>
-						</div>
-					</form>
-					<a href="#" id="link" rel="noreferrer" class="hide" target="_blank">searchlink</a>
-					<ul class="search-cat" id="search-cat">
-					</ul>
-				</div>
-			<ul class="sug" id="sug">
-			</ul>
+				</form>
+				<a href="#" id="link" rel="noreferrer" class="hide" target="_blank">searchlink</a>
+				<ul class="search-cat" id="search-cat"></ul>
+			</div>
+			<ul class="sug" id="sug"></ul>
 		</div>
 	</div>
 	<script type="text/javascript" src="jquery.min.js"></script>
