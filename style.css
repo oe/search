@@ -1,5 +1,9 @@
 body{
 	background-color: whitesmoke;
+	background-image: url(//b.zol-img.com.cn/desk/bizhi/image/2/1440x900/1365649260249.jpg);
+	background-position: center;
+	background-repeat: no-repeat;
+	background-attachment: fixed;
 	font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
 	font-size: 14px;
 	padding: 0;
@@ -188,8 +192,8 @@ body{
 	float: left;
 	padding: 4px 10px;
 	margin: 0;
-	/*border: 1px solid blue;*/
-	color: #777;
+	text-shadow: 2px 2px 4px rgba(201,201,201,.6);
+	color: #666;
 	font-size: 16px;
 	cursor: pointer;
 }
@@ -212,8 +216,8 @@ body{
 	float: left;
 	padding: 0;
 	margin: 0;
-	/*border: 1px solid blue;*/
-	color: #777;
+	text-shadow: 2px 2px 4px rgba(201,201,201,.6);
+	color: #666;
 	cursor: pointer;
 }
 .search-cat li label{
@@ -230,7 +234,9 @@ body{
 	position: absolute;
 	top: 20px;
 	right: 40px;
-	color: #777px;
+	color: #777;
+	text-shadow: 2px 2px 4px rgba(201,201,201,.7);
+	cursor: default;
 }
 #switch-lang span{
 	color: #6ab8e6;

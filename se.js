@@ -95,13 +95,14 @@ $(function  () {
 	init_SearchList();
 	set_sug_pos();
 	//input box foucus & click event
-	$('#isa').on('focus',function  (event) {
+	$('#isa').on('focus click',function  (event) {
 		event.stopPropagation();
 		$('#isa,#search-btn').addClass('box-shadow');
 	}).focus();
 	//input box blur event
 	$('#search-wrapper').on('click',function  (event) {
 		event.stopPropagation();
+		$('#sug').hide();
 		$('#isa').focus();
 		// $('#isa,#search-btn').removeClass('box-shadow');
 	});
