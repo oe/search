@@ -29,6 +29,7 @@ body{
 	color: #666;
 	text-shadow: 2px 1px 4px rgba(201,201,201,.6);
 	text-align: center;
+	cursor: default;
 }
 .search-form{
 	clear: both;

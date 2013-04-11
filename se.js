@@ -90,23 +90,29 @@ var len = 0,
 	currentEngine = '';
 //init
 $(function  () {
-	$('#isa').focus();
 	cookie.init();
 	init_argv();
 	init_SearchList();
 	set_sug_pos();
+	//input box foucus & click event
+	$('#isa').on('focus',function  (event) {
+		event.stopPropagation();
+		$('#isa,#search-btn').addClass('box-shadow');
+	}).focus();
+	//input box blur event
+	$('#search-wrapper').on('click',function  (event) {
+		event.stopPropagation();
+		$('#isa').focus();
+		// $('#isa,#search-btn').removeClass('box-shadow');
+	});
 	//hide sug list
 	$(document).on('click',function  () {
 		$('#sug').hide();
+		$('#isa,#search-btn').removeClass('box-shadow');
 	});
 	//reset sug list pos
 	$(window).on('resize',function  () {
 		set_sug_pos();
-	});
-	//placeholder behavior
-	$('#ph').on('mousedown focus',function  () {
-		$('#isa').focus();
-		return false;
 	});
 	//switch lang
 	$('#switch-lang').on('click','span',function  () {
@@ -129,15 +135,6 @@ $(function  () {
 				}
 			}
 		}
-	});
-	//input box foucus & click event
-	$('#isa').on('focus click',function  (event) {
-		event.stopPropagation();
-		$('#isa,#submit').addClass('box-shadow');
-	});
-	//input box blur event
-	$('#isa').on('blur',function  () {
-		$('#isa,#submit').removeClass('box-shadow');
 	});
 	//input box direction key and other controller key event
 	$('#isa').on('keydown',function  (event) {
@@ -234,7 +231,6 @@ $(function  () {
 			currentEngine = $('#search-engine-list .' + currentType + ' li:eq(0)').addClass('current').attr('data');
 			changeSearchEngine();
 		}
-		$('#isa').focus();
 	});
 	//switch search engine
 	$('#search-engine-list').on('click','ul li',function  () {
@@ -243,7 +239,6 @@ $(function  () {
 			currentEngine = $(this).addClass('current').attr('data');
 			changeSearchEngine();
 		}
-		$('#isa').focus();
 	});
 	//search submit
 	$('#search-form').on('submit',function  () {
