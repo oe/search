@@ -9,7 +9,18 @@
 </head>
 <body>
 	<div class="container">
-		<div id="switch-lang"></div>
+		<div class="setting-container">
+				<div id="switch-lang" class="switch-lang"></div>
+				<div class="setting-icon" id="setting-icon">☸</div>
+				<div class="setting-panel" id="setting-panel">
+					<div id="setting-tip" class="setting-tip">
+						<a href="http://desk.zol.com.cn" target="_blank">Set bg-img/设置背景图片</a>
+					</div>
+					<input type="text" id="bgimg">
+					<input type="button" value="OK" id="set-bgimg">
+				</div>
+			</div>
+		</div>
 		<div class="search-container">
 			<div class="search-wrapper" id="search-wrapper">
 				<div id="app-name" class="app-name">综合搜索</div>
@@ -27,6 +38,9 @@
 				<ul class="search-cat" id="search-cat"></ul>
 			</div>
 			<ul class="sug" id="sug"></ul>
+		</div>
+		<div class="appinfo">
+			Copyright © <a href="http://www.evecalm.com" target="_blank">夏影2011-2013</a> <a href="http://www.evecalm.com" target="_blank">Help/Feedback</a>
 		</div>
 	</div>
 	<script type="text/javascript" src="jquery.min.js"></script>

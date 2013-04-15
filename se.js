@@ -101,15 +101,14 @@ $(function  () {
 	}).focus();
 	//input box blur event
 	$('#search-wrapper').on('click',function  (event) {
-		event.stopPropagation();
-		$('#sug').hide();
 		$('#isa').focus();
-		// $('#isa,#search-btn').removeClass('box-shadow');
 	});
 	//hide sug list
-	$(document).on('click',function  () {
+	$(document.body).on('click',function  () {
 		$('#sug').hide();
 		$('#isa,#search-btn').removeClass('box-shadow');
+		$('#setting-icon').removeClass('current');
+		$('#setting-panel').hide();
 	});
 	//reset sug list pos
 	$(window).on('resize',function  () {
@@ -121,6 +120,34 @@ $(function  () {
 		cookie.setlang(lang);
 		init_SearchList();
 	});
+	//setting panel
+	$('#setting-icon').on('click',function  (event) {
+		event.stopPropagation();
+		$(this).addClass('current');
+		$('#setting-panel').show();
+		$('#bgimg').focus();
+	});
+	//set background image
+	$('#set-bgimg').on('click',function  (event) {
+		event.stopPropagation();
+		var url = $('#bgimg').val();
+		if (url) {
+			$(document.body).css('background-image','url(' + url + ')');
+			$('#bgimg').val('');
+			cookie.attr('bgimg',url);
+			$('#setting-icon').removeClass('current');
+			$('#setting-panel').hide();
+		}
+	});
+	$('#bgimg').on('keydown',function  (event) {
+		if (event.keyCode === 13) {
+			$('#set-bgimg').click();
+			return false;
+		}
+	})
+	$('#setting-panel').on('click',function  (event) {
+		event.stopPropagation();
+	})
 	//input box value change realtime event
 	$('#isa').on('input propertychange',function  () {
 		if ('' === $(this).val()) {
@@ -214,7 +241,6 @@ $(function  () {
 	});
 	//sug list item click
 	$('#sug').on('click','li',function  (event) {
-		// event.stopPropagation();
 		val = $(this).html();
 		$('#isa').val(val);
 		$('#search-form').submit();
@@ -246,7 +272,6 @@ $(function  () {
 		$('#sug').hide();
 		val = $('#isa').val();
 		if ('' === val) {
-			alert('No input!');
 			return false;
 		}else if (' ' === val ||
 			currentEngine === 'qiyi' ||
@@ -423,11 +448,13 @@ function init_SearchList () {
 	try{
 		config = $.ajax({url:'assets/se.json',async:false}).responseText;
 		config = $.parseJSON(config);
-		var lists = '';
-		var types = '';
-		var current = '';
-		var lang = cookie.attr('lang');
-		var ph = config['placeholder'][lang];
+		var lists = '',
+			types = '',
+			current = '',
+			lang = cookie.attr('lang'),
+			bgimg = cookie.attr('bgimg'),
+			ph;
+		ph= config['placeholder'][lang];
 		for (var key in config['searches']) {
 			if (config['searches'].hasOwnProperty(key)) {
 				current = (key == currentType) ? 'checked' : '';
@@ -445,6 +472,9 @@ function init_SearchList () {
 			}
 		}
 		document.title = config['title'][lang];
+		if (bgimg) {
+			$(document.body).css('background-image','url(' + bgimg + ')');
+		}
 		$('#switch-lang').html(config['lang'][lang]);
 		$('#app-name').html(config['title'][lang]);
 		$('#ico').addClass('ico-' + currentType);

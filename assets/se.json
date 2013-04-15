@@ -90,7 +90,7 @@
 			"en":"Music",
 			"engines":{
 				"yinyuetai":{
-					"link":"http://www.yinyuetai.com/search",
+					"link":"http://www.yinyuetai.com/",
 					"url":"http://www.yinyuetai.com/search/mv",
 					"hiddens":{},
 					"key":"keyword",
