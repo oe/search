@@ -6,8 +6,8 @@
 // @match          http://www.google.com.hk/*
 // @match          https://www.google.com/*
 // @match          https://www.google.com.hk/*
-// @updateURL      https://userscripts.org/scripts/source/138814.meta.js
-// @downloadURL    https://userscripts.org/scripts/source/138814.user.js
+// @updateURL      http://app.evecalm.com/search/googlelink.meta.js
+// @downloadURL    http://app.evecalm.com/search/googlelink.user.js
 // @version        0.50
 // ==/UserScript==
 function proxy(fn) {
