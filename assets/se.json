@@ -429,6 +429,48 @@
 					"en":"PanSo"
 				}
 			}
+		},
+		"doc":{
+			"zh":"编程",
+			"en":"Coding",
+			"engines":{
+				"cblog":{
+					"link":"http://www.google.com/ncr",
+					"url":"http://www.google.com/cse",
+					"hiddens":{
+						"ie":"utf-8",
+						"cx":"009448954738066331666:k9xgys0kmf8"
+						},
+					"key":"q",
+					"charset":"utf-8",
+					"zh":"程序猿博客",
+					"en":"Coder Blog"
+				},
+				"cqa":{
+					"link":"http://www.google.com/ncr",
+					"url":"http://www.google.com/cse",
+					"hiddens":{
+						"ie":"utf-8",
+						"cx":"009448954738066331666:edslil6k7yg"
+						},
+					"key":"q",
+					"charset":"utf-8",
+					"zh":"程序猿问答",
+					"en":"Coder Q&A"
+				},
+				"cproject":{
+					"link":"http://www.google.com/ncr",
+					"url":"http://www.google.com/cse",
+					"hiddens":{
+						"ie":"utf-8",
+						"cx":"009448954738066331666:sqpm2s_akvk"
+						},
+					"key":"q",
+					"charset":"utf-8",
+					"zh":"开源项目",
+					"en":"OS Project"
+				}
+			}
 		}
 	}
 }

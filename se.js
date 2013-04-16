@@ -95,16 +95,17 @@ $(function  () {
 	init_SearchList();
 	set_sug_pos();
 	//input box foucus & click event
-	$('#isa').on('focus click',function  (event) {
-		event.stopPropagation();
+	$('#isa').on('focus',function  (event) {
 		$('#isa,#search-btn').addClass('box-shadow');
 	}).focus();
 	//input box blur event
 	$('#search-wrapper').on('click',function  (event) {
-		$('#isa').focus();
+		if ('isa' !== event.toElement.id) {
+			$('#isa').focus();
+		}
 	});
 	//hide sug list
-	$(document.body).on('click',function  () {
+	$(document).on('click',function  () {
 		$('#sug').hide();
 		$('#isa,#search-btn').removeClass('box-shadow');
 		$('#setting-icon').removeClass('current');
@@ -144,12 +145,12 @@ $(function  () {
 			$('#set-bgimg').click();
 			return false;
 		}
-	})
+	});
 	$('#setting-panel').on('click',function  (event) {
 		event.stopPropagation();
-	})
+	});
 	//input box value change realtime event
-	$('#isa').on('input propertychange',function  () {
+	$('#isa').on('input propertychange',function  (event) {
 		if ('' === $(this).val()) {
 			$('#ph').show();
 			$('#sug').hide();
