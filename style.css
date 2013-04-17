@@ -217,6 +217,7 @@ a{
 	padding-top: 3px;
 	color: #999;
 	text-align: left;
+	cursor: text;
 	pointer-events: none;
 }
 .sug{
