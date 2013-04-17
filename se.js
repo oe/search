@@ -95,14 +95,14 @@ $(function  () {
 	init_SearchList();
 	set_sug_pos();
 	//input box foucus & click event
-	$('#isa').on('focus',function  (event) {
+	$('#isa').on('click focus',function  (event) {
+		event.stopPropagation();
 		$('#isa,#search-btn').addClass('box-shadow');
 	}).focus();
 	//input box blur event
-	$('#search-wrapper').on('click',function  (event) {
-		if ('isa' !== event.toElement.id) {
-			$('#isa').focus();
-		}
+	$('#ph').on('click',function  (event) {
+		event.stopPropagation();
+		$('#isa').focus();
 	});
 	//hide sug list
 	$(document).on('click',function  () {
@@ -259,6 +259,7 @@ $(function  () {
 			currentEngine = $('#search-engine-list .' + currentType + ' li:eq(0)').addClass('current').attr('data');
 			changeSearchEngine();
 		}
+		$('#isa').focus();
 	});
 	//switch search engine
 	$('#search-engine-list').on('click','ul li',function  () {
@@ -267,6 +268,7 @@ $(function  () {
 			currentEngine = $(this).addClass('current').attr('data');
 			changeSearchEngine();
 		}
+		$('#isa').focus();
 	});
 	//search submit
 	$('#search-form').on('submit',function  () {
@@ -497,7 +499,6 @@ function init_SearchList () {
 			cookie.attr('defaultEngine',currentEngine);
 		}
 		if (!$('#search-cat input:checked').length) {
-			//TODO
 			$('#search-cat li:eq(0) label').click();
 		}
 		changeSearchEngine();
