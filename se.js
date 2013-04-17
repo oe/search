@@ -111,6 +111,11 @@ $(function  () {
 		$('#setting-icon').removeClass('current');
 		$('#setting-panel').hide();
 	});
+	$(document).on('keydown',function  (event) {
+		if (event.keyCode === 36) {
+			$('#isa').focus();
+		}
+	});
 	//reset sug list pos
 	$(window).on('resize',function  () {
 		set_sug_pos();
