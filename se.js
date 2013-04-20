@@ -120,6 +120,14 @@ $(function  () {
 	$(window).on('resize',function  () {
 		set_sug_pos();
 	});
+	//window blur
+	$(window).on('blur',function  () {
+		$('#sug').hide();
+	});
+	//window focus
+	$(window).on('focus',function  () {
+		$('#isa').focus();
+	});
 	//switch lang
 	$('#switch-lang').on('click','span',function  () {
 		var lang = $(this).attr('data');
