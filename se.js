@@ -84,7 +84,6 @@ var len = 0,
 	currentIndex = -1,
 	isArrowKey = false,
 	val = '',
-	lang = 'zh',
 	config = null,
 	currentType = '',
 	currentEngine = '';
@@ -160,7 +159,7 @@ $(function  () {
 			$(document.body).css('background-image','');
 			cookie.attr('bgimg','');
 			$('.search-wrapper,.appinfo').removeClass('trsprt-bg');
-			$('#imgerror-tip').html(config.imgloaderror[lang]).show();
+			$('#imgerror-tip').html(config.imgloaderror[cookie.attr('lang')]).show();
 			setTimeout(function() {$('#imgerror-tip').hide();}, 2000);
 			img = null;
 		};
