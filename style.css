@@ -78,7 +78,8 @@ a{
 	height: 100%;
 	padding: 2px 4px;
 	text-align: left;
-	background-color: #fcf8e3;
+	color: #d00;
+	background-color: #ccc;
 }
 .setting-tip{
 	text-align: left;
