@@ -506,6 +506,7 @@ function init_SearchList () {
 		document.title = config['title'][lang];
 		if (bgimg) {
 			$(document.body).css('background-image','url(' + bgimg + ')');
+			$('.search-wrapper,.appinfo').addClass('trsprt-bg');
 		}
 		$('#switch-lang').html(config['lang'][lang]);
 		$('#app-name').html(config['title'][lang]);
