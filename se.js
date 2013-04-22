@@ -130,8 +130,7 @@ $(function  () {
 	});
 	//switch lang
 	$('#switch-lang').on('click','span',function  () {
-		var lang = $(this).attr('data');
-		cookie.setlang(lang);
+		cookie.setlang($(this).attr('data'));
 		init_SearchList();
 	});
 	//setting panel
@@ -144,13 +143,31 @@ $(function  () {
 	//set background image
 	$('#set-bgimg').on('click',function  (event) {
 		event.stopPropagation();
-		var url = $('#bgimg').val();
-		if (url) {
+		var url = $('#bgimg').val(),
+			img = new Image(),
+			imgload,
+			imgerror;
+		imgload = function  () {
 			$(document.body).css('background-image','url(' + url + ')');
 			$('#bgimg').val('');
 			cookie.attr('bgimg',url);
 			$('#setting-icon').removeClass('current');
 			$('#setting-panel').hide();
+			$('.search-wrapper,.appinfo').addClass('trsprt-bg');
+			img = null;
+		};
+		imgerror = function  () {
+			$(document.body).css('background-image','');
+			cookie.attr('bgimg','');
+			$('.search-wrapper,.appinfo').removeClass('trsprt-bg');
+			$('#imgerror-tip').html(config.imgloaderror[lang]).show();
+			setTimeout(function() {$('#imgerror-tip').hide();}, 2000);
+			img = null;
+		};
+		img.onerror = imgerror;
+		img.onload = imgload;
+		if (url) {
+			img.src = url;
 		}
 	});
 	$('#bgimg').on('keydown',function  (event) {
@@ -462,14 +479,14 @@ function init_argv () {
 //init app
 function init_SearchList () {
 	try{
-		config = $.ajax({url:'assets/se.json',async:false}).responseText;
-		config = $.parseJSON(config);
 		var lists = '',
+			lang = cookie.attr('lang'),
 			types = '',
 			current = '',
-			lang = cookie.attr('lang'),
 			bgimg = cookie.attr('bgimg'),
 			ph;
+		config = $.ajax({url:'assets/se.json',async:false}).responseText;
+		config = $.parseJSON(config);
 		ph= config['placeholder'][lang];
 		for (var key in config['searches']) {
 			if (config['searches'].hasOwnProperty(key)) {

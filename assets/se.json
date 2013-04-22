@@ -15,6 +15,10 @@
 		"zh":"搜索",
 		"en":"Search"
 	},
+	"imgloaderror":{
+		"zh":"设置背景图片失败，请确认图片路径是否正确。",
+		"en":"Failed to set bg-img. Please confirm the img's url."	
+	},
 	"searches":{
 		"search":{
 			"zh":"搜索",
