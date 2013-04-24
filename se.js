@@ -484,8 +484,10 @@ function init_SearchList () {
 			current = '',
 			bgimg = cookie.attr('bgimg'),
 			ph;
-		config = $.ajax({url:'assets/se.json',async:false}).responseText;
-		config = $.parseJSON(config);
+		if (!config) {
+			config = $.ajax({url:'assets/se.json',async:false}).responseText;
+			config = $.parseJSON(config);
+		}
 		ph= config['placeholder'][lang];
 		for (var key in config['searches']) {
 			if (config['searches'].hasOwnProperty(key)) {
@@ -533,7 +535,7 @@ function init_SearchList () {
 		}
 		changeSearchEngine();
 	}catch(e){
-		alert('init error!');
+		alert('Init error! You may try to reload this page.');
 	}
 }
 
