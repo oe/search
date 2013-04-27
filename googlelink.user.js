@@ -8,7 +8,7 @@
 // @match          https://www.google.com.hk/*
 // @updateURL      http://app.evecalm.com/search/googlelink.meta.js
 // @downloadURL    http://app.evecalm.com/search/googlelink.user.js
-// @version        0.50
+// @version        0.51
 // ==/UserScript==
 function proxy(fn) {
 	var script = document.createElement('script');
@@ -17,7 +17,7 @@ function proxy(fn) {
 }
 function main(Global){
 	var anchors = document.querySelectorAll('#ires h3 a'),
-		caches = document.querySelectorAll('#ires .gl a'),
+		caches = document.querySelectorAll('#ires .action-menu-panel ul a'),
 		i,
 		j,
 		nullFun = function  () {
