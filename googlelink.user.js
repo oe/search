@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name           Saiya.Google.Encripted
 // @namespace      Saiya.Google.Encripted
-// @description    Saiya.Google.Encripted, Make it easier to use google search(optimized for search result including wikipedia & facebook)
+// @description    Saiya.Google.Encripted, Make it easier to access google search's results
 // @match          http://www.google.com/*
 // @match          http://www.google.com.hk/*
 // @match          https://www.google.com/*
@@ -27,7 +27,6 @@ function main(Global){
 			anchors = document.querySelectorAll('#cse-body a.gs-title'); //for cse results
 			j = anchors.length;
 			for (; i < j; ++i) {
-				console.log(i);
 				anchors[i].setAttribute('data-cturl','');
 				anchors[i].setAttribute('target','_blank');
 			}
