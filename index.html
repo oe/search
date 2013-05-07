@@ -3,7 +3,6 @@
 <head>
 	<meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
 	<title>综合搜索/Union Search</title>
-	<base href="/search/"/>
 	<meta http-equiv="X-UA-Compatible" content="IE=Edge" />
 	<meta name="description" content="综合搜索，搜索整个互联网/An union search utility, search the whole internet.">
 	<link rel="stylesheet" type="text/css" href="style.css" media="all">
@@ -26,8 +25,8 @@
 		<div class="search-container">
 			<div class="search-wrapper" id="search-wrapper">
 				<div id="app-name" class="app-name">综合搜索</div>
-				<div class="search-engine-list" id="search-engine-list"></div>
-				<form action="#" class="search-form" id="search-form" target="_blank" accept-charset="utf-8">
+				<div class="search-engine-list clearfix" id="search-engine-list"></div>
+				<form action="#" class="search-form clearfix" id="search-form" target="_blank" accept-charset="utf-8">
 					<div class="hide" id="hiddens"></div>
 					<div class="input">
 						<span class="ico" id="ico"></span>
@@ -36,8 +35,10 @@
 						<label class="ph" for="isa" id="ph"></label>
 					</div>
 				</form>
-				<a href="#" id="link" rel="noreferrer" class="hide" target="_blank">searchlink</a>
-				<ul class="search-cat" id="search-cat"></ul>
+				<div class="hide">
+					<a href="#" id="link" rel="noreferrer" target="_blank"></a>
+				</div>
+				<ul class="search-cat clearfix" id="search-cat"></ul>
 			</div>
 			<ul class="sug" id="sug"></ul>
 		</div>

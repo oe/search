@@ -93,7 +93,7 @@ $(function  () {
 	init_argv();
 	init_SearchList();
 	set_sug_pos();
-	//input box foucus & click event
+	//input box focus & click event
 	$('#isa').on('click focus',function  (event) {
 		event.stopPropagation();
 		$('#isa,#search-btn').addClass('box-shadow');
