@@ -1,7 +1,7 @@
 // ==UserScript==
-// @name           Saiya.Google.Encripted
-// @namespace      Saiya.Google.Encripted
-// @description    Saiya.Google.Encripted, Make it easier to access google search's results
+// @name           Easy Access of Google Search
+// @namespace      Saiya.Google.link
+// @description    Make it easier to use google search(including cse)
 // @match          http://www.google.com/*
 // @match          http://www.google.com.hk/*
 // @match          https://www.google.com/*
