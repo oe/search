@@ -1,0 +1,11 @@
+CACHE MANIFEST
+#vesion 0.1
+CACHE:
+    assets/bg.gif
+    assets/se.json
+    se.js
+    style.css
+    jquery.min.js
+    index.html
+NETWORK:
+    *
