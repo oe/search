@@ -2,20 +2,6 @@
 //增加推荐网站，如搜索音乐时推荐 豆瓣电台，QQ电台等等
 //增加搜索技巧
 
-$.fn.selectRange = function(start, end) {
-	return this.each(function() {
-		if (this.setSelectionRange) {
-			this.focus();
-			this.setSelectionRange(start, end);
-		} else if (this.createTextRange) {
-			var range = this.createTextRange();
-			range.collapse(true);
-			range.moveEnd('character', end);
-			range.moveStart('character', start);
-			range.select();
-		}
-	});
-};
 //cookies
 var cookie = {
 	mycookie: {},
@@ -79,20 +65,195 @@ var cookie = {
 		return this.attr('lang',lang);
 	}
 };
-//length for sug list
-var len = 0,
-	currentIndex = -1,
-	isArrowKey = false,
-	val = '',
-	config = null,
-	currentType = '',
-	currentEngine = '';
-//init
+
+$.toJSONString = JSON.stringify || function (obj) {
+    var t = typeof (obj);
+    if (t != "object" || obj === null) {
+        // simple data type
+        if (t == "string") obj = '"'+obj+'"';
+        return String(obj);
+    }
+    else {
+        // recurse array or object
+        var n, v, json = [], arr = (obj && obj.constructor == Array);
+        for (n in obj) {
+            v = obj[n]; t = typeof(v);
+            if (t == "string") v = '"'+v+'"';
+            else if (t == "object" && v !== null) v = JSON.stringify(v);
+            json.push((arr ? "" : '"' + n + '":') + String(v));
+        }
+        return (arr ? "[" : "{") + String(json) + (arr ? "]" : "}");
+    }
+};
+
 $(function  () {
 	cookie.init();
-	init_argv();
-	init_SearchList();
-	set_sug_pos();
+	var currentType = cookie.attr('defaultType'),
+		currentEngine = cookie.attr('defaultEngine'),
+		history = $.parseJSON(cookie.attr('history')) || [],
+		lang = cookie.attr('lang'),
+		isArrowKey = false,
+		currentIndex = -1,
+		config = null,
+		len = 0,
+		val = '',
+		urls = {
+			'search'	: 'http://suggestion.baidu.com/su?wd=@&p=3&cb=?',
+			'music'		: 'http://nssug.baidu.com/su?wd=@&prod=mp3&cb=?',
+			'video'		: 'http://nssug.baidu.com/su?wd=@&prod=video&cb=?',
+			'question'	: 'http://nssug.baidu.com/su?wd=@&prod=zhidao&cb=?',
+			'image'		: 'http://nssug.baidu.com/su?wd=@&ie=utf-8&prod=image&cb=?',
+			'map'		: 'http://map.baidu.com/su?wd=@&ie=utf-8&cid=1&type=0&newmap=1&callback=?',
+			'doc'		: 'http://nssug.baidu.com/su?wd=@&prod=wenku&oe=utf-8&cb=?',
+			'shop'		: 'http://suggest.taobao.com/sug?area=etao&code=utf-8&q=@&callback=?'
+		};
+	if (!history instanceof Array) history = [];
+	//init app
+	function initApp (lang, typeName, engineName) {
+		try{
+			var lists = '',
+				types = '',
+				current = '',
+				bgimg = cookie.attr('bgimg'),
+				ph;
+			if (!config) {
+				config = $.ajax({url:'assets/se.json',async:false}).responseText;
+				config = $.parseJSON(config);
+			}
+			ph= config['placeholder'][lang];
+			for (var key in config['searches']) {
+				if (config['searches'].hasOwnProperty(key)) {
+					current = (key == typeName) ? 'checked' : '';
+					types += '<li><label><input type="radio" name="type" value="' + key + '" '+ current+'>' + config['searches'][key][lang] + '</label></li>';
+					current = (key == typeName) ? ' current' : '';
+					lists += '<ul class="'+ key + current +'">';
+					keys = config['searches'][key]['engines'];
+					for (var ke in keys) {
+						if (keys.hasOwnProperty(ke)) {
+							current = (ke == engineName && key == typeName) ? 'class="current"' : '';
+							lists += '<li data="' + ke + '" '+ current +'>' + keys[ke][lang] + '</li>';
+						}
+					}
+					lists += '</ul>';
+				}
+			}
+			document.title = config['title'][lang];
+			if (bgimg) {
+				$(document.body).css('background-image','url(' + bgimg + ')');
+				$('.search-wrapper,.appinfo').addClass('trsprt-bg');
+			}
+			$('#switch-lang').html(config['lang'][lang]);
+			$('#app-name').html(config['title'][lang]);
+			$('#ico').addClass('ico-' + typeName);
+			$('#ph').html(ph);
+			$('#search-btn').text(config['submit'][lang]);
+			$('#search-engine-list').html(lists);
+			$('#search-cat').html(types);
+			var $current = null;
+			if(0 === $('#search-engine-list .' + typeName).length){
+				$current = $('#search-engine-list ul:eq(0)');
+				typeName = $current.attr('class');
+				$current.addClass('current');
+				cookie.attr('defaultType',typeName);
+			}
+			if (0 === $('#search-engine-list .' + typeName + ' li.current').length) {
+				$current = $('#search-engine-list .' + typeName + ' li:eq(0)');
+				searchEngine = $current.attr('data');
+				$current.addClass('current');
+				cookie.attr('defaultEngine',searchEngine);
+			}
+			if (!$('#search-cat input:checked').length) {
+				$('#search-cat li:eq(0) label').click();
+			}
+			changeSearchEngine(typeName,engineName);
+		}catch(e){
+			alert('Init error! You may try to reload this page.');
+		}
+	}
+
+	function getHistoryList () {
+		var str = '';
+		len = 0;
+		currentIndex = -1;
+		if (history.length) {
+			len = history.length;
+			for (var i = 0; i < len; ++i) {
+				str += '<li>' + history[i] + '</li>';	
+			}
+			str += '<li id="clear-history">' + config['clearhistory'][lang] + '</li>';
+		}
+		return str;
+	}
+	//set sug list position
+	function setSugPos () {
+		$('#sug').css({'top':$('.search-form').offset().top + $('.search-form').height(),'left':$('.search-form').offset().left});
+	}
+	//change engine type
+	function changeSearchEngine(typeName,engineName){
+		var engine = config['searches'][typeName]['engines'][engineName],
+			hiddens = '';
+		$('#search-form').attr('accept-charset',engine['charset']);
+		$('#search-form').attr('action',engine['url']);
+		$('#isa').attr('name',engine['key']);
+		for (var nn in engine['hiddens']){
+			if (engine['hiddens'].hasOwnProperty(nn)) {
+				hiddens += '<input type="hidden" name="' + nn + '" value="' + engine['hiddens'][nn] + '">';
+			}
+		}
+		$('#hiddens').html(hiddens);
+		$('#link').attr('href',engine['link']);
+	}
+
+	function suggestion (keyword,type) {
+		if (!urls[type]) return;
+		var url;
+		keyword = encodeURIComponent(keyword);
+
+		url = urls[type].replace('@',keyword);
+		try{
+			$.getJSON(url,function  (json) {
+				var length = 0,
+					str = '',
+					data,i;
+				if (type == 'shop') {
+					data = json.result;
+					length = data.length;
+					if (length) {
+						for(i = 0; i < length; ++i){
+							str += '<li>' + data[i][0] + '</li>';
+						}
+					}
+				} else{
+					data = json.s;
+					length = data.length;
+					if (length) {
+						if (type == 'map') {
+							for(i = 0; i < length; ++i){
+								str += '<li>' + data[i].replace(/(\$)|(\d*$)/g,' ') + '</li>';
+							}
+						} else{
+							for (i = 0; i < length; ++i) {
+								str += '<li>' + data[i] + '</li>';
+							}
+						}
+					}
+				}
+				if (length) {
+					$('#sug').html(str).show();
+				} else{
+					$('#sug').hide();
+				}
+				len = length;
+			})
+		} catch(e) {
+			len = 0;
+		}
+		currentIndex = -1;
+	}
+
+	initApp(lang,currentType,currentEngine);
+	setSugPos();
+	$('#sug').html(getHistoryList());
 	//input box foucus & click event
 	$('#isa').on('click focus',function  (event) {
 		event.stopPropagation();
@@ -117,20 +278,23 @@ $(function  () {
 	});
 	//reset sug list pos
 	$(window).on('resize',function  () {
-		set_sug_pos();
-	});
-	//window blur
-	$(window).on('blur',function  () {
-		$('#sug').hide();
+		setSugPos();
 	});
 	//window focus
 	$(window).on('focus',function  () {
 		$('#isa').focus();
 	});
+	//save data to cookie
+	window.onbeforeunload = function  (e) {
+		cookie.attr('history',$.toJSONString(history));
+		cookie.attr('defaultType',currentType);	
+		cookie.attr('defaultEngine',currentEngine);	
+		cookie.attr('lang',lang);	
+	};
 	//switch lang
 	$('#switch-lang').on('click','span',function  () {
-		cookie.setlang($(this).attr('data'));
-		init_SearchList();
+		lang = $(this).attr('data');
+		initApp(lang,currentType,currentEngine);
 	});
 	//setting panel
 	$('#setting-icon').on('click',function  (event) {
@@ -182,15 +346,13 @@ $(function  () {
 	$('#isa').on('input propertychange',function  (event) {
 		if ('' === $(this).val()) {
 			$('#ph').show();
-			$('#sug').hide();
 			val = '';
+			if(!isArrowKey)	$('#sug').html(getHistoryList()).hide();
 		} else{
 			$('#ph').hide();
-			if (!isArrowKey) {
-				if(val != $(this).val()){
-					val = $(this).val();
-					getSug(val);
-				}
+			if (!isArrowKey && val != $(this).val()) {
+				val = $(this).val();
+				suggestion (val,currentType);
 			}
 		}
 	});
@@ -198,7 +360,9 @@ $(function  () {
 	$('#isa').on('keydown',function  (event) {
 		var ret = true,
 			newIndex = 0,
-			text = '';
+			text = '',
+			$sug = $('#sug'),
+			$ph = $('#ph');
 		isArrowKey = false;
 		switch(event.keyCode){
 			case 9: //Tab
@@ -220,14 +384,14 @@ $(function  () {
 				ret = false;
 				break;
 			case 27: //esc
-				$('#sug').hide();
+				$sug.hide();
 				ret = false;
 				break;
 			case 38: //up
 				if (!len) return ret;
 				isArrowKey = true;
-				$('#sug').show();
-				$('#ph').hide();
+				$sug.show();
+				$ph.hide();
 				newIndex = currentIndex - 1;
 				if (newIndex < -1 ) {
 					newIndex = len - 1;
@@ -235,14 +399,15 @@ $(function  () {
 				$('#sug li:eq('+ currentIndex + ')').removeClass('current');
 				text = (-1 == newIndex) ? val : $('#sug li:eq('+ newIndex + ')').addClass('current').text();
 				$(this).val(text);
+				if (text === '') $('#ph').show();
 				currentIndex = newIndex;
 				ret = false;
 				break;
 			case 40: //down
 				if (!len) return ret;
 				isArrowKey = true;
-				$('#sug').show();
-				$('#ph').hide();
+				$sug.show();
+				$ph.hide();
 				newIndex = currentIndex + 1;
 				if (newIndex >= len ) {
 					newIndex = -1;
@@ -250,6 +415,7 @@ $(function  () {
 				$('#sug li:eq('+ currentIndex + ')').removeClass('current');
 				text = (-1 == newIndex) ? val : $('#sug li:eq('+ newIndex + ')').addClass('current').text();
 				$(this).val(text);
+				if (text === '') $('#ph').show();
 				currentIndex = newIndex;
 				ret = false;
 				break;
@@ -271,6 +437,14 @@ $(function  () {
 	});
 	//sug list item click
 	$('#sug').on('click','li',function  (event) {
+		console.log(event);
+		if (event.srcElement.id == 'clear-history') {
+			history = [];
+			len = 0;
+			$('#sug').html('').hide();
+			$('#isa').focus();
+			return false;
+		}
 		val = $(this).html();
 		$('#isa').val(val);
 		$('#search-form').submit();
@@ -286,7 +460,7 @@ $(function  () {
 			$('#ico').addClass('ico-' + currentType);
 			$('#search-engine-list .' + currentType).addClass('current');
 			currentEngine = $('#search-engine-list .' + currentType + ' li:eq(0)').addClass('current').attr('data');
-			changeSearchEngine();
+			changeSearchEngine(currentType,currentEngine);
 		}
 		$('#isa').focus();
 	});
@@ -295,7 +469,7 @@ $(function  () {
 		if (currentEngine != $(this).attr('data')) {
 			$('#search-engine-list ul li.current').removeClass('current');
 			currentEngine = $(this).addClass('current').attr('data');
-			changeSearchEngine();
+			changeSearchEngine(currentType,currentEngine);
 		}
 		$('#isa').focus();
 	});
@@ -321,240 +495,26 @@ $(function  () {
 			$('#link')[0].click();
 			return false;
 		} else{
+			var i = 0,
+				length = history.length;
+			for (; i < length; ++i) {
+				if (val == history[i]) {
+					if (i != 0) {
+						history.splice(i,1);
+						history.unshift(val);
+					}
+					break;
+				}
+			}
+			if (i == length) {
+				if(length > 9){
+					history.splice(9,length - 10);
+				}
+				history.unshift(val);
+			}
 			return true;
 		}
 	});
 });
-//get sug list
-function getSug (word) {
-	word = encodeURIComponent(word);
-	if (suggestionFun[currentType]) {
-		try{
-			suggestionFun[currentType](word);
-		}catch(e){
-			len = 0;
-		}
-	}
-	currentIndex = -1;
-}
-var suggestionFun = {
-	'search': function  (word) {
-		var url = 'http://suggestion.baidu.com/su?wd=' + word + '&p=3&cb=?';
-		$.getJSON(url,function  (json) {
-			len = json.s.length;
-			var str = '';
-			for( var i = 0; i < len; ++i){
-				str += '<li>' + json.s[i] + '</li>';
-			}
-			$('#sug').html(str);
-			if (len) {
-				$('#sug').show();
-			} else{
-				$('#sug').hide();
-			}
-		});
-	},
-	'music': function  (word) {
-		var url = 'http://nssug.baidu.com/su?wd=' + word + '&prod=mp3&cb=?';
-		$.getJSON(url,function  (json) {
-			len = json.s.length;
-			var str = '';
-			for( var i = 0; i < len; ++i){
-				str += '<li>' + json.s[i] + '</li>';
-			}
-			$('#sug').html(str);
-			if (len) {
-				$('#sug').show();
-			} else{
-				$('#sug').hide();
-			}
-		});
-	},
-	'video': function  (word) {
-		var url = 'http://nssug.baidu.com/su?wd=' + word + '&prod=video&cb=?';
-		$.getJSON(url,function  (json) {
-			len = json.s.length;
-			var str = '';
-			for( var i = 0; i < len; ++i){
-				str += '<li>' + json.s[i] + '</li>';
-			}
-			$('#sug').html(str);
-			if (len) {
-				$('#sug').show();
-			} else{
-				$('#sug').hide();
-			}
-		});
-	},
-	'question': function  (word) {
-		var url = 'http://nssug.baidu.com/su?wd=' + word + '&prod=zhidao&cb=?';
-		$.getJSON(url,function  (json) {
-			len = json.s.length;
-			var str = '';
-			for( var i = 0; i < len; ++i){
-				str += '<li>' + json.s[i] + '</li>';
-			}
-			$('#sug').html(str);
-			if (len) {
-				$('#sug').show();
-			} else{
-				$('#sug').hide();
-			}
-		});
-	},
-	'image': function  (word) {
-		var url = 'http://nssug.baidu.com/su?wd=' + word + '&ie=utf-8&prod=image&cb=?';
-		$.getJSON(url,function  (json) {
-			len = json.s.length;
-			var str = '';
-			for( var i = 0; i < len; ++i){
-				str += '<li>' + json.s[i] + '</li>';
-			}
-			$('#sug').html(str);
-			if (len) {
-				$('#sug').show();
-			} else{
-				$('#sug').hide();
-			}
-		});
-	},
-	'map': function  (word) {
-		var url = 'http://map.baidu.com/su?wd=' + word + '&ie=utf-8&cid=1&type=0&newmap=1&callback=?';
-		$.getJSON(url,function  (json) {
-			len = json.s.length;
-			var str = '',
-				sugword;
-			for( var i = 0; i < len; ++i){
-				sugword = $.trim(json.s[i].replace(/\$/g,' '));
-				sugword = $.trim(sugword.replace(/ \d*$/,''));
-				str += '<li>' + sugword + '</li>';
-			}
-			$('#sug').html(str);
-			if (len) {
-				$('#sug').show();
-			} else{
-				$('#sug').hide();
-			}
-		});
-	},
-	'doc': function  (word) {
-		var url = 'http://nssug.baidu.com/su?wd=' + word + '&prod=wenku&oe=utf-8&cb=?';
-		$.getJSON(url,function  (json) {
-			len = json.s.length;
-			var str = '';
-			for( var i = 0; i < len; ++i){
-				str += '<li>' + json.s[i] + '</li>';
-			}
-			$('#sug').html(str);
-			if (len) {
-				$('#sug').show();
-			} else{
-				$('#sug').hide();
-			}
-		});
-	},
-	'shop': function  (word) {
-		var url = 'http://suggest.taobao.com/sug?area=etao&code=utf-8&q=' + word + '&callback=?';
-		$.getJSON(url,function  (json) {
-			len = json.result.length;
-			var str = '';
-			for( var i = 0; i < len; ++i){
-				str += '<li>' + json.result[i][0] + '</li>';
-			}
-			$('#sug').html(str);
-			if (len) {
-				$('#sug').show();
-			} else{
-				$('#sug').hide();
-			}
-		});
-	}
-};
 
-function init_argv () {
-	currentType = cookie.attr('defaultType');
-	currentEngine = cookie.attr('defaultEngine');
-}
-//init app
-function init_SearchList () {
-	try{
-		var lists = '',
-			lang = cookie.attr('lang'),
-			types = '',
-			current = '',
-			bgimg = cookie.attr('bgimg'),
-			ph;
-		if (!config) {
-			config = $.ajax({url:'assets/se.json',async:false}).responseText;
-			config = $.parseJSON(config);
-		}
-		ph= config['placeholder'][lang];
-		for (var key in config['searches']) {
-			if (config['searches'].hasOwnProperty(key)) {
-				current = (key == currentType) ? 'checked' : '';
-				types += '<li><label><input type="radio" name="type" value="' + key + '" '+ current+'>' + config['searches'][key][lang] + '</label></li>';
-				current = (key == currentType) ? ' current' : '';
-				lists += '<ul class="'+ key + current +'">';
-				keys = config['searches'][key]['engines'];
-				for (var ke in keys) {
-					if (keys.hasOwnProperty(ke)) {
-						current = (ke == currentEngine && key == currentType) ? 'class="current"' : '';
-						lists += '<li data="' + ke + '" '+ current +'>' + keys[ke][lang] + '</li>';
-					}
-				}
-				lists += '</ul>';
-			}
-		}
-		document.title = config['title'][lang];
-		if (bgimg) {
-			$(document.body).css('background-image','url(' + bgimg + ')');
-			$('.search-wrapper,.appinfo').addClass('trsprt-bg');
-		}
-		$('#switch-lang').html(config['lang'][lang]);
-		$('#app-name').html(config['title'][lang]);
-		$('#ico').addClass('ico-' + currentType);
-		$('#ph').html(ph);
-		$('#search-btn').text(config['submit'][lang]);
-		$('#search-engine-list').html(lists);
-		$('#search-cat').html(types);
-		var $current = null;
-		if(0 === $('#search-engine-list .' + currentType).length){
-			$current = $('#search-engine-list ul:eq(0)');
-			currentType = $current.attr('class');
-			$current.addClass('current');
-			cookie.attr('defaultType',currentType);
-		}
-		if (0 === $('#search-engine-list .' + currentType + ' li.current').length) {
-			$current = $('#search-engine-list .' + currentType + ' li:eq(0)');
-			currentEngine = $current.attr('data');
-			$current.addClass('current');
-			cookie.attr('defaultEngine',currentEngine);
-		}
-		if (!$('#search-cat input:checked').length) {
-			$('#search-cat li:eq(0) label').click();
-		}
-		changeSearchEngine();
-	}catch(e){
-		alert('Init error! You may try to reload this page.');
-	}
-}
 
-//set sug list position
-function set_sug_pos () {
-	$('#sug').css({'top':$('.search-form').offset().top + $('.search-form').height(),'left':$('.search-form').offset().left});
-}
-//change engine type
-function changeSearchEngine(){
-	var engine = config['searches'][currentType]['engines'][currentEngine];
-	$('#search-form').attr('accept-charset',engine['charset']);
-	$('#search-form').attr('action',engine['url']);
-	$('#isa').attr('name',engine['key']);
-	var hiddens = '';
-	for (var nn in engine['hiddens']){
-		if (engine['hiddens'].hasOwnProperty(nn)) {
-			hiddens += '<input type="hidden" name="' + nn + '" value="' + engine['hiddens'][nn] + '">';
-		}
-	}
-	$('#hiddens').html(hiddens);
-	$('#link').attr('href',engine['link']);
-}

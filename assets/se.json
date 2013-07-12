@@ -15,6 +15,10 @@
 		"zh":"搜索",
 		"en":"Search"
 	},
+	"clearhistory":{
+		"zh":"清空历史记录",
+		"en":"Clear my search history"
+	},
 	"imgloaderror":{
 		"zh":"设置背景图片失败，请确认图片路径是否正确。",
 		"en":"Failed to set bg-img. Please confirm the img's url."	
@@ -110,15 +114,6 @@
 					"charset":"gb2312",
 					"zh":"搜狗♬",
 					"en":"Sogou♬"
-				},
-				"top100":{
-					"link":"http://www.top100.cn",
-					"url":"http://www.top100.cn/search/",
-					"hiddens":{"act":"allsong"},
-					"key":"keyword",
-					"charset":"utf-8",
-					"zh":"巨鲸",
-					"en":"Top100"
 				},
 				"xiami":{
 					"link":"http://www.xiami.com",
@@ -345,6 +340,15 @@
 			"zh":"购物",
 			"en":"Shop",
 			"engines":{
+				"etao":{
+					"link":"http://www.etao.com",
+					"url":"http://s.etao.com/search",
+					"hiddens":{},
+					"key":"q",
+					"charset":"utf-8",
+					"zh":"一淘",
+					"en":"Etao"
+				},
 				"taobao":{
 					"link":"http://www.taobao.com",
 					"url":"http://s.taobao.com/search",
@@ -380,15 +384,6 @@
 					"charset":"utf-8",
 					"zh":"当当",
 					"en":"DangDang"
-				},
-				"etao":{
-					"link":"http://www.etao.com",
-					"url":"http://s.etao.com/search",
-					"hiddens":{},
-					"key":"q",
-					"charset":"utf-8",
-					"zh":"一淘",
-					"en":"Etao"
 				}
 			}
 		},
