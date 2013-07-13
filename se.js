@@ -501,20 +501,24 @@ $(function  () {
 		} else{
 			var i = 0,
 				length = history.length;
+			if(length > 10){
+				history.splice(10,length);
+				length = 10;
+			}
 			for (; i < length; ++i) {
 				if (val == history[i]) {
-					if (i != 0) {
+					if (i !== 0) {
 						history.splice(i,1);
 						history.unshift(val);
 					}
 					break;
 				}
 			}
-			if (i == length) {
-				if(length > 9){
-					history.splice(9,length - 10);
-				}
+			if (i === length) {
 				history.unshift(val);
+				if(length === 10){
+					history.splice(10,1);
+				}
 			}
 			return true;
 		}
