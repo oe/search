@@ -204,7 +204,7 @@ $(function  () {
 		$('#link').attr('href',engine['link']);
 	}
 
-	function suggestion (keyword,type) {
+	function getSuggestion (keyword,type) {
 		if (!urls[type]) return;
 		var url;
 		keyword = encodeURIComponent(keyword);
@@ -277,13 +277,17 @@ $(function  () {
 		}
 	});
 	//reset sug list pos
-	$(window).on('resize',function  () {
+	window.onresize = function  () {
 		setSugPos();
-	});
+	};
 	//window focus
-	$(window).on('focus',function  () {
+	window.onfocus = function  () {
 		$('#isa').focus();
-	});
+	};
+	//window blur
+	window.onblur = function(){
+		$('#sug').hide();
+	};
 	//save data to cookie
 	window.onbeforeunload = function  (e) {
 		cookie.attr('history',$.toJSONString(history));
@@ -352,7 +356,7 @@ $(function  () {
 			$('#ph').hide();
 			if (!isArrowKey && val != $(this).val()) {
 				val = $(this).val();
-				suggestion (val,currentType);
+				getSuggestion (val,currentType);
 			}
 		}
 	});
@@ -475,7 +479,7 @@ $(function  () {
 	});
 	//search submit
 	$('#search-form').on('submit',function  () {
-		$('#sug').hide();
+		// $('#sug').hide();
 		val = $('#isa').val();
 		if ('' === val) {
 			return false;
