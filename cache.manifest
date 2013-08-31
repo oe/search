@@ -1,11 +1,11 @@
 CACHE MANIFEST
-# 1373736213759 20130714 version 0.5
+# 2013-08-31 15:32:46
 CACHE:
+    index.html
     assets/bg.gif
-    assets/se.json
+    assets/config.js
     se.js
     style.css
     jquery.min.js
-    index.html
 NETWORK:
     *
