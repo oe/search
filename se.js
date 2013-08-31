@@ -283,8 +283,10 @@ $(function  () {
 		$('#setting-panel').hide();
 	});
 	$(document).on('keydown',function  (event) {
-		if (event.keyCode === 36) {
+		// 36 is the keycode of "Home" key, 83 is the keycode of "s" key
+		if (event.keyCode === 36 || event.keyCode === 83){
 			$('#isa').focus();
+			return false;
 		}
 	});
 	//reset sug list pos
@@ -379,6 +381,7 @@ $(function  () {
 			text = '',
 			$sug = $('#sug'),
 			$ph = $('#ph');
+		event.stopPropagation();
 		isArrowKey = false;
 		switch(event.keyCode){
 			case 9: //Tab
