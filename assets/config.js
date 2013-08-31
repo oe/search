@@ -1,4 +1,4 @@
-{
+var config = {
 	"placeholder":{
 		"zh":"请输入关键字，按Enter搜索",
 		"en":"Enter the keywords and press enter to search"
@@ -21,7 +21,7 @@
 	},
 	"imgloaderror":{
 		"zh":"设置背景图片失败，请确认图片路径是否正确。",
-		"en":"Failed to set bg-img. Please confirm the img's url."	
+		"en":"Failed to set bg-img. Please confirm the img's url."
 	},
 	"searches":{
 		"search":{
@@ -33,34 +33,27 @@
 					"url":"https://www.google.com.hk/search",
 					"hiddens":{"hl":"zh-CN"},
 					"key":"q",
-					"charset":"utf-8",
 					"zh":"谷歌",
 					"en":"Google"
 				},
 				"baidu":{
 					"link":"http://www.baidu.com",
 					"url":"http://www.baidu.com/s",
-					"hiddens":{},
 					"key":"wd",
-					"charset":"utf-8",
 					"zh":"百度",
 					"en":"Baidu"
 				},
 				"bing":{
 					"link":"http://cn.bing.com",
 					"url":"http://cn.bing.com/search",
-					"hiddens":{},
 					"key":"q",
-					"charset":"utf-8",
 					"zh":"必应",
 					"en":"Bing"
 				},
 				"youdao":{
 					"link":"http://www.youdao.com",
 					"url":"http://www.youdao.com/search",
-					"hiddens":{},
 					"key":"q",
-					"charset":"utf-8",
 					"zh":"有道",
 					"en":"Youdao"
 				},
@@ -69,25 +62,20 @@
 					"url":"http://www.soso.com/q",
 					"hiddens":{"pid":"s.idx","cid":"s.idx.se"},
 					"key":"w",
-					"charset":"utf-8",
 					"zh":"搜搜",
 					"en":"Soso"
 				},
 				"sogou":{
 					"link":"http://www.sogou.com",
 					"url":"http://www.sogou.com/web",
-					"hiddens":{},
 					"key":"query",
-					"charset":"utf-8",
 					"zh":"搜狗",
 					"en":"Sogou"
 				},
 				"q360":{
 					"link":"http://www.so.com",
 					"url":"http://www.so.com/s",
-					"hiddens":{},
 					"key":"q",
-					"charset":"utf-8",
 					"zh":"360",
 					"en":"360"
 				}
@@ -97,41 +85,42 @@
 			"zh":"音乐",
 			"en":"Music",
 			"engines":{
+				"baidu":{
+					"link":"http://music.baidu.com/",
+					"url":"http://music.baidu.com/search",
+					"key":"key",
+					"zh":"百度音乐",
+					"en": "Baidu Music"
+				},
 				"yinyuetai":{
 					"link":"http://www.yinyuetai.com/",
 					"url":"http://www.yinyuetai.com/search/mv",
-					"hiddens":{},
 					"key":"keyword",
-					"charset":"utf-8",
 					"zh":"音乐台",
 					"en":"Yinyuetai"
 				},
 				"sogou":{
 					"link":"http://mp3.sogou.com",
 					"url":"http://mp3.sogou.com/music.so",
-					"hiddens":{},
 					"key":"query",
 					"charset":"gb2312",
-					"zh":"搜狗♬",
-					"en":"Sogou♬"
+					"zh":"搜狗音乐",
+					"en":"Sogou Music"
 				},
 				"xiami":{
 					"link":"http://www.xiami.com",
 					"url":"http://www.xiami.com/search",
-					"hiddens":{},
 					"key":"key",
-					"charset":"utf-8",
 					"zh":"虾米",
 					"en":"Xiami"
 				},
 				"soso":{
 					"link":"http://music.soso.com",
 					"url":"http://cgi.music.soso.com/fcgi-bin/m.q",
-					"hiddens":{},
 					"key":"w",
 					"charset":"gb2312",
-					"zh":"搜搜♬",
-					"en":"Soso♬"
+					"zh":"搜搜音乐",
+					"en":"Soso Music"
 				}
 			}
 		},
@@ -142,47 +131,44 @@
 				"soku":{
 					"link":"http://www.soku.com",
 					"url":"http://www.soku.com/v",
-					"hiddens":{},
 					"key":"keyword",
-					"charset":"utf-8",
 					"zh":"搜酷",
 					"en":"Soku"
 				},
 				"xunlei":{
 					"link":"http://daquan.xunlei.com",
 					"url":"http://search.daquan.xunlei.com/web/search.html",
-					"hiddens":{},
 					"key":"keyword",
-					"charset":"utf-8",
 					"zh":"迅雷大全",
 					"en":"Xunlei"
 				},
 				"qiyi":{
 					"link":"http://www.iqiyi.com",
 					"url":"http://so.iqiyi.com/so/",
-					"hiddens":{},
 					"key":"q",
-					"charset":"utf-8",
 					"zh":"爱奇艺",
 					"en":"iQiyi"
 				},
 				"qq":{
 					"link":"http://v.qq.com",
 					"url":"http://v.qq.com/search.html",
-					"hiddens":{},
 					"key":"ms_key",
-					"charset":"utf-8",
 					"zh":"腾讯视频",
 					"en":"QQ Video"
 				},
 				"sohu":{
 					"link":"http://tv.sohu.com",
 					"url":"http://so.tv.sohu.com/mts",
-					"hiddens":{},
 					"key":"wd",
-					"charset":"utf-8",
 					"zh":"搜狐视频",
 					"en":"Sohu Video"
+				},
+				"youtube":{
+					"link":"http://www.youtube.com",
+					"url":"http://www.youtube.com/results",
+					"key":"search_query",
+					"zh":"YouTube",
+					"en":"YouTube"
 				}
 			}
 		},
@@ -193,9 +179,7 @@
 				"google":{
 					"link":"https://www.google.com.hk/imghp?hl=zh-CN&tab=wi",
 					"url":"https://www.google.com.hk/search",
-					"hiddens":{"hl":"zh-CN","newwindow":"1","safe":"strict","um":"1","ie":"UTF-8","tbm":"isch","source":"og","sa":"N","tab":"wi"},
 					"key":"q",
-					"charset":"utf-8",
 					"zh":"谷歌图片",
 					"en":"Google Picture"
 				},
@@ -203,10 +187,8 @@
 					"link":"http://image.baidu.com/",
 					"url":"http://image.baidu.com/i",
 					"hiddens":{
-						"ie":"utf-8"
 					},
 					"key":"word",
-					"charset":"utf-8",
 					"zh":"百度图片",
 					"en":"Baidu Image"
 				},
@@ -222,18 +204,14 @@
 				"bing":{
 					"link":"http://cn.bing.com/images",
 					"url":"http://cn.bing.com/images/search",
-					"hiddens":{},
 					"key":"q",
-					"charset":"utf-8",
 					"zh":"必应图片",
 					"en":"Bing"
 				},
 				"topit":{
 					"link":"http://www.topit.me",
 					"url":"http://www.topit.me/items/search",
-					"hiddens":{},
 					"key":"query",
-					"charset":"utf-8",
 					"zh":"Topit",
 					"en":"Topit"
 				}
@@ -246,9 +224,7 @@
 				"baidu":{
 					"link":"http://zhidao.baidu.com",
 					"url":"http://zhidao.baidu.com/search",
-					"hiddens":{},
 					"key":"word",
-					"charset":"utf-8",
 					"zh":"百度知道",
 					"en":"Baidu Zhidao"
 				},
@@ -259,16 +235,13 @@
 						"type":"question"
 					},
 					"key":"q",
-					"charset":"utf-8",
 					"zh":"知乎",
 					"en":"Zhihu"
 				},
 				"wiki":{
 					"link":"https://zh.wikipedia.org",
 					"url":"https://zh.wikipedia.org/wiki/Special:Search",
-					"hiddens":{},
 					"key":"search",
-					"charset":"utf-8",
 					"zh":"维基百科",
 					"en":"Wikipedia"
 				},
@@ -277,7 +250,6 @@
 					"url":"https://www.google.com.hk/search",
 					"hiddens":{"hl":"zh-CN","newwindow":"1","safe":"strict","tbo":"d","source":"lnms","tbm":"klg","sa":"X"},
 					"key":"q",
-					"charset":"utf-8",
 					"zh":"谷歌问答",
 					"en":"Google Answers"
 				}
@@ -290,9 +262,7 @@
 				"google":{
 					"link":"https://maps.google.com.hk",
 					"url":"https://maps.google.com.hk/maps",
-					"hiddens":{},
 					"key":"q",
-					"charset":"utf-8",
 					"zh":"谷歌地图",
 					"en":"Goolge Map"
 				},
@@ -301,12 +271,10 @@
 					"url":" http://map.baidu.com/",
 					"hiddens":{
 						"newmap":1,
-						"ie":"utf-8",
 						"s":"s",
 						"c":1
 					},
 					"key":"wd",
-					"charset":"utf-8",
 					"zh":"百度地图",
 					"en":"Baidu Map"
 				},
@@ -327,10 +295,8 @@
 					"url":"http://map.soso.com/",
 					"hiddens":{
 						"pid":"web.map",
-						"ie":"utf-8"
 					},
 					"key":"w",
-					"charset":"utf-8",
 					"zh":"搜搜地图",
 					"en":"Soso Map"
 				}
@@ -343,9 +309,7 @@
 				"etao":{
 					"link":"http://www.etao.com",
 					"url":"http://s.etao.com/search",
-					"hiddens":{},
 					"key":"q",
-					"charset":"utf-8",
 					"zh":"一淘",
 					"en":"Etao"
 				},
@@ -354,14 +318,12 @@
 					"url":"http://s.taobao.com/search",
 					"hiddens":{"commend":"all"},
 					"key":"q",
-					"charset":"utf-8",
 					"zh":"淘宝",
 					"en":"Taobao"
 				},
 				"jingdong":{
 					"link":"http://www.jd.com",
 					"url":"http://search.jd.com/Search",
-					"hiddens":{},
 					"key":"keyword",
 					"charset":"gbk",
 					"zh":"京东",
@@ -372,16 +334,13 @@
 					"url":"http://www.amazon.cn/s/ref=nb_sb_noss_2",
 					"hiddens":{"__mk_zh_CN":"亚马逊中国","url":"search-alias","tab":"saiya-23"},
 					"key":"field-keywords",
-					"charset":"utf-8",
 					"zh":"亚马逊",
 					"en":"Amazon"
 				},
 				"dangdang":{
 					"link":"http://www.dangdang.com",
 					"url":"http://searchb.dangdang.com/",
-					"hiddens":{},
 					"key":"key",
-					"charset":"utf-8",
 					"zh":"当当",
 					"en":"DangDang"
 				}
@@ -394,7 +353,6 @@
 				"wenku":{
 					"link":"http://wenku.baidu.com",
 					"url":"http://wenku.baidu.com/search",
-					"hiddens":{},
 					"key":"word",
 					"charset":"gb2312",
 					"zh":"百度文库",
@@ -403,7 +361,6 @@
 				"iShare":{
 					"link":"http://ishare.iask.sina.com.cn",
 					"url":"http://ishare.iask.sina.com.cn/search.php",
-					"hiddens":{},
 					"key":"key",
 					"charset":"gb2312",
 					"zh":"爱问资料",
@@ -414,7 +371,6 @@
 					"url":"http://f.xunlei.com/search",
 					"hiddens":{"type":"file"},
 					"key":"k",
-					"charset":"utf-8",
 					"zh":"迅雷方舟",
 					"en":"XLPan"
 				},
@@ -423,13 +379,12 @@
 					"url":"http://www.pansou.com/s.php",
 					"hiddens":{"wp":"0","op":"gn","ty":"gn"},
 					"key":"q",
-					"charset":"utf-8",
 					"zh":"网盘搜索",
 					"en":"PanSo"
 				}
 			}
 		},
-		"doc":{
+		"blog":{
 			"zh":"编程",
 			"en":"Coding",
 			"engines":{
@@ -437,11 +392,9 @@
 					"link":"http://www.google.com/ncr",
 					"url":"http://www.google.com/cse",
 					"hiddens":{
-						"ie":"utf-8",
 						"cx":"009448954738066331666:k9xgys0kmf8"
 						},
 					"key":"q",
-					"charset":"utf-8",
 					"zh":"程序猿博客",
 					"en":"Coder Blog"
 				},
@@ -449,11 +402,9 @@
 					"link":"http://www.google.com/ncr",
 					"url":"http://www.google.com/cse",
 					"hiddens":{
-						"ie":"utf-8",
 						"cx":"009448954738066331666:edslil6k7yg"
 						},
 					"key":"q",
-					"charset":"utf-8",
 					"zh":"程序猿问答",
 					"en":"Coder Q&A"
 				},
@@ -461,15 +412,13 @@
 					"link":"http://www.google.com/ncr",
 					"url":"http://www.google.com/cse",
 					"hiddens":{
-						"ie":"utf-8",
 						"cx":"009448954738066331666:sqpm2s_akvk"
 						},
 					"key":"q",
-					"charset":"utf-8",
 					"zh":"开源项目",
 					"en":"OS Project"
 				}
 			}
 		}
 	}
-}
+};

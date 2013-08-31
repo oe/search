@@ -68,7 +68,7 @@ var cookie = {
 
 $.toJSONString = JSON.stringify || function (obj) {
     var t = typeof (obj);
-    if (t != "object" || obj === null) {
+    if (t !== "object" || obj === null) {
         // simple data type
         if (t == "string") obj = '"'+obj+'"';
         return String(obj);
@@ -78,8 +78,8 @@ $.toJSONString = JSON.stringify || function (obj) {
         var n, v, json = [], arr = (obj && obj.constructor == Array);
         for (n in obj) {
             v = obj[n]; t = typeof(v);
-            if (t == "string") v = '"'+v+'"';
-            else if (t == "object" && v !== null) v = JSON.stringify(v);
+            if (t ==="string") v = '"'+v+'"';
+            else if (t === "object" && v !== null) v = JSON.stringify(v);
             json.push((arr ? "" : '"' + n + '":') + String(v));
         }
         return (arr ? "[" : "{") + String(json) + (arr ? "]" : "}");
@@ -94,7 +94,7 @@ $(function  () {
 		lang = cookie.attr('lang'),
 		isArrowKey = false,
 		currentIndex = -1,
-		config = null,
+		config = window.config,
 		len = 0,
 		val = '',
 		urls = {
@@ -116,10 +116,6 @@ $(function  () {
 				current = '',
 				bgimg = cookie.attr('bgimg'),
 				ph;
-			if (!config) {
-				config = $.ajax({url:'assets/se.json',async:false}).responseText;
-				config = $.parseJSON(config);
-			}
 			ph= config['placeholder'][lang];
 			for (var key in config['searches']) {
 				if (config['searches'].hasOwnProperty(key)) {
@@ -178,7 +174,7 @@ $(function  () {
 		if (history.length) {
 			len = history.length;
 			for (var i = 0; i < len; ++i) {
-				str += '<li>' + history[i] + '</li>';	
+				str += '<li>' + history[i] + '</li>';
 			}
 			str += '<li id="clear-history">' + config['clearhistory'][lang] + '</li>';
 		}
@@ -191,48 +187,63 @@ $(function  () {
 	//change engine type
 	function changeSearchEngine(typeName,engineName){
 		var engine = config['searches'][typeName]['engines'][engineName],
-			hiddens = '';
-		$('#search-form').attr('accept-charset',engine['charset']);
+			hiddens = engine['hiddens'],
+			str = '';
+		$('#search-form').attr('accept-charset',engine['charset'] || 'utf-8');
 		$('#search-form').attr('action',engine['url']);
 		$('#isa').attr('name',engine['key']);
-		for (var nn in engine['hiddens']){
-			if (engine['hiddens'].hasOwnProperty(nn)) {
-				hiddens += '<input type="hidden" name="' + nn + '" value="' + engine['hiddens'][nn] + '">';
+		if (hiddens) {
+			for (var nn in hiddens){
+				if (hiddens.hasOwnProperty(nn)) {
+					str += '<input type="hidden" name="' + nn + '" value="' + hiddens[nn] + '">';
+				}
 			}
 		}
-		$('#hiddens').html(hiddens);
+		$('#hiddens').html(str);
 		$('#link').attr('href',engine['link']);
 	}
 
 	function getSuggestion (keyword,type) {
 		if (!urls[type]) return;
 		var url;
-		keyword = encodeURIComponent(keyword);
-
-		url = urls[type].replace('@',keyword);
+		keyword = keyword.replace(/^\s*|\s*$/g,'');
+		if (keyword === ''){
+			$('#sug').hide();
+			return;
+		}
+		url = urls[type].replace('@',encodeURIComponent(keyword));
 		try{
 			$.getJSON(url,function  (json) {
 				var length = 0,
 					str = '',
+					j = 0,
 					data,i;
+				keyword = keyword.toLowerCase();
+				for (i = 0, length = history.length; i < length; ++i) {
+					if(-1 !== history[i].toLowerCase().indexOf(keyword)){
+						++j;
+						str += '<li class="s-h">' + history[i] + '</li>';
+					}
+				}
+				i = j;
 				if (type == 'shop') {
 					data = json.result;
-					length = data.length;
+					length = Math.min(data.length,10);
 					if (length) {
-						for(i = 0; i < length; ++i){
+						for(; i < length; ++i){
 							str += '<li>' + data[i][0] + '</li>';
 						}
 					}
 				} else{
 					data = json.s;
-					length = data.length;
+					length = Math.min(data.length,10);
 					if (length) {
 						if (type == 'map') {
-							for(i = 0; i < length; ++i){
+							for(; i < length; ++i){
 								str += '<li>' + data[i].replace(/(\$)|(\d*$)/g,' ') + '</li>';
 							}
 						} else{
-							for (i = 0; i < length; ++i) {
+							for (; i < length; ++i) {
 								str += '<li>' + data[i] + '</li>';
 							}
 						}
@@ -346,7 +357,8 @@ $(function  () {
 	$('#setting-panel').on('click',function  (event) {
 		event.stopPropagation();
 	});
-	//input box value change realtime event
+	//input box value change realtime event, Emulate html5 palceholder
+	//event 'propertychange' is for ie, 'input' is for others
 	$('#isa').on('input propertychange',function  (event) {
 		if ('' === $(this).val()) {
 			$('#ph').show();
@@ -441,7 +453,6 @@ $(function  () {
 	});
 	//sug list item click
 	$('#sug').on('click','li',function  (event) {
-		console.log(event);
 		if (event.srcElement.id == 'clear-history') {
 			history = [];
 			len = 0;
@@ -479,7 +490,7 @@ $(function  () {
 	});
 	//search submit
 	$('#search-form').on('submit',function  () {
-		// $('#sug').hide();
+		$('#sug').hide();
 		val = $('#isa').val();
 		if ('' === val) {
 			return false;

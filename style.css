@@ -294,6 +294,7 @@ a{
 .search-engine-list ul li{
 	display: block;
 	float: left;
+	overflow: hidden;
 	padding: 4px 10px;
 	margin: 0;
 	text-shadow: 2px 2px 4px rgba(201,201,201,.6);
@@ -328,6 +329,9 @@ a{
 .search-cat li label:hover{
 	background-color: #6ab8e6;
 	color: #333;
+}
+.s-h{
+	color: #f89406;
 }
 
 #clear-history{
