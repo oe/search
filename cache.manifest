@@ -1,10 +1,8 @@
 CACHE MANIFEST
-#12233
+#love u
 CACHE:
     index.html
     assets/bg.gif
-
-    #config added
     assets/config.js
     se.js
     style.css
