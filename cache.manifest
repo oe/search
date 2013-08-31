@@ -1,8 +1,10 @@
 CACHE MANIFEST
-# 2013-08-31 15:32:46
+#12233
 CACHE:
     index.html
     assets/bg.gif
+
+    #config added
     assets/config.js
     se.js
     style.css
