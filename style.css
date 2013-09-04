@@ -106,10 +106,10 @@ a{
 	margin-top: 180px;
 }
 .search-wrapper,.appinfo{
-	width: 660px ;
+	width: 680px ;
 	border-radius: 6px;
 	margin: 0 auto;
-	/*padding: 10px;*/
+	padding: 10px;
 	color: #444;
 	font-weight: 500;
 }
