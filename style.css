@@ -1,9 +1,14 @@
+*{
+	-webkit-box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	box-sizing: border-box;
+}
+
 body{
 	background-color: whitesmoke;
 	background-position: center;
 	background-attachment: fixed;
 	font-family: 'Century Gothic', 'Microsoft YaHei', Verdana;
-	/*font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;*/
 	font-size: 14px;
 	padding: 0;
 	margin: 0;
@@ -80,9 +85,6 @@ a{
 .setting-panel .imgerror-tip{
 	position: absolute;
 	display: none;
-	-moz-box-sizing: border-box;
-	-webkit-box-sizing: border-box;
-	box-sizing: border-box;
 	top: 0;
 	left: 0;
 	width: 100%;
@@ -104,11 +106,10 @@ a{
 	margin-top: 180px;
 }
 .search-wrapper,.appinfo{
-	width: 640px;
-	*width: 660px ;
+	width: 660px ;
 	border-radius: 6px;
 	margin: 0 auto;
-	padding: 10px;
+	/*padding: 10px;*/
 	color: #444;
 	font-weight: 500;
 }
@@ -141,12 +142,9 @@ a{
 	position: relative;
 }
 .input .input-box{
-	-webkit-box-sizing: border-box;
-	-moz-box-sizing: border-box;
-	box-sizing: border-box;
 	font-size: 20px;
 	font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-	width: 570px;
+	width: 580px;
 	*width: 560px;
 	margin: 0;
 	padding: 3px 0px 3px 30px;
@@ -210,10 +208,7 @@ a{
 	background-position:-144px 0;
 }
 .input .submit{
-	-webkit-box-sizing: border-box;
-	-moz-box-sizing: border-box;
-	box-sizing: border-box;
-	width: 70px;
+	width: 80px;
 	font-size: 20px;
 	*font-size: 16px;
 	padding: 3px;
@@ -234,11 +229,9 @@ a{
 }
 @-moz-document url-prefix()
 {
-	/*.input .submit{
-		font-size: 20px;
-		font-weight: normal;
-		padding: 1.5px;
-	}*/
+	.input .submit{
+		height: 35px;
+	}
 }
 .box-shadow{
 	box-shadow:0 0 8px 2px rgba(82,168,236,0.7) !important;
@@ -265,7 +258,7 @@ a{
 	padding: 0;
 	margin-top: -1px \0;
 	margin-left: 30px;
-	width: 537px;
+	width: 547px;
 	position: absolute;
 	background-color: whitesmoke;
 	display: none;

@@ -162,6 +162,10 @@ $(function  () {
 				$('#search-cat li:eq(0) label').click();
 			}
 			changeSearchEngine(typeName,engineName);
+			//log source code info in console for chrome only
+			if (-1 !== navigator.userAgent.indexOf('Chrome')) {
+				console.log('%cThanks for your attention!\nYou can visit https://github.com/evecalm/search for uncompressed source code.\nHere is my website http://www.evecalm.com.','font-size: 14px;color:#068;font-weight: bolder;');
+			}
 		}catch(e){
 			alert('Init error! You may try to reload this page.');
 		}
