@@ -2,13 +2,12 @@
 // @name           Easy Access of Google Search
 // @namespace      Saiya.Google.link
 // @description    Make it easier to use google search(including cse)
-// @match          http://www.google.com/*
-// @match          http://www.google.com.hk/*
-// @match          https://www.google.com/*
-// @match          https://www.google.com.hk/*
+// @match          *://www.google.com/*
+// @match          *://www.google.com.hk/*
+// @match          http://www.baidu.com/s*
 // @updateURL      http://app.evecalm.com/search/googlelink.meta.js
 // @downloadURL    http://app.evecalm.com/search/googlelink.user.js
-// @version        0.52
+// @version        0.54
 // ==/UserScript==
 function proxy(fn) {
 	var script = document.createElement('script');
@@ -16,11 +15,25 @@ function proxy(fn) {
 	document.body.appendChild(script);
 }
 function main(Global){
-	var csebody = document.querySelector('#cse-body'),
+	var host = location.host,
+		csebody = document.querySelector('#cse-body'),
 		i = 0,
 		j = 0,
 		anchors = null,
 		caches = null;
+	if (host === 'www.baidu.com') {
+		var tg = document.querySelectorAll('.ec_pp_f,.ec_bdtg,.ad-layout-row,.ecl-weigou-nav-buy');
+		if (tg.length) {
+			tg = Array.prototype.slice.call(tg);
+			tg.forEach(function (ele) {
+				ele.remove();
+			});
+		}
+		document.querySelector('#ec_im_container').remove();
+		document.querySelector('#ecl-weigou-view-container').remove();
+		document.querySelector('#ecl-weigou-nav-buy-transfer').remove();
+		return;
+	}
 	if (csebody) {
 		i = 0;
 		csebody.addEventListener('DOMSubtreeModified',function  (event) {
@@ -45,3 +58,4 @@ function main(Global){
 	}
 }
 proxy(main);
+// main(window);
