@@ -2,8 +2,8 @@
 // @name           Easy Access of Google Search
 // @namespace      Saiya.Google.link
 // @description    Make it easier to use google search(including cse)
-// @match          *://www.google.com/*
-// @match          *://www.google.com.hk/*
+// @match          *://www.google.com/search*
+// @match          *://www.google.com.hk/search*
 // @match          http://www.baidu.com/s*
 // @updateURL      http://app.evecalm.com/search/googlelink.meta.js
 // @downloadURL    http://app.evecalm.com/search/googlelink.user.js
