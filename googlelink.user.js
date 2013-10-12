@@ -30,7 +30,7 @@ function main(Global){
 		document.querySelector('#ecl-weigou-nav-buy-transfer').remove();
 		return;
 	}
-	if (location.href.indexOf('//www.google.com/cse')) {
+	if (location.href.indexOf('//www.google.com/cse') > 0) {
 		function removeCseRedirect () {
 			var anchors = Array.prototype.slice.apply(document.querySelectorAll('#cse-body a.gs-title')); //for cse results
 			anchors.forEach(function (el) {
@@ -49,11 +49,11 @@ function main(Global){
 			var anchors = Array.prototype.slice.apply(document.querySelectorAll('#ires h3 a')), // google search results' links
 				caches = Array.prototype.slice.apply(document.querySelectorAll('#ires .action-menu-panel ul a')); // for webcaches' links
 			anchors.forEach(function (el) {
-				anchors[i].onmousedown = null;
+				el.onmousedown = null;
 			});
 			caches.forEach(function (el) {
-				caches[i].href = caches[i].href.replace('http://','https://');
-				caches[i].onmousedown = null;
+				el.href = el.href.replace('http://','https://');
+				el.onmousedown = null;
 			})
 		}
 		resultBody.addEventListener('DOMSubtreeModified',function  (event) {
