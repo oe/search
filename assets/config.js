@@ -187,6 +187,7 @@ var config = {
 					"link":"http://image.baidu.com/",
 					"url":"http://image.baidu.com/i",
 					"hiddens":{
+						"ie":"utf-8"
 					},
 					"key":"word",
 					"zh":"百度图片",
