@@ -29,9 +29,8 @@ var config = {
 			"en":"Search",
 			"engines":{
 				"google":{
-					"link":"https://www.google.com.hk",
-					"url":"https://www.google.com.hk/search",
-					"hiddens":{"hl":"zh-CN"},
+					"link":"https://www.google.com",
+					"url":"https://www.google.com/search",
 					"key":"q",
 					"zh":"谷歌",
 					"en":"Google"
@@ -49,13 +48,6 @@ var config = {
 					"key":"q",
 					"zh":"必应",
 					"en":"Bing"
-				},
-				"youdao":{
-					"link":"http://www.youdao.com",
-					"url":"http://www.youdao.com/search",
-					"key":"q",
-					"zh":"有道",
-					"en":"Youdao"
 				},
 				"soso":{
 					"link":"http://www.soso.com",
@@ -177,8 +169,12 @@ var config = {
 			"en":"Image",
 			"engines":{
 				"google":{
-					"link":"https://www.google.com.hk/imghp?hl=zh-CN&tab=wi",
-					"url":"https://www.google.com.hk/search",
+					"link":"http://www.google.com/imghp",
+					"url":"http://www.google.com/search",
+					"hiddens": {
+						"ie": "UTF-8",
+						"tbm": "isch"
+					},
 					"key":"q",
 					"zh":"谷歌图片",
 					"en":"Google Picture"
@@ -249,7 +245,7 @@ var config = {
 				"google":{
 					"link":"https://www.google.com.hk",
 					"url":"https://www.google.com.hk/search",
-					"hiddens":{"hl":"zh-CN","newwindow":"1","safe":"strict","tbo":"d","source":"lnms","tbm":"klg","sa":"X"},
+					"hiddens":{"tbo":"d","source":"lnms","tbm":"klg","sa":"X"},
 					"key":"q",
 					"zh":"谷歌问答",
 					"en":"Google Answers"

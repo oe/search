@@ -406,6 +406,10 @@ $(function  () {
 				}
 				ret = false;
 				break;
+			case 13: //enter
+				$sug.hide();
+				ret = true;
+				break;
 			case 27: //esc
 				$sug.hide();
 				ret = false;
