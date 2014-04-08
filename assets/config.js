@@ -49,14 +49,6 @@ var config = {
 					"zh":"必应",
 					"en":"Bing"
 				},
-				"soso":{
-					"link":"http://www.soso.com",
-					"url":"http://www.soso.com/q",
-					"hiddens":{"pid":"s.idx","cid":"s.idx.se"},
-					"key":"w",
-					"zh":"搜搜",
-					"en":"Soso"
-				},
 				"sogou":{
 					"link":"http://www.sogou.com",
 					"url":"http://www.sogou.com/web",
@@ -329,7 +321,7 @@ var config = {
 				"amazon":{
 					"link":"http://www.amazon.cn",
 					"url":"http://www.amazon.cn/s/ref=nb_sb_noss_2",
-					"hiddens":{"__mk_zh_CN":"亚马逊中国","url":"search-alias","tab":"saiya-23"},
+					"hiddens":{"__mk_zh_CN":"亚马逊中国","url":"search-alias","tag":"saiya-23"},
 					"key":"field-keywords",
 					"zh":"亚马逊",
 					"en":"Amazon"
