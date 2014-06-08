@@ -1,9 +1,14 @@
+.lang-zh .en {
+	display: none !important;
+}
+.lang-en .zh {
+	display: none !important;
+}
 *{
 	-webkit-box-sizing: border-box;
 	-moz-box-sizing: border-box;
 	box-sizing: border-box;
 }
-
 body{
 	background-color: whitesmoke;
 	background-position: center;
@@ -16,9 +21,15 @@ body{
 	min-width: 700px;
 }
 
-a{
+a {
 	color: #6ab8e6;
 	text-decoration: none;
+}
+b {
+	font-weight: inherit;
+}
+li > label > span {
+	margin-left: -4px;
 }
 .trsprt-bg{
 	background-color: rgba(255,255,255,.4);
@@ -43,7 +54,7 @@ a{
 	display: inline;
 	position: relative;
 }
-.switch-lang span{
+.switch-lang b{
 	color: #6ab8e6;
 	text-decoration: underline;
 	cursor: pointer;
@@ -54,6 +65,16 @@ a{
 	vertical-align: middle;
 	font-weight: 700;
 	text-shadow: none;
+}
+.setting-mask {
+	/*display: block;*/
+	display: none;
+	position: fixed;
+	top: 0;
+	bottom: 0;
+	right: 0;
+	left: 0;
+	z-index: 20;
 }
 .setting-icon.current{
 	border-radius: 2px 2px 0 0;
@@ -69,6 +90,7 @@ a{
 	padding: 2px 4px;
 	background-color: #ccc;
 	background-color: rgba(204,204,204,.4);
+	z-index: 22;
 	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr=#66ffffff,endColorstr=#66ffffff);
 }
 .clearfix{
@@ -175,7 +197,7 @@ a{
 .ico{
 	height: 16px;
 	width: 16px;
-	background: transparent url(assets/bg.gif) no-repeat center center;
+	background: transparent url(../img/bg.gif) no-repeat center center;
 }
 .ico-search{
 	background-position:0 0;
@@ -250,6 +272,7 @@ a{
 	text-align: left;
 	cursor: text;
 	pointer-events: none;
+	font-weight: normal;
 }
 .sug{
 	border: 1px solid #999;
