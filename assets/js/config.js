@@ -1,4 +1,12 @@
 var config = {
+	"langswitch":{
+		"zh": "<b>English</b>/中文",
+		"en": "English/<b>中文</b>"
+	},
+	"setBgimg":{
+		"zh": "设置背景图片",
+		"en": "Set background-img"
+	},
 	"placeholder":{
 		"zh":"请输入关键字，按Enter搜索",
 		"en":"Enter the keywords and press enter to search"

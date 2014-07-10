@@ -7,36 +7,38 @@ do ->
       res.push '"' + k + '":"' + v + '"'
     '{' + res.join(',') + '}'
 
+  getLan = (opt)->
+    "<span class='en'>#{opt.en}</span><span class='zh'>#{opt.zh}</span>"
+
   tpl = '''
   <div class="setting-container">
     <div id="switch-lang" class="switch-lang">
-      <span class="en">English/<b>中文</b></span>
-      <span class="zh"><b>English</b>/中文</span>
+      {{=getLan(config.langswitch)}}
     </div>
     <div class="setting-icon" id="setting-icon">☸</div>
     <div class="setting-panel" id="setting-panel">
       <div id="setting-tip" class="setting-tip">
         <a href="http://desk.zol.com.cn" target="_blank">
-          <span class="en">Set bg-img</span><span class="zh">设置背景图片</span>
+          {{=getLan(config.setBgimg)}}
         </a>
       </div>
       <input type="text" id="bgimg">
       <input type="button" value="OK" id="set-bgimg">
       <div id="imgerror-tip" class="imgerror-tip">
-        <span class="en">{{=config.imgloaderror.en}}</span><span class="zh">{{=config.imgloaderror.zh}}</span>
+        {{=getLan(config.imgloaderror)}}
       </div>
     </div>
   </div>
   <div class="search-container">
     <div class="search-wrapper" id="search-wrapper">
-      <div class="app-name"><span class="en">{{=config.title.en}}</span><span class="zh">{{=config.title.zh}}</span></div>
+      <div class="app-name">{{=getLan(config.title)}}</div>
       <div class="search-engine-list clearfix" id="search-engine-list">
         {{ var cur = true; _.each(config.searches, function(val, key){ }}
           <ul data-engine-type="{{=key}}" class="{{=cur ? 'current' : ''}}">
             {{ _.each(val.engines, function(v, k){ }}
               <li class="{{=cur ? 'current' : ''}}" data-engine-name="{{=k}}" data-link="{{=v.link}}" data-key="{{=v.key}}" data-charset="{{=v.charset||'utf-8'}}" data-url="{{=v.url}}" data-hiddens="{{=obj2String(v.hiddens)}}">
                 {{ cur = false; }}
-                <span class="en">{{=v.en}}</span><span class="zh">{{=v.zh}}</span>
+                {{=getLan(v)}}
               </li>
             {{ }) }}
           </ul>
@@ -46,9 +48,9 @@ do ->
         <div class="hide" id="hiddens"></div>
         <div class="input">
           <span class="ico ico-search" id="ico"></span>
-          <input type="text" class="input-box box-shadow" name="q" id="isa" autocomplete="off" autofocus speech="speech" x-webkit-speech="x-webkit-speech" x-webkit-grammar="builtin:search">
-          <button class="submit box-shadow" type="submit" id="search-btn"><span class="en">{{=config.submit.en}}</span><span class="zh">{{=config.submit.zh}}</span></button>
-          <label class="ph" for="isa" id="ph"><span class="en">{{=config.placeholder.en}}</span><span class="zh">{{=config.placeholder.zh}}</span></label>
+          <input type="text" class="input-box" name="q" id="isa" autocomplete="off" autofocus speech="speech" x-webkit-speech="x-webkit-speech" x-webkit-grammar="builtin:search">
+          <button class="submit" type="submit" id="search-btn">{{=getLan(config.submit)}}</button>
+          <label class="ph" for="isa" id="ph">{{=getLan(config.placeholder)}}</label>
         </div>
       </form>
       <div class="hide">
@@ -56,10 +58,10 @@ do ->
       </div>
       <ul class="search-cat clearfix" id="search-cat">
         {{ cur = true; _.each(config.searches, function(val, key){ }}
-          <li><label>
-            <input type="radio" name="type" value="{{=key}}" {{=cur? 'checked': ''}}>
+          <li data-type="{{=key}}"><label>
+            <input type="radio" name="type" {{=cur? 'checked': ''}}>
             {{ cur = false; }}
-            <span class="en">{{=val.en}}</span><span class="zh">{{=val.zh}}</span>
+            {{=getLan(val)}}
           </label></li>
         {{ }) }}
       </ul>
@@ -71,7 +73,7 @@ do ->
   </div>
   '''
 
-  document.getElementById('content').innerHTML = _.template tpl, config:config,obj2String:obj2String
+  document.getElementById('content').innerHTML = _.template tpl, config:config,obj2String:obj2String, getLan:getLan
 
 
 
