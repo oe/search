@@ -1,7 +1,7 @@
 var config = {
 	"langswitch":{
-		"zh": "<b>English</b>/中文",
-		"en": "English/<b>中文</b>"
+		"zh": "<b lang='en'>English</b>/中文",
+		"en": "English/<b lang='zh'>中文</b>"
 	},
 	"setBgimg":{
 		"zh": "设置背景图片",
@@ -37,8 +37,8 @@ var config = {
 			"en":"Search",
 			"engines":{
 				"google":{
-					"link":"https://www.google.com",
-					"url":"https://www.google.com/search",
+					"link":"http://www.google.com",
+					"url":"http://www.google.com/search",
 					"key":"q",
 					"zh":"谷歌",
 					"en":"Google"
@@ -156,8 +156,8 @@ var config = {
 					"en":"Sohu Video"
 				},
 				"youtube":{
-					"link":"http://www.youtube.com",
-					"url":"http://www.youtube.com/results",
+					"link":"https://www.youtube.com",
+					"url":"https://www.youtube.com/results",
 					"key":"search_query",
 					"zh":"YouTube",
 					"en":"YouTube"
@@ -243,8 +243,8 @@ var config = {
 					"en":"Wikipedia"
 				},
 				"google":{
-					"link":"https://www.google.com.hk",
-					"url":"https://www.google.com.hk/search",
+					"link":"http://www.google.com.hk",
+					"url":"http://www.google.com.hk/search",
 					"hiddens":{"tbo":"d","source":"lnms","tbm":"klg","sa":"X"},
 					"key":"q",
 					"zh":"谷歌问答",

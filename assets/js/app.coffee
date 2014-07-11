@@ -1,10 +1,16 @@
 $ ->
   langArr = ['en','zh']
+  searchHistory = []
+  # history length
+  HISTORYLEN = 10
   changeLang = (lang)->
     if langArr.indexOf(lang) > -1
-      document.documentElement.className = "lang-#{lang}"
+      cls = document.documentElement.className.replace /lang\-[a-z]+/,''
+      cls += " lang-#{lang}"
+      document.documentElement.className = cls.replace /^\s+|\s+$/g, ''
       cookie?.attr 'lang', lang
 
+  # cookie utility
   cookie =
     _cookie: do ->
       obj = {}
@@ -13,7 +19,8 @@ $ ->
         pair = v.split '='
         obj[ pair[0] ] = unescape pair[1]
       obj
-    # expire为有效天数
+    # get or set cookie
+    #   expire is count by day
     attr: (key, val, expire, path)->
       if val is undefined
         return if @_cookie[ key ] is undefined then undefined else @_cookie[ key ]
@@ -30,7 +37,7 @@ $ ->
       document.cookie = "#{key}=#{val};expires=#{expire};path=#{path}"
       @_cookie[ key ] = val
       @_cookie
-      
+    # remove cookie
     remove: (key)->
       val = @_cookie[ key ]
       if val?
@@ -39,68 +46,21 @@ $ ->
         document.cookie = "#{key}=#{val};expires=#{date.toGMTString()}"
       @_cookie
 
-  init = ->
-    lang = cookie.attr 'lang'
-    if lang is undefined
-      lang = if window.navigator.language? then window.navigator.language else window.navigator.browserLanguage
-      lang = if lang.toLowerCase() is 'zh-cn' then 'zh' else 'en'
-    changeLang lang
-    # searchHistory;
-    cookie.attr('defaultType', 'search') if cookie.attr('defaultType') is undefined
-
+  # adjust suggestion list's postion
   setSugPos = ->
     $('#sug').css
       'top':$('.search-form').offset().top + $('.search-form').height()
       'left':$('.search-form').offset().left
     return
 
-  # 更改搜索引擎
-  changeSearchEngine = (engineName, typeName)->
-    $engineList = $ '#search-engine-list'
-    if typeName?
-      $newType = $engineList.find ">ul[data-engine-type='#{typeName}']"
-    if not typeName or not $newType.length
-      $newType = $engineList.find ">ul.current"
-      if not $newType.length
-        $newType = $engineList.find '>ul:first'
-    typeName = $newType.data 'engine-type'
-    $("#search-cat>li[data-type='#{typeName}'] input").prop 'checked', true
-    $engineList.find('>ul.current').removeClass 'current'
-    $newType.addClass 'current'
-    
-    if engineName?
-      $newEngine = $newType.find ">li[data-engine-name='#{engineName}']"
-    if not engineName or not $newEngine.length
-      $newEngine = $newType.find '>li.current'
-      if not $newEngine.length
-        $newEngine = $newType.find '>li:first'
-    engineName = $newEngine.data 'engine-name'
-    $newType.find('>li.current').removeClass 'current'
-    $newEngine.addClass 'current'
-
-    $form = $ '#search-form'
-    data = $newEngine.data()
-    $form.attr 'accept-charset', data['charset'] || 'utf-8'
-    $form.attr 'action', data['url']
-    $('#isa').attr 'name', data['key']
-    $('#link').attr 'href', data['link']
-
-    hiddens = $.parseJSON data.hiddens if data.hiddens
-    html = ''
-    if hiddens
-      for k, v of hiddens
-        html += "<input type='hidden' name='#{k}' value='#{v}'>"
-    $('#hiddens').html str
-
-    return
-  # 展示搜索建议
+  # show keyword suggestion list
   showSuggestion = (data, searchHistory)->
     $sug = $ '#sug'
     if data is undefined
       $sug.hide()
       return
 
-  # 获取搜索建议
+  # get keyword suggestion from baidu
   getSuggestion = (kwd, type)->
     urlTbl =
       'search'  : 'http://suggestion.baidu.com/su?wd=@&p=3&cb=?'
@@ -139,15 +99,113 @@ $ ->
       showSuggestion()
       return
   
+  # adjust url, mainly for google
+  adjustUrl = (url)->
+    gHosts = [
+      '64.233.168.97'
+      '173.194.124.55'
+      '74.125.110.236'
+      '173.194.21.233'
+      '173.194.124.108'
+    ]
+    if url.indexOf('www.google.com') > -1
+      url.replace 'www.google.com', gHosts[ Math.floor(gHosts.length * Math.random()) ]
+    else
+      url
 
-  $('#isa').on 'click focus', (e)->
-    e.stopPropagation()
+  # switch search engine
+  changeSearchEngine = (engineName, typeName)->
+    $engineList = $ '#search-engine-list'
+    if typeName?
+      $newType = $engineList.find ">ul[data-engine-type='#{typeName}']"
+    if not typeName or not $newType.length
+      $newType = $engineList.find ">ul.current"
+      if not $newType.length
+        $newType = $engineList.find '>ul:first'
+    typeName = $newType.data 'engine-type'
+    $("#search-cat>li[data-type='#{typeName}'] input").prop 'checked', true
+    $engineList.find('>ul.current').removeClass 'current'
+    $newType.addClass 'current'
+    
+    if engineName?
+      $newEngine = $newType.find ">li[data-engine-name='#{engineName}']"
+    if not engineName or not $newEngine.length
+      $newEngine = $newType.find '>li.current'
+      if not $newEngine.length
+        $newEngine = $newType.find '>li:first'
+    engineName = $newEngine.data 'engine-name'
+    $newType.find('>li.current').removeClass 'current'
+    $newEngine.addClass 'current'
+
+    $form = $ '#search-form'
+    data = $newEngine.data()
+    $form.attr 'accept-charset', data['charset'] || 'utf-8'
+    $form.attr 'action', data['url']
+    $form.attr 'origin-action', data['url']
+    $('#isa').attr 'name', data['key']
+    $('#link').attr 'href', data['link']
+    $('#link').attr 'origin-href', data['link']
+
+    hiddens = data.hiddens
+    html = ''
+    if hiddens
+      for k, v of hiddens
+        html += "<input type='hidden' name='#{k}' value='#{v}'>"
+    $('#hiddens').html html
+
+    cookie.attr 'defaultType', typeName
+    cookie.attr 'defaultEngine', engineName
+    return
+  
+  # switch engine
+  $('#search-engine-list').on 'click', 'li', (e)->
+    $this = $ this
+    unless $this.hasClass('current')
+      changeSearchEngine $this.data 'engine-name'
+    do $('#isa').focus
+    do e.stopPropagation
+    return false
+
+  # switch engine type
+  $('#search-cat').on 'click', 'input', (e)->
+    $this = $ this
+    # unless $this.prop 'checked'
+    changeSearchEngine null, $this.closest('li').data 'type'
+    do $('#isa').focus
+    do e.stopPropagation
+    return
+
+  # on form submit
+  $('#search-form').on 'submit', (e)->
+    if $('#isa').val() is ' '
+      $link = $ '#link'
+      $link.attr 'href', adjustUrl $link.attr 'origin-href'
+      do $link[0].click
+      return false
+    else
+      $this = $ this
+      $this.attr 'action', adjustUrl $this.attr 'origin-action'
+      return
+
+  # add box-shadow to search box when focus
+  $('#isa').on 'focus', (e)->
+    do e.stopPropagation
     $('#isa,#search-btn').addClass 'box-shadow'
     return
-  # //input box value change realtime event, Emulate html5 palceholder
-  # //event 'propertychange' is for ie, 'input' is for others
+
+  $('#search-wrapper').on 'click', (e)->
+    do e.stopPropagation
+    do $('#isa').focus
+    return
+  
+  # remove box-shadow when blur
+  $(document).on 'click', (e)->
+    $('#isa,#search-btn').removeClass 'box-shadow'
+    return
+
+  # input box value change realtime event, Emulate html5 palceholder
+  #   event 'propertychange' is for ie, 'input' is for others
   $('#isa').on 'input propertychange',(e)->
-    console.log 'hahah'
     if $(this).val() is ''
       $('#ph').show()
       # if(!isArrowKey) then $('#sug').html(getHistoryList()).hide();
@@ -157,20 +215,60 @@ $ ->
         # val = $(this).val();
         # getSuggestion (val,currentType);
     return
-  # //input box blur event
-  $('#ph').on 'click', (e)->
-    console.log 'click'
-    e.stopPropagation()
-    $('#isa').focus()
+
+  # stop keydown event propagation
+  $('#isa').on 'keydown', (e)->
+    do e.stopPropagation
+    # Tab key
+    if e.keyCode is 9
+      if e.shiftKey
+        $engineList = $ '#search-cat'
+        $nextEngine = do $engineList.find('>li input:checked').closest('li').next
+        unless $nextEngine.length
+          $nextEngine = $engineList.find '>li:first'
+        $nextEngine.find('input').trigger 'click'
+      else
+        $engineList = $ '#search-engine-list ul.current'
+        $nextEngine = do $engineList.find('>li.current').next
+        unless $nextEngine.length
+          $nextEngine = $engineList.find '>li:first'
+        $nextEngine.trigger 'click'
+      do e.preventDefault
     return
+
+  # placelholder click for browser not support css pointer-event
+  $('#ph').on 'click', (e)->
+    $('#isa').focus()
+    return false
+
+  # bind shortcut key 'home' key and 's' key to focus on search box
+  #     when search box blured
   $(document).on 'keydown',(e)->
-    # // 36 is the keycode of "Home" key, 83 is the keycode of "s" key
+    # 36 is the keycode of "Home" key, 83 is the keycode of "s" key
     if e.keyCode is 36 or e.keyCode is 83
       $('#isa').focus()
       return false
 
-    
-
+  # switch language
+  $('#switch-lang').on 'click', 'b', ->
+    changeLang $(this).attr 'lang'
+    return
+  
+  # init
+  do ->
+    lang = cookie.attr 'lang'
+    if lang is undefined
+      lang = if window.navigator.language? then window.navigator.language else window.navigator.browserLanguage
+      lang = if lang.toLowerCase() is 'zh-cn' then 'zh' else 'en'
+    changeLang lang
+    searchHistory = cookie.attr 'history'
+    searchHistory = if searchHistory  then $.parseJSON('searchHistory') else []
+    changeSearchEngine cookie.attr('defaultEngine'), cookie.attr('defaultType')
+    setTimeout ->
+      do $('#isa').focus
+      return
+    , 0
+    return
     
 
   return

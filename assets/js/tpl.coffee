@@ -1,11 +1,12 @@
 do ->
   obj2String = (obj)->
-    if not obj
-      return ''
-    res = []
-    for own k, v of obj
-      res.push '"' + k + '":"' + v + '"'
-    '{' + res.join(',') + '}'
+    if obj then JSON.stringify(obj) else ''
+    # if not obj
+    #   return ''
+    # res = []
+    # for own k, v of obj
+    #   res.push '"' + k + '":"' + v + '"'
+    # '{' + res.join(',') + '}'
 
   getLan = (opt)->
     "<span class='en'>#{opt.en}</span><span class='zh'>#{opt.zh}</span>"
@@ -36,7 +37,7 @@ do ->
         {{ var cur = true; _.each(config.searches, function(val, key){ }}
           <ul data-engine-type="{{=key}}" class="{{=cur ? 'current' : ''}}">
             {{ _.each(val.engines, function(v, k){ }}
-              <li class="{{=cur ? 'current' : ''}}" data-engine-name="{{=k}}" data-link="{{=v.link}}" data-key="{{=v.key}}" data-charset="{{=v.charset||'utf-8'}}" data-url="{{=v.url}}" data-hiddens="{{=obj2String(v.hiddens)}}">
+              <li class="{{=cur ? 'current' : ''}}" data-engine-name="{{=k}}" data-link="{{=v.link}}" data-key="{{=v.key}}" data-charset="{{=v.charset||'utf-8'}}" data-url="{{=v.url}}" data-hiddens='{{=obj2String(v.hiddens)}}'>
                 {{ cur = false; }}
                 {{=getLan(v)}}
               </li>
@@ -44,7 +45,7 @@ do ->
           </ul>
         {{ }) }}
       </div>
-      <form action="https://www.google.com/search" class="search-form clearfix" id="search-form" target="_blank" accept-charset="utf-8">
+      <form class="search-form clearfix" id="search-form" target="_blank" accept-charset="utf-8">
         <div class="hide" id="hiddens"></div>
         <div class="input">
           <span class="ico ico-search" id="ico"></span>
