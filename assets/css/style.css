@@ -282,18 +282,36 @@ li > label > span {
 	margin-top: -1px \0;
 	margin-left: 30px;
 	width: 547px;
+	font-size: 16px;
 	position: absolute;
 	background-color: whitesmoke;
 	display: none;
 }
-.sug li{
+.suglist {
+	list-style-type: none;
+	margin: 0;
+	padding: 0;
+}
+.suglist li{
 	padding: 2px 4px;
 	padding-left: 10px;
-	font-size: 16px;
 	cursor: pointer;
 }
-.sug .current{
+.sug li.current, li:hover{
 	background-color: lightblue;
+}
+.s-h{
+	color: #f89406;
+}
+#clear-history{
+	padding: 2px 4px;
+	text-align: center;
+	color: #f89406;
+	background-color: #ddd;
+	cursor: pointer;
+}
+#clear-history:hover{
+	color: red;
 }
 .search-cat,.search-engine-list ul{
 	display: none;
@@ -346,15 +364,4 @@ li > label > span {
 	background-color: #6ab8e6;
 	color: #333;
 }
-.s-h{
-	color: #f89406;
-}
 
-#clear-history{
-	text-align: center;
-	color: #f89406;
-	background-color: #ddd;
-}
-#clear-history:hover{
-	color: red;
-}

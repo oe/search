@@ -1,14 +1,28 @@
 $ ->
-  langArr = ['en','zh']
-  searchHistory = []
-  # history length
-  HISTORYLEN = 10
-  changeLang = (lang)->
-    if langArr.indexOf(lang) > -1
-      cls = document.documentElement.className.replace /lang\-[a-z]+/,''
-      cls += " lang-#{lang}"
-      document.documentElement.className = cls.replace /^\s+|\s+$/g, ''
-      cookie?.attr 'lang', lang
+  currentEngineType = ''
+  # enable JSONString for old browser
+  $.toJSONString = (window.JSON and window.JSON.stringify ) or ( toJSONString = (obj)->
+    t = typeof obj
+    if t isnt "object" or obj is null
+      if t is "string" then obj = '"'+obj+'"'
+      return String obj
+    else
+      json = []
+      arr = obj && obj.constructor is Array
+      for n,v of obj
+        t = typeof v
+        if t is 'string'
+          v = '"' + v + '"'
+        else
+          if t is 'object' and v isnt null
+            v = toJSONString v
+        json.push (if arr then '' else '"' + n + '"') + String v
+
+      if arr
+        return '[' + String(json) + ']'
+      else
+        return '{' + String(json) + '}'
+  )
 
   # cookie utility
   cookie =
@@ -45,7 +59,34 @@ $ ->
         date.setTime date.getTime - 1
         document.cookie = "#{key}=#{val};expires=#{date.toGMTString()}"
       @_cookie
-
+  # search history utility
+  searchHistory =
+    _MAX: 10
+    _history: do->
+      hsty = cookie.attr 'history'
+      hsty = if hsty  then $.parseJSON(hsty) else []
+    add: (kwd)->
+      if kwd not in this._history
+        this._history.unshift kwd
+        if this._history.length > this._MAX
+          do this._history.pop
+        cookie.attr 'history', $.toJSONString this._history
+      console.log this._history
+      this
+    clear: ->
+      this._history.length = 0
+      cookie.attr 'history', $.toJSONString this._history
+      this
+    get: ->
+      this._history
+  # change language
+  changeLang = (lang)->
+    langArr = ['en','zh']
+    if langArr.indexOf(lang) > -1
+      cls = document.documentElement.className.replace /lang\-[a-z]+/,''
+      cls += " lang-#{lang}"
+      document.documentElement.className = cls.replace /^\s+|\s+$/g, ''
+      cookie?.attr 'lang', lang
   # adjust suggestion list's postion
   setSugPos = ->
     $('#sug').css
@@ -53,15 +94,46 @@ $ ->
       'left':$('.search-form').offset().left
     return
 
-  # show keyword suggestion list
-  showSuggestion = (data, searchHistory)->
+  ###*
+   * show keyword suggestion list
+   * @param  {String} kwd            关键字
+   * @param  {Array}  data           百度建议的关键字列表
+   * @param  {Boolean} showAllHistory 是否显示所有搜索历史
+   * @return {undefined}                无返回值
+  ###
+  showSuggestion = (kwd, data, showAllHistory)->
+    MAX = 10
     $sug = $ '#sug'
-    if data is undefined
-      $sug.hide()
-      return
+    $suglist = $ '#suglist'
+    $suglist.html ''
+    len = 0
+    shistory = do searchHistory.get
+    listHtml = ''
+    if showAllHistory
+      for v in shistory
+        if len >= MAX then break
+        ++len
+        listHtml += "<li>#{v}</li>"
+    else
+      for v in shistory
+        if len >= MAX then break
+        if v.indexOf(kwd) > -1
+          ++len
+          listHtml += "<li class='s-h'>#{v}</li>"
+    if data and len < MAX
+      for v in data
+        ++len
+        listHtml += "<li>#{v}</li>"
+        if len >= MAX then break
+    if len
+      $suglist.html listHtml
+      do $sug.show
+    else
+      do $sug.hide
+    return
 
   # get keyword suggestion from baidu
-  getSuggestion = (kwd, type)->
+  getSuggestion = (kwd, type, cb)->
     urlTbl =
       'search'  : 'http://suggestion.baidu.com/su?wd=@&p=3&cb=?'
       'music'   : 'http://nssug.baidu.com/su?wd=@&prod=mp3&cb=?'
@@ -74,10 +146,10 @@ $ ->
     
     url = urlTbl[ type ]
     if not url
-      showSuggestion()
+      cb? kwd
       return
     if type is '' or not type?
-      showSuggestion()
+      cb? kwd
       return
     url = url.replace '@', encodeURIComponent kwd
     try
@@ -92,11 +164,11 @@ $ ->
               data.push i.replace /(\$)|(\d*$)/g, ' '
           else
             data = res.s
-        showSuggestion data
+        cb? kwd, data
         return
       return
     catch e
-      showSuggestion()
+      cb? kwd
       return
   
   # adjust url, mainly for google
@@ -155,6 +227,7 @@ $ ->
 
     cookie.attr 'defaultType', typeName
     cookie.attr 'defaultEngine', engineName
+    currentEngineType = typeName
     return
   
   # switch engine
@@ -177,12 +250,16 @@ $ ->
 
   # on form submit
   $('#search-form').on 'submit', (e)->
-    if $('#isa').val() is ' '
+    val = do $('#isa').val
+    if val is ' '
       $link = $ '#link'
       $link.attr 'href', adjustUrl $link.attr 'origin-href'
       do $link[0].click
       return false
+    else if val is ''
+      return false
     else
+      searchHistory.add val
       $this = $ this
       $this.attr 'action', adjustUrl $this.attr 'origin-action'
       return
@@ -206,16 +283,22 @@ $ ->
   # input box value change realtime event, Emulate html5 palceholder
   #   event 'propertychange' is for ie, 'input' is for others
   $('#isa').on 'input propertychange',(e)->
-    if $(this).val() is ''
-      $('#ph').show()
+    val = do $(this).val
+    if val is ''
+      do $('#ph').show
       # if(!isArrowKey) then $('#sug').html(getHistoryList()).hide();
     else
-      $('#ph').hide()
-      # if (!isArrowKey && val != $(this).val()) {
-        # val = $(this).val();
-        # getSuggestion (val,currentType);
+      do $('#ph').hide
+      if $.trim(val) isnt ''
+        getSuggestion val, currentEngineType, showSuggestion
     return
 
+  $('#clear-history').on 'click', (e)->
+    do searchHistory.clear
+    $('#suglist').html ''
+    do $('#sug').hide
+    do $('#isa').focus
+    return
   # stop keydown event propagation
   $('#isa').on 'keydown', (e)->
     do e.stopPropagation
@@ -254,6 +337,14 @@ $ ->
     changeLang $(this).attr 'lang'
     return
   
+  # reset suglist pos when window resize
+  $(window).on 'resize', ->
+    do setSugPos
+    return
+  # focus on search box when window actived
+  $(window).on 'focus', ->
+    do $('#isa').focus
+    return
   # init
   do ->
     lang = cookie.attr 'lang'
@@ -261,15 +352,15 @@ $ ->
       lang = if window.navigator.language? then window.navigator.language else window.navigator.browserLanguage
       lang = if lang.toLowerCase() is 'zh-cn' then 'zh' else 'en'
     changeLang lang
-    searchHistory = cookie.attr 'history'
-    searchHistory = if searchHistory  then $.parseJSON('searchHistory') else []
     changeSearchEngine cookie.attr('defaultEngine'), cookie.attr('defaultType')
     setTimeout ->
       do $('#isa').focus
       return
     , 0
+    do setSugPos
     return
-    
+  
+  # window.searchHistory = searchHistory
 
   return
       

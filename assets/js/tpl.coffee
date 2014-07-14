@@ -67,6 +67,10 @@ do ->
         {{ }) }}
       </ul>
     </div>
+    <div class="sug" id="sug">
+      <ul id="suglist" class="suglist"></ul>
+      <div id="clear-history">{{=getLan(config.clearhistory)}}</div>
+    </div>
   </div>
   <div class="setting-mask" id="setting-mask"></div>
   <div class="appinfo">

@@ -1,17 +1,38 @@
+var __indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
+
 $(function() {
-  var HISTORYLEN, adjustUrl, changeLang, changeSearchEngine, cookie, getSuggestion, langArr, searchHistory, setSugPos, showSuggestion;
-  langArr = ['en', 'zh'];
-  searchHistory = [];
-  HISTORYLEN = 10;
-  changeLang = function(lang) {
-    var cls;
-    if (langArr.indexOf(lang) > -1) {
-      cls = document.documentElement.className.replace(/lang\-[a-z]+/, '');
-      cls += " lang-" + lang;
-      document.documentElement.className = cls.replace(/^\s+|\s+$/g, '');
-      return typeof cookie !== "undefined" && cookie !== null ? cookie.attr('lang', lang) : void 0;
+  var adjustUrl, changeLang, changeSearchEngine, cookie, currentEngineType, getSuggestion, searchHistory, setSugPos, showSuggestion, toJSONString;
+  currentEngineType = '';
+  $.toJSONString = (window.JSON && window.JSON.stringify) || (toJSONString = function(obj) {
+    var arr, json, n, t, v;
+    t = typeof obj;
+    if (t !== "object" || obj === null) {
+      if (t === "string") {
+        obj = '"' + obj + '"';
+      }
+      return String(obj);
+    } else {
+      json = [];
+      arr = obj && obj.constructor === Array;
+      for (n in obj) {
+        v = obj[n];
+        t = typeof v;
+        if (t === 'string') {
+          v = '"' + v + '"';
+        } else {
+          if (t === 'object' && v !== null) {
+            v = toJSONString(v);
+          }
+        }
+        json.push((arr ? '' : '"' + n + '"') + String(v));
+      }
+      if (arr) {
+        return '[' + String(json) + ']';
+      } else {
+        return '{' + String(json) + '}';
+      }
     }
-  };
+  });
   cookie = {
     _cookie: (function() {
       var cookieArr, obj, pair, v, _i, _len;
@@ -59,20 +80,105 @@ $(function() {
       return this._cookie;
     }
   };
+  searchHistory = {
+    _MAX: 10,
+    _history: (function() {
+      var hsty;
+      hsty = cookie.attr('history');
+      return hsty = hsty ? $.parseJSON(hsty) : [];
+    })(),
+    add: function(kwd) {
+      if (__indexOf.call(this._history, kwd) < 0) {
+        this._history.unshift(kwd);
+        if (this._history.length > this._MAX) {
+          this._history.pop();
+        }
+        cookie.attr('history', $.toJSONString(this._history));
+      }
+      console.log(this._history);
+      return this;
+    },
+    clear: function() {
+      this._history.length = 0;
+      cookie.attr('history', $.toJSONString(this._history));
+      return this;
+    },
+    get: function() {
+      return this._history;
+    }
+  };
+  changeLang = function(lang) {
+    var cls, langArr;
+    langArr = ['en', 'zh'];
+    if (langArr.indexOf(lang) > -1) {
+      cls = document.documentElement.className.replace(/lang\-[a-z]+/, '');
+      cls += " lang-" + lang;
+      document.documentElement.className = cls.replace(/^\s+|\s+$/g, '');
+      return cookie != null ? cookie.attr('lang', lang) : void 0;
+    }
+  };
   setSugPos = function() {
     $('#sug').css({
       'top': $('.search-form').offset().top + $('.search-form').height(),
       'left': $('.search-form').offset().left
     });
   };
-  showSuggestion = function(data, searchHistory) {
-    var $sug;
+  /**
+   * show keyword suggestion list
+   * @param  {String} kwd            关键字
+   * @param  {Array}  data           百度建议的关键字列表
+   * @param  {Boolean} showAllHistory 是否显示所有搜索历史
+   * @return {undefined}                无返回值
+  */
+
+  showSuggestion = function(kwd, data, showAllHistory) {
+    var $sug, $suglist, MAX, len, listHtml, shistory, v, _i, _j, _k, _len, _len1, _len2;
+    MAX = 10;
     $sug = $('#sug');
-    if (data === void 0) {
+    $suglist = $('#suglist');
+    $suglist.html('');
+    len = 0;
+    shistory = searchHistory.get();
+    listHtml = '';
+    if (showAllHistory) {
+      for (_i = 0, _len = shistory.length; _i < _len; _i++) {
+        v = shistory[_i];
+        if (len >= MAX) {
+          break;
+        }
+        ++len;
+        listHtml += "<li>" + v + "</li>";
+      }
+    } else {
+      for (_j = 0, _len1 = shistory.length; _j < _len1; _j++) {
+        v = shistory[_j];
+        if (len >= MAX) {
+          break;
+        }
+        if (v.indexOf(kwd) > -1) {
+          ++len;
+          listHtml += "<li class='s-h'>" + v + "</li>";
+        }
+      }
+    }
+    if (data && len < MAX) {
+      for (_k = 0, _len2 = data.length; _k < _len2; _k++) {
+        v = data[_k];
+        ++len;
+        listHtml += "<li>" + v + "</li>";
+        if (len >= MAX) {
+          break;
+        }
+      }
+    }
+    if (len) {
+      $suglist.html(listHtml);
+      $sug.show();
+    } else {
       $sug.hide();
     }
   };
-  getSuggestion = function(kwd, type) {
+  getSuggestion = function(kwd, type, cb) {
     var e, url, urlTbl;
     urlTbl = {
       'search': 'http://suggestion.baidu.com/su?wd=@&p=3&cb=?',
@@ -86,11 +192,15 @@ $(function() {
     };
     url = urlTbl[type];
     if (!url) {
-      showSuggestion();
+      if (typeof cb === "function") {
+        cb(kwd);
+      }
       return;
     }
     if (type === '' || (type == null)) {
-      showSuggestion();
+      if (typeof cb === "function") {
+        cb(kwd);
+      }
       return;
     }
     url = url.replace('@', encodeURIComponent(kwd));
@@ -116,11 +226,15 @@ $(function() {
           default:
             data = res.s;
         }
-        showSuggestion(data);
+        if (typeof cb === "function") {
+          cb(kwd, data);
+        }
       });
     } catch (_error) {
       e = _error;
-      showSuggestion();
+      if (typeof cb === "function") {
+        cb(kwd);
+      }
     }
   };
   adjustUrl = function(url) {
@@ -179,6 +293,7 @@ $(function() {
     $('#hiddens').html(html);
     cookie.attr('defaultType', typeName);
     cookie.attr('defaultEngine', engineName);
+    currentEngineType = typeName;
   };
   $('#search-engine-list').on('click', 'li', function(e) {
     var $this;
@@ -198,13 +313,17 @@ $(function() {
     e.stopPropagation();
   });
   $('#search-form').on('submit', function(e) {
-    var $link, $this;
-    if ($('#isa').val() === ' ') {
+    var $link, $this, val;
+    val = $('#isa').val();
+    if (val === ' ') {
       $link = $('#link');
       $link.attr('href', adjustUrl($link.attr('origin-href')));
       $link[0].click();
       return false;
+    } else if (val === '') {
+      return false;
     } else {
+      searchHistory.add(val);
       $this = $(this);
       $this.attr('action', adjustUrl($this.attr('origin-action')));
     }
@@ -221,11 +340,22 @@ $(function() {
     $('#isa,#search-btn').removeClass('box-shadow');
   });
   $('#isa').on('input propertychange', function(e) {
-    if ($(this).val() === '') {
+    var val;
+    val = $(this).val();
+    if (val === '') {
       $('#ph').show();
     } else {
       $('#ph').hide();
+      if ($.trim(val) !== '') {
+        getSuggestion(val, currentEngineType, showSuggestion);
+      }
     }
+  });
+  $('#clear-history').on('click', function(e) {
+    searchHistory.clear();
+    $('#suglist').html('');
+    $('#sug').hide();
+    $('#isa').focus();
   });
   $('#isa').on('keydown', function(e) {
     var $engineList, $nextEngine;
@@ -262,6 +392,12 @@ $(function() {
   $('#switch-lang').on('click', 'b', function() {
     changeLang($(this).attr('lang'));
   });
+  $(window).on('resize', function() {
+    setSugPos();
+  });
+  $(window).on('focus', function() {
+    $('#isa').focus();
+  });
   (function() {
     var lang;
     lang = cookie.attr('lang');
@@ -270,12 +406,11 @@ $(function() {
       lang = lang.toLowerCase() === 'zh-cn' ? 'zh' : 'en';
     }
     changeLang(lang);
-    searchHistory = cookie.attr('history');
-    searchHistory = searchHistory ? $.parseJSON('searchHistory') : [];
     changeSearchEngine(cookie.attr('defaultEngine'), cookie.attr('defaultType'));
     setTimeout(function() {
       $('#isa').focus();
     }, 0);
+    setSugPos();
   })();
 });
 
