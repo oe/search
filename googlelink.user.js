@@ -2,13 +2,13 @@
 // @name           Easy Access of Google Search
 // @namespace      Saiya.Google.link
 // @description    Make it easier to use google search(including cse)
-// @match          http://www.google.com/*
-// @match          http://www.google.com.hk/*
-// @match          https://www.google.com/*
-// @match          https://www.google.com.hk/*
+// @match          *://www.google.com/search*
+// @match          *://www.google.com.hk/search*
+// @match          *://www.google.com/cse*
+// @match          http://www.baidu.com/s*
 // @updateURL      http://app.evecalm.com/search/googlelink.meta.js
 // @downloadURL    http://app.evecalm.com/search/googlelink.user.js
-// @version        0.52
+// @version        0.56
 // ==/UserScript==
 function proxy(fn) {
 	var script = document.createElement('script');
@@ -16,31 +16,50 @@ function proxy(fn) {
 	document.body.appendChild(script);
 }
 function main(Global){
-	var csebody = document.querySelector('#cse-body'),
-		i = 0,
-		j = 0,
-		anchors = null,
-		caches = null;
-	if (csebody) {
-		i = 0;
-		csebody.addEventListener('DOMSubtreeModified',function  (event) {
-			anchors = document.querySelectorAll('#cse-body a.gs-title'); //for cse results
-			j = anchors.length;
-			for (; i < j; ++i) {
-				anchors[i].setAttribute('data-cturl','');
-				anchors[i].setAttribute('target','_blank');
-			}
+	var resultBody;
+	if (location.host === 'www.baidu.com') {
+		var tg = document.querySelectorAll('.ec_pp_f,.ec_bdtg,.ad-layout-row,.ecl-weigou-nav-buy');
+		if (tg.length) {
+			tg = Array.prototype.slice.call(tg);
+			tg.forEach(function (ele) {
+				ele.remove();
+			});
+		}
+		document.querySelector('#ec_im_container').remove();
+		document.querySelector('#ecl-weigou-view-container').remove();
+		document.querySelector('#ecl-weigou-nav-buy-transfer').remove();
+		return;
+	}
+	if (location.href.indexOf('//www.google.com/cse') > 0) {
+		function removeCseRedirect () {
+			var anchors = Array.prototype.slice.apply(document.querySelectorAll('#cse-body a.gs-title')); //for cse results
+			anchors.forEach(function (el) {
+				el.setAttribute('data-cturl','');
+				el.setAttribute('target','_blank');
+			});
+		}
+		document.body.addEventListener('DOMSubtreeModified',function  (event) {
+			clearTimeout(removeCseRedirect.tId);
+			if (!document.querySelector('#cse-body')) return;
+			removeCseRedirect.tId = setTimeout(removeCseRedirect, 450);
 		},false);
 	} else {
-		anchors = document.querySelectorAll('#ires h3 a'); // google search results' links
-		caches = document.querySelectorAll('#ires .action-menu-panel ul a'); // for webcaches' links
-		for (i = 0,j = anchors.length; i < j; ++i) {
-			anchors[i].onmousedown = null;
-			if (caches[i]) {
-				caches[i].href = caches[i].href.replace('http://','https://');
-				caches[i].onmousedown = null;
-			}
+		resultBody = document.querySelector('#main');
+		function removeRedirect () {
+			var anchors = Array.prototype.slice.apply(document.querySelectorAll('#ires h3 a')), // google search results' links
+				caches = Array.prototype.slice.apply(document.querySelectorAll('#ires .action-menu-panel ul a')); // for webcaches' links
+			anchors.forEach(function (el) {
+				el.onmousedown = null;
+			});
+			caches.forEach(function (el) {
+				el.href = el.href.replace('http://','https://');
+				el.onmousedown = null;
+			})
 		}
+		resultBody.addEventListener('DOMSubtreeModified',function  (event) {
+			clearTimeout(removeRedirect.tId);
+			removeRedirect.tId = setTimeout(removeRedirect, 350);
+		},false);
 	}
-}
+};
 proxy(main);

@@ -1,11 +1,10 @@
 CACHE MANIFEST
-#QWE
+# 2014-7-15 17:52:42
 CACHE:
     index.html
-    assets/bg.gif
-    assets/config.js
-    se.js
-    style.css
-    jquery.min.js
+    assets/img/bg.gif
+    assets/js/app.js
+    assets/libs/jquery.min.js
+    assets/css/style.css
 NETWORK:
     *
