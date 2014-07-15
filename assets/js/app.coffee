@@ -254,14 +254,14 @@ $ ->
     return
   # set document.body background image
   setBgImg = (imgUrl)->
-    if imgUrl is ''
-      document.body.style.backgroundImage = ''
-      $('#search-wrapper').removeClass 'trsprt-bg'
-      $('#footer').removeClass 'trsprt-bg'
-    else
+    if imgUrl
       document.body.style.backgroundImage = "url(#{imgUrl})"
       $('#search-wrapper').addClass 'trsprt-bg'
       $('#footer').addClass 'trsprt-bg'
+    else
+      document.body.style.backgroundImage = ''
+      $('#search-wrapper').removeClass 'trsprt-bg'
+      $('#footer').removeClass 'trsprt-bg'
     return
   # add box-shadow to search box when focus
   $('#isa').on 'focus', (e)->
@@ -279,6 +279,9 @@ $ ->
     setBgImg cookie.attr 'bgimg'
     setTimeout ->
       do $('#isa').focus
+      if navigator.userAgent.indexOf('Chrome') > -1
+        heartString = ("l2v2l6v2e1l1v3l2v3e1v7e1v7e1v7e1l2v6e1l4v5e1l6v4e1l8v3e1l7l3v2e1l9l3v1").replace /[lve]\d/g,(a)-> Array(-~a[1]).join({l:" ",v:"Love",e:"\n"}[a[0]])
+        console.log '%c%s\n%cThanks for your attention!\nYou can visit https://github.com/evecalm/search for uncompressed source code.\nHere is my website http://www.evecalm.com.','color: #ed5565;', heartString,'font-size: 18px;color:#068;font-weight: 400;'
       return
     , 0
     do setSugPos
