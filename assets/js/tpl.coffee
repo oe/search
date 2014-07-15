@@ -12,6 +12,7 @@ do ->
     "<span class='en'>#{opt.en}</span><span class='zh'>#{opt.zh}</span>"
 
   tpl = '''
+  <div class="overlay" id="overlay"></div>
   <div class="setting-container">
     <div id="switch-lang" class="switch-lang">
       {{=getLan(config.langswitch)}}
@@ -32,7 +33,7 @@ do ->
   </div>
   <div class="search-container">
     <div class="search-wrapper" id="search-wrapper">
-      <div class="app-name">{{=getLan(config.title)}}</div>
+      <h1 class="app-name">{{=getLan(config.title)}}</h1>
       <div class="search-engine-list clearfix" id="search-engine-list">
         {{ var cur = true; _.each(config.searches, function(val, key){ }}
           <ul data-engine-type="{{=key}}" class="{{=cur ? 'current' : ''}}">
@@ -72,9 +73,45 @@ do ->
       <div id="clear-history">{{=getLan(config.clearhistory)}}</div>
     </div>
   </div>
-  <div class="setting-mask" id="setting-mask"></div>
-  <div class="appinfo">
-    Copyright © <a href="http://www.evecalm.com" target="_blank">夏影 ❤ 2011-{{=new Date().getFullYear()}}</a> <a href="http://www.evecalm.com/2013/04/union-search.html" target="_blank">Help/Feedback</a>
+  <div class="usage-content" id="usage-content">
+    <div class="usage-close" id="usage-close">&times;</div>
+    <h3><span class="en">Usage</span><span class="zh">使用帮助</span></h3>
+    <h4><span class="en">Shortcuts</span><span class="zh">快捷键</span></h4>
+    <ol>
+      <li>
+        <kbd>Tab</kbd>
+        <span class="en">Switch Search Engine</span>
+        <span class="zh">切换搜索引擎</span>
+      </li>
+      <li>
+        <kbd>Shift</kbd> +
+        <kbd>Tab</kbd>
+        <span class="en">Switch Search Category</span>
+        <span class="zh">切换搜索类别</span>
+      </li>
+      <li>
+        <kbd>Home</kbd> /
+        <kbd>F</kbd> /
+        <kbd>S</kbd>
+        <span class="en">Focus on Search Box</span>
+        <span class="zh">快速聚焦到搜索框</span>
+      </li>
+    </ol>
+    <h4><span class="en">Switch Language</span><span class="zh">切换语言</span></h4>
+    <p>
+      <span class="en">Click "English/中文" at the right top corner to switch language</span>
+      <span class="zh">点击右上角的“English/中文”来切换应用语言</span>
+    </p>
+    <h4><span class="en">Set Backgrount Image</span><span class="zh">设置背景图片</span></h4>
+    <p>
+      <span class="en">Click "☸" at the right top corner, then paste image's url into then input box and press enter key!</span>
+      <span class="zh">点击右上角的“☸”, 在显示出来的输入框中输入图片地址按回车键即可.</span>
+    </p>
+  </div>
+  <div class="footer" id="footer">
+    Copyright © <a href="http://www.evecalm.com" target="_blank">夏影 ❤ 2011-{{=new Date().getFullYear()}}</a> /
+    <a class="usage" id="usage">{{=getLan(config.usage)}}</a> /
+    <a href="http://www.evecalm.com/2013/04/union-search.html" target="_blank">{{=getLan(config.feedback)}}</a>
   </div>
   '''
 

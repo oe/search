@@ -31,9 +31,41 @@ b {
 li > label > span {
 	margin-left: -4px;
 }
+kbd {
+	color: #000;
+	background: #eee;
+	border-style: solid;
+	border-color: #ccc #aaa #888 #bbb;
+	padding: .1em .6em;
+	border: 1px solid #ccc;
+	font-size: 11px;
+	font-family: 'Helvetica Neue',Helvetica,Arial,sans-serif;
+	background-color: #f7f7f7;
+	color: #333;
+	-moz-box-shadow: 0 1px 0 rgba(0,0,0,0.2),0 0 0 2px #fff inset;
+	-webkit-box-shadow: 0 1px 0 rgba(0,0,0,0.2),0 0 0 2px #fff inset;
+	box-shadow: 0 1px 0 rgba(0,0,0,0.2),0 0 0 2px #fff inset;
+	border-radius: 3px;
+	display: inline-block;
+	margin: 0 .1em;
+	text-shadow: 0 1px 0 #fff;
+	line-height: 1.4;
+	white-space: nowrap;
+}
 .trsprt-bg{
 	background-color: rgba(255,255,255,.4);
 	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr=#66ffffff,endColorstr=#66ffffff);
+}
+.overlay {
+	display: none;
+	position: fixed;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	background-color: rgba(204,204,204,.4);
+	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr=#66ffffff,endColorstr=#66ffffff);
+	z-index: 999;
 }
 .container{
 	width: 100%;
@@ -66,32 +98,13 @@ li > label > span {
 	font-weight: 700;
 	text-shadow: none;
 }
-.setting-mask {
-	/*display: block;*/
-	display: none;
-	position: fixed;
-	top: 0;
-	bottom: 0;
-	right: 0;
-	left: 0;
-	z-index: 20;
-}
-.setting-icon.current{
-	border-radius: 2px 2px 0 0;
-	background-color: #ccc;
-	background-color: rgba(204,204,204,.4);
-	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr=#66ffffff,endColorstr=#66ffffff);
-	color: #6ab8e6;
-}
 .setting-panel{
 	display: none;
 	position: relative;
-	border-radius: 4px 0 4px 4px;
+	border-radius: 4px;
 	padding: 2px 4px;
 	background-color: #ccc;
-	background-color: rgba(204,204,204,.4);
-	z-index: 22;
-	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr=#66ffffff,endColorstr=#66ffffff);
+	z-index: 1100;
 }
 .clearfix{
 	zoom: 1;
@@ -127,7 +140,7 @@ li > label > span {
 .search-container{
 	margin-top: 180px;
 }
-.search-wrapper,.appinfo{
+.search-wrapper,.footer{
 	width: 680px ;
 	border-radius: 6px;
 	margin: 0 auto;
@@ -135,12 +148,16 @@ li > label > span {
 	color: #444;
 	font-weight: 500;
 }
-.appinfo{
+.footer{
 	margin-top: 150px;
 	text-align: center;
 }
-.appinfo a{
+.footer a{
 	margin: 0 4px;
+}
+.usage {
+	cursor: pointer;
+	border-bottom: 1px dashed;
 }
 .app-name{
 	margin-bottom: 10px;
@@ -297,7 +314,7 @@ li > label > span {
 	padding-left: 10px;
 	cursor: pointer;
 }
-.sug li.current, li:hover{
+.sug li.current{
 	background-color: lightblue;
 }
 .s-h{
@@ -365,3 +382,42 @@ li > label > span {
 	color: #333;
 }
 
+.usage-content {
+	display: none;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  margin-top: -175px;
+  margin-left: -200px;
+  width: 400px;
+  height: 350px;
+  padding: 20px;
+  background-color: #fefefe;
+  border: 1px dotted #eee;
+  border-radius: 4px;
+  z-index: 1200;
+}
+.usage-content li {
+	margin-bottom: 2px;
+}
+.usage-content li span {
+  margin-left: 20px;
+}
+.usage-content h4 {
+  margin-bottom: 6px;
+}
+.usage-content p, .usage-content ol {
+  margin-top: 6px;
+  margin-bottom: 6px;
+}
+.usage-content .usage-close {
+	position: absolute;
+	right: 10px;
+	top: 0;
+	font-size: 40px;
+	color: #999;
+	cursor: pointer;
+}
+.usage-content .usage-close:hover {
+	color: #666;
+}

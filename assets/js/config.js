@@ -19,6 +19,14 @@ var config = {
 		"zh":"<span data='en'>English</span>/中文",
 		"en":"English/<span data='zh'>中文</span>"
 	},
+	"feedback": {
+		"zh":"反馈",
+		"en":"Feedback"
+	},
+	"usage": {
+		"zh":"使用帮助",
+		"en":"Usage"
+	},
 	"submit":{
 		"zh":"搜索",
 		"en":"Search"

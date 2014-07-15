@@ -1,5 +1,7 @@
 $ ->
   currentEngineType = ''
+  currentEngineName = ''
+  currentKwd = ''
   # enable JSONString for old browser
   $.toJSONString = (window.JSON and window.JSON.stringify ) or ( toJSONString = (obj)->
     t = typeof obj
@@ -59,6 +61,7 @@ $ ->
         date.setTime date.getTime - 1
         document.cookie = "#{key}=#{val};expires=#{date.toGMTString()}"
       @_cookie
+  
   # search history utility
   searchHistory =
     _MAX: 10
@@ -71,7 +74,6 @@ $ ->
         if this._history.length > this._MAX
           do this._history.pop
         cookie.attr 'history', $.toJSONString this._history
-      console.log this._history
       this
     clear: ->
       this._history.length = 0
@@ -79,6 +81,7 @@ $ ->
       this
     get: ->
       this._history
+  
   # change language
   changeLang = (lang)->
     langArr = ['en','zh']
@@ -87,6 +90,12 @@ $ ->
       cls += " lang-#{lang}"
       document.documentElement.className = cls.replace /^\s+|\s+$/g, ''
       cookie?.attr 'lang', lang
+      if lang is 'zh'
+        document.title = '综合搜索'
+      else
+        document.title = 'Union Search'
+    return
+  
   # adjust suggestion list's postion
   setSugPos = ->
     $('#sug').css
@@ -114,14 +123,18 @@ $ ->
         if len >= MAX then break
         ++len
         listHtml += "<li>#{v}</li>"
+      do $('#clear-history').show
     else
       for v in shistory
         if len >= MAX then break
         if v.indexOf(kwd) > -1
           ++len
           listHtml += "<li class='s-h'>#{v}</li>"
+      do $('#clear-history').hide
     if data and len < MAX
       for v in data
+        # remove duplicated item
+        if v in shistory then continue
         ++len
         listHtml += "<li>#{v}</li>"
         if len >= MAX then break
@@ -160,8 +173,9 @@ $ ->
             for i in res.result
               data.push i[0]
           when 'map'
+            # remove '$' and trailing numbers
             for i in res.s
-              data.push i.replace /(\$)|(\d*$)/g, ' '
+              data.push $.trim(i.replace(/(\$+)/g, ' ')).replace(/\d+$/,'')
           else
             data = res.s
         cb? kwd, data
@@ -228,8 +242,48 @@ $ ->
     cookie.attr 'defaultType', typeName
     cookie.attr 'defaultEngine', engineName
     currentEngineType = typeName
+    currentEngineName = engineName
     return
   
+  # load image
+  loadImg = (imgUrl, done, fail)->
+    img = new Image
+    img.onload = done if done
+    img.onerror = fail if fail
+    img.src = imgUrl
+    return
+  # set document.body background image
+  setBgImg = (imgUrl)->
+    if imgUrl is ''
+      document.body.style.backgroundImage = ''
+      $('#search-wrapper').removeClass 'trsprt-bg'
+      $('#footer').removeClass 'trsprt-bg'
+    else
+      document.body.style.backgroundImage = "url(#{imgUrl})"
+      $('#search-wrapper').addClass 'trsprt-bg'
+      $('#footer').addClass 'trsprt-bg'
+    return
+  # add box-shadow to search box when focus
+  $('#isa').on 'focus', (e)->
+    do e.stopPropagation
+    $('#isa,#search-btn').addClass 'box-shadow'
+    return
+  # init
+  do ->
+    lang = cookie.attr 'lang'
+    if lang is undefined
+      lang = if window.navigator.language? then window.navigator.language else window.navigator.browserLanguage
+      lang = if lang.toLowerCase() is 'zh-cn' then 'zh' else 'en'
+    changeLang lang
+    changeSearchEngine cookie.attr('defaultEngine'), cookie.attr('defaultType')
+    setBgImg cookie.attr 'bgimg'
+    setTimeout ->
+      do $('#isa').focus
+      return
+    , 0
+    do setSugPos
+    return
+
   # switch engine
   $('#search-engine-list').on 'click', 'li', (e)->
     $this = $ this
@@ -250,118 +304,266 @@ $ ->
 
   # on form submit
   $('#search-form').on 'submit', (e)->
+    $this = $ this
+    $link = $ '#link'
+    do $('#sug').hide
     val = do $('#isa').val
     if val is ' '
-      $link = $ '#link'
-      $link.attr 'href', adjustUrl $link.attr 'origin-href'
+      href = adjustUrl $link.attr 'origin-href'
+      $link.attr 'href', href
       do $link[0].click
       return false
     else if val is ''
       return false
     else
+      # update current kwd
+      currentKwd = val
       searchHistory.add val
-      $this = $ this
-      $this.attr 'action', adjustUrl $this.attr 'origin-action'
+      href = adjustUrl $this.attr 'origin-action'
+      if currentEngineName is 'qiyi' or (currentEngineType is 'map' and currentEngineName is 'baidu')
+        if currentEngineName is 'qiyi'
+          href += "q_#{encodeURIComponent(val)}"
+        else
+          href += "?newmap=1&ie=utf-8&s=s%26wd%3D#{encodeURIComponent(val)}%26c%3D1"
+        $link.attr 'href', href
+        do $link[0].click
+        return false
+      else
+        $this.attr 'action', href
       return
 
-  # add box-shadow to search box when focus
-  $('#isa').on 'focus', (e)->
-    do e.stopPropagation
-    $('#isa,#search-btn').addClass 'box-shadow'
-    return
 
   $('#search-wrapper').on 'click', (e)->
     do e.stopPropagation
     do $('#isa').focus
+    do $('#sug').hide
     return
   
-  # remove box-shadow when blur
-  $(document).on 'click', (e)->
-    $('#isa,#search-btn').removeClass 'box-shadow'
+  
+  # search box click
+  $('#isa').on 'click', (e)->
+    do e.stopPropagation
+    if this.value is ''
+      showSuggestion '', false, true
+    else if $('#suglist li').length
+      do $('#sug').show
     return
-
   # input box value change realtime event, Emulate html5 palceholder
   #   event 'propertychange' is for ie, 'input' is for others
   $('#isa').on 'input propertychange',(e)->
     val = do $(this).val
     if val is ''
       do $('#ph').show
-      # if(!isArrowKey) then $('#sug').html(getHistoryList()).hide();
+      do $('#sug').hide
+      $('#suglist').html ''
+      # update current kwd
+      currentKwd = val
     else
       do $('#ph').hide
       if $.trim(val) isnt ''
+        # update current kwd
+        currentKwd = val
         getSuggestion val, currentEngineType, showSuggestion
     return
+  # stop keydown event propagation
+  $('#isa').on 'keydown', (e)->
+    do e.stopPropagation
+    switch e.keyCode
+      # Tab key
+      when 9
+        if e.shiftKey
+          $engineList = $ '#search-cat'
+          $nextEngine = do $engineList.find('>li input:checked').closest('li').next
+          unless $nextEngine.length
+            $nextEngine = $engineList.find '>li:first'
+          $nextEngine.find('input').trigger 'click'
+        else
+          $engineList = $ '#search-engine-list ul.current'
+          $nextEngine = do $engineList.find('>li.current').next
+          unless $nextEngine.length
+            $nextEngine = $engineList.find '>li:first'
+          $nextEngine.trigger 'click'
+        do e.preventDefault
+      # Escape key
+      when 27
+        do $('#sug').hide
+      # up key
+      when 38
+        if $('#sug').is ':visible'
+          do e.preventDefault
+          $curt = $ '#suglist li.current'
+          if $curt.length
+            $next = do $curt.prev
+            $curt.removeClass 'current'
+            $next = false if not $next.length
+          else
+            $next = $ '#suglist li:last'
+          if $next
+            $next.addClass 'current'
+            kwd = do $next.text
+          else
+            kwd = currentKwd
+          kwd = $.trim kwd
+          if kwd is ''
+            do $('#ph').show
+          else
+            do $('#ph').hide
+          $('#isa').val kwd
+        else
+          if $('#suglist li').length
+            do e.preventDefault
+            do $('#sug').show
+          else if currentKwd is ''
+            showSuggestion '', false, true
+      # down key
+      when 40
+        if $('#sug').is ':visible'
+          do e.preventDefault
+          $curt = $ '#suglist li.current'
+          if $curt.length
+            $next = do $curt.next
+            $curt.removeClass 'current'
+            $next = false if not $next.length
+          else
+            $next = $ '#suglist li:first'
+          if $next
+            $next.addClass 'current'
+            kwd = do $next.text
+          else
+            kwd = currentKwd
+          kwd = $.trim kwd
+          if kwd is ''
+            do $('#ph').show
+          else
+            do $('#ph').hide
+          $('#isa').val kwd
+        else
+          if $('#suglist li').length
+            do e.preventDefault
+            do $('#sug').show
+          else if currentKwd is ''
+            showSuggestion '', false, true
+    return
+  # suggestion list click
+  $('#suglist').on 'click', 'li', ->
+    $this = $ this
+    $this.addClass 'current'
+    do $('#ph').hide
+    $('#isa').val $.trim $this.text()
+    do $('#search-form').submit
+    return false
 
+  # suggestion list hover
+  $('#suglist').on 'hover', 'li', ->
+    $this = $ this
+    $this.parent().find('li').removeClass 'current'
+    $this.addClass 'current'
+    return false
+  # clear search history
   $('#clear-history').on 'click', (e)->
     do searchHistory.clear
     $('#suglist').html ''
     do $('#sug').hide
     do $('#isa').focus
     return
-  # stop keydown event propagation
-  $('#isa').on 'keydown', (e)->
-    do e.stopPropagation
-    # Tab key
-    if e.keyCode is 9
-      if e.shiftKey
-        $engineList = $ '#search-cat'
-        $nextEngine = do $engineList.find('>li input:checked').closest('li').next
-        unless $nextEngine.length
-          $nextEngine = $engineList.find '>li:first'
-        $nextEngine.find('input').trigger 'click'
-      else
-        $engineList = $ '#search-engine-list ul.current'
-        $nextEngine = do $engineList.find('>li.current').next
-        unless $nextEngine.length
-          $nextEngine = $engineList.find '>li:first'
-        $nextEngine.trigger 'click'
-      do e.preventDefault
+  # clear search history
+  $('#clear-history').on 'hover', (e)->
+    $('#suglist li').removeClass 'current'
     return
-
   # placelholder click for browser not support css pointer-event
   $('#ph').on 'click', (e)->
     $('#isa').focus()
     return false
 
-  # bind shortcut key 'home' key and 's' key to focus on search box
+  # remove box-shadow when blur
+  $(document).on 'click', (e)->
+    $('#isa,#search-btn').removeClass 'box-shadow'
+    do $('#sug').hide
+    return
+  # bind shortcut key 'home' key and 's' 'f' key to focus on search box
   #     when search box blured
   $(document).on 'keydown',(e)->
-    # 36 is the keycode of "Home" key, 83 is the keycode of "s" key
-    if e.keyCode is 36 or e.keyCode is 83
-      $('#isa').focus()
-      return false
-
+    if $('#overlay').is ':hidden'
+      # 36 for "Home" key
+      # 83 for "s" key
+      # 70 for "f" key
+      if e.keyCode is 36 or e.keyCode is 83 or e.keyCode is 70
+        $('#isa').focus()
+        return false
+    else
+      if e.keyCode is 27
+        $('#overlay').trigger 'click'
+    return
+    
+    
   # switch language
   $('#switch-lang').on 'click', 'b', ->
     changeLang $(this).attr 'lang'
     return
-  
+
+  $('#setting-icon').on 'click', ->
+    $('#overlay').fadeIn 'fast'
+    $('#setting-panel').fadeIn 'fast'
+    do $('#bgimg').focus
+    return
+  $('#bgimg').on 'keydown', (e)->
+    switch e.keyCode
+      when 13
+        $('#set-bgimg').trigger 'click'
+      when 27
+        do e.stopPropagation
+    return
+
+  $('#set-bgimg').on 'click', ->
+    $imginput = $ '#bgimg'
+    imgUrl = $.trim $imginput.val()
+    if imgUrl is '' then return
+    loadImg imgUrl, ->
+      $imginput.val ''
+      $('#overlay').trigger 'click'
+      cookie.attr 'bgimg', imgUrl
+      setBgImg imgUrl
+      return
+    , ->
+      do $('#imgerror-tip').show
+      setTimeout ->
+        do $('#imgerror-tip').hide
+        return
+      , 2000
+      cookie.attr 'bgimg', ''
+      setBgImg ''
+      return
+  # overlay click
+  $('#overlay').on 'click', ->
+    $('#setting-panel').fadeOut 'fast'
+    $('#usage-content').fadeOut 'fast'
+    $(this).fadeOut 'fast'
+    setTimeout ->
+      do $('#isa').focus
+      return
+    , 0
+    return
+  $('#usage').on 'click', ->
+    $('#overlay').fadeIn 'fast'
+    $('#usage-content').fadeIn 'fast'
+    return
+  $('#usage-close').on 'click', ->
+    $('#overlay').trigger 'click'
+    return
   # reset suglist pos when window resize
   $(window).on 'resize', ->
     do setSugPos
     return
   # focus on search box when window actived
   $(window).on 'focus', ->
-    do $('#isa').focus
-    return
-  # init
-  do ->
-    lang = cookie.attr 'lang'
-    if lang is undefined
-      lang = if window.navigator.language? then window.navigator.language else window.navigator.browserLanguage
-      lang = if lang.toLowerCase() is 'zh-cn' then 'zh' else 'en'
-    changeLang lang
-    changeSearchEngine cookie.attr('defaultEngine'), cookie.attr('defaultType')
-    setTimeout ->
+    if $('#overlay').is ':hidden'
       do $('#isa').focus
-      return
-    , 0
-    do setSugPos
+    return
+  # focus on search box when window actived
+  $(window).on 'blur', ->
+    do $('#sug').hide
     return
   
-  # window.searchHistory = searchHistory
-
   return
       
       
