@@ -102,6 +102,11 @@ do ->
       <span class="en">Click "English/中文" at the right top corner to switch language</span>
       <span class="zh">点击右上角的“English/中文”来切换应用语言</span>
     </p>
+    <h4><span class="en">Open Search Engine Offical Site</span><span class="zh">打开搜索引擎官网</span></h4>
+    <p>
+      <span class="en">Type *one* space and press enter key</span>
+      <span class="zh">输入一个空格, 按回车键即可</span>
+    </p>
     <h4><span class="en">Set Backgrount Image</span><span class="zh">设置背景图片</span></h4>
     <p>
       <span class="en">Click "☸" at the right top corner, then paste image's url into then input box and press enter key!</span>

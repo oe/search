@@ -175,7 +175,7 @@ $ ->
           when 'map'
             # remove '$' and trailing numbers
             for i in res.s
-              data.push $.trim(i.replace(/(\$+)/g, ' ')).replace(/\d+$/,'')
+              data.push $.trim $.trim(i.replace(/(\$+)/g, ' ')).replace(/\d+$/,'')
           else
             data = res.s
         cb? kwd, data
