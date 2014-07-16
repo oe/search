@@ -1,7 +1,7 @@
 <!doctype html>
-<html class="lang-zh" manifest="cache.manifest"><head>
+<html class="lang-en" manifest="cache.manifest"><head>
   <meta charset="UTF-8">
-  <title>Unio Search/综合搜索</title>
+  <title>Union Search</title>
   <meta http-equiv="X-UA-Compatible" content="IE=Edge">
   <meta name="author" content="Saiya Lee">
   <meta name="description" content="综合搜索，搜索整个互联网/An union search utility, search the whole internet.">
@@ -32,7 +32,7 @@
     <h1 class="app-name"><span class="en">Union Search</span><span class="zh">综合搜索</span></h1>
     <div class="search-engine-list clearfix" id="search-engine-list">
       
-        <ul data-engine-type="search" class="">
+        <ul data-engine-type="search" class="current">
           
             <li class="current" data-engine-name="google" data-link="http://www.google.com" data-key="q" data-charset="utf-8" data-url="http://www.google.com/search" data-hiddens="">
               
@@ -201,9 +201,9 @@
           
         </ul>
       
-        <ul data-engine-type="shop" class="current">
+        <ul data-engine-type="shop" class="">
           
-            <li class="current" data-engine-name="etao" data-link="http://www.etao.com" data-key="q" data-charset="utf-8" data-url="http://s.etao.com/search" data-hiddens="">
+            <li class="" data-engine-name="etao" data-link="http://www.etao.com" data-key="q" data-charset="utf-8" data-url="http://s.etao.com/search" data-hiddens="">
               
               <span class="en">Etao</span><span class="zh">一淘</span>
             </li>
@@ -274,7 +274,7 @@
         </ul>
       
     </div>
-    <form class="search-form clearfix" id="search-form" target="_blank" accept-charset="utf-8" action="http://s.etao.com/search" origin-action="http://s.etao.com/search">
+    <form class="search-form clearfix" id="search-form" target="_blank" accept-charset="utf-8" action="http://www.google.com/search" origin-action="http://www.google.com/search">
       <div class="hide" id="hiddens"></div>
       <div class="input">
         <span class="ico ico-search" id="ico"></span>
@@ -284,7 +284,7 @@
       </div>
     </form>
     <div class="hide">
-      <a href="http://www.etao.com" id="link" rel="noreferrer" target="_blank" origin-href="http://www.etao.com"></a>
+      <a href="http://www.google.com" id="link" rel="noreferrer" target="_blank" origin-href="http://www.google.com"></a>
     </div>
     <ul class="search-cat clearfix" id="search-cat">
       
@@ -344,7 +344,7 @@
       
     </ul>
   </div>
-  <div class="sug" id="sug" style="top: 338.796875px; left: 20px;">
+  <div class="sug" id="sug" style="top: 338.796875px; left: 344.5px; display: none;">
     <ul id="suglist" class="suglist"></ul>
     <div id="clear-history"><span class="en">Clear my search history</span><span class="zh">清空历史记录</span></div>
   </div>
@@ -377,6 +377,11 @@
   <p>
     <span class="en">Click "English/中文" at the right top corner to switch language</span>
     <span class="zh">点击右上角的“English/中文”来切换应用语言</span>
+  </p>
+  <h4><span class="en">Open Search Engine Offical Site</span><span class="zh">打开搜索引擎官网</span></h4>
+  <p>
+    <span class="en">Type *one* space and press enter key</span>
+    <span class="zh">输入一个空格, 按回车键即可</span>
   </p>
   <h4><span class="en">Set Backgrount Image</span><span class="zh">设置背景图片</span></h4>
   <p>
