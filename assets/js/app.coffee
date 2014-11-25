@@ -221,7 +221,6 @@ $ ->
       '173.194.195.120'
       '173.194.193.141'
       '74.125.201.82'
-      ''
     ]
     if url.indexOf('www.google.com') > -1
       url.replace 'www.google.com', gHosts[ Math.floor(gHosts.length * Math.random()) ]
