@@ -27,40 +27,59 @@ $ ->
   )
 
   # cookie utility
-  cookie =
-    _cookie: do ->
-      obj = {}
-      cookieArr = document.cookie.split '; '
-      for v in cookieArr
-        pair = v.split '='
-        obj[ pair[0] ] = unescape pair[1]
-      obj
-    # get or set cookie
-    #   expire is count by day
-    attr: (key, val, expire, path)->
-      if val is undefined
-        return if @_cookie[ key ] is undefined then undefined else @_cookie[ key ]
+  cookie = do ->
+    if window.localStorage
+      {
+        _loc: window.localStorage
+        attr: (key, val)->
+          if val is undefined
+            return if key is undefined
+            return @_loc.getItem "#{key}"
+          else
+            @_loc.setItem "#{key}", "#{val}"
+        remove: (key)->
+          @_loc.removeItem "#{key}"
 
-      if expire is undefined
-        expire = 'Sat, 19 Jan 2037 03:52:43 GMT'
-      else
-        date = new Date()
-        date.setTime date.getTime() + expire * 24 * 60 * 60 * 1000
-        date = date.toGMTString()
-      
-      path = '/' if not path
-      val = escape val
-      document.cookie = "#{key}=#{val};expires=#{expire};path=#{path}"
-      @_cookie[ key ] = val
-      @_cookie
-    # remove cookie
-    remove: (key)->
-      val = @_cookie[ key ]
-      if val?
-        date = new Date()
-        date.setTime date.getTime - 1
-        document.cookie = "#{key}=#{val};expires=#{date.toGMTString()}"
-      @_cookie
+      }
+    else
+      {
+        _cookie: do ->
+          obj = {}
+          cookieArr = document.cookie.split '; '
+          for v in cookieArr
+            pair = v.split '='
+            obj[ pair[0] ] = unescape pair[1]
+          obj
+        # get or set cookie
+        #   expire is count by day
+        attr: (key, val, expire, path)->
+          if val is undefined
+            return @_cookie[ key ]
+
+          if expire is undefined
+            expire = 'Sat, 19 Jan 2037 03:52:43 GMT'
+          else
+            date = new Date()
+            date.setTime date.getTime() + expire * 24 * 60 * 60 * 1000
+            date = date.toGMTString()
+          
+          path = '/' if not path
+          val = escape val
+          document.cookie = "#{key}=#{val};expires=#{expire};path=#{path}"
+          @_cookie[ key ] = val
+          @_cookie
+        # remove cookie
+        remove: (key)->
+          val = @_cookie[ key ]
+          if val?
+            date = new Date()
+            delete @_cookie[ key ]
+            date.setTime date.getTime - 1
+            document.cookie = "#{key}=#{val};expires=#{date.toGMTString()}"
+          @_cookie
+        # ...
+      }
+    
   
   # search history utility
   searchHistory =
@@ -191,8 +210,18 @@ $ ->
       '64.233.168.97'
       '173.194.124.55'
       '74.125.110.236'
-      '173.194.21.233'
-      '173.194.127.184'
+      '173.194.120.64'
+      '74.125.192.115'
+      '74.125.198.84'
+      '74.125.129.51'
+      '74.125.239.189'
+      '173.194.120.86'
+      '74.125.133.95'
+      '173.194.120.75'
+      '173.194.195.120'
+      '173.194.193.141'
+      '74.125.201.82'
+      ''
     ]
     if url.indexOf('www.google.com') > -1
       url.replace 'www.google.com', gHosts[ Math.floor(gHosts.length * Math.random()) ]
