@@ -2,6 +2,8 @@ $ ->
   currentEngineType = ''
   currentEngineName = ''
   currentKwd = ''
+
+  gHosts = []
   # enable JSONString for old browser
   $.toJSONString = (window.JSON and window.JSON.stringify ) or ( toJSONString = (obj)->
     t = typeof obj
@@ -11,7 +13,7 @@ $ ->
     else
       json = []
       arr = obj && obj.constructor is Array
-      for n,v of obj
+      for n, v of obj
         t = typeof v
         if t is 'string'
           v = '"' + v + '"'
@@ -62,7 +64,7 @@ $ ->
             date = new Date()
             date.setTime date.getTime() + expire * 24 * 60 * 60 * 1000
             date = date.toGMTString()
-          
+
           path = '/' if not path
           val = escape val
           document.cookie = "#{key}=#{val};expires=#{expire};path=#{path}"
@@ -79,8 +81,8 @@ $ ->
           @_cookie
         # ...
       }
-    
-  
+
+
   # search history utility
   searchHistory =
     _MAX: 10
@@ -100,7 +102,7 @@ $ ->
       this
     get: ->
       this._history
-  
+
   # change language
   changeLang = (lang)->
     langArr = ['en','zh']
@@ -114,7 +116,7 @@ $ ->
       else
         document.title = 'Union Search'
     return
-  
+
   # adjust suggestion list's postion
   setSugPos = ->
     $('#sug').css
@@ -175,7 +177,7 @@ $ ->
       'map'   : 'http://map.baidu.com/su?wd=@&ie=utf-8&cid=1&type=0&newmap=1&callback=?'
       'doc'   : 'http://nssug.baidu.com/su?wd=@&prod=wenku&oe=utf-8&cb=?'
       'shop'    : 'http://suggest.taobao.com/sug?area=etao&code=utf-8&q=@&callback=?'
-    
+
     url = urlTbl[ type ]
     if not url
       cb? kwd
@@ -203,26 +205,10 @@ $ ->
     catch e
       cb? kwd
       return
-  
+
   # adjust url, mainly for google
   adjustUrl = (url)->
-    gHosts = [
-      '64.233.168.97'
-      '173.194.124.55'
-      '74.125.110.236'
-      '173.194.120.64'
-      '74.125.192.115'
-      '74.125.198.84'
-      '74.125.129.51'
-      '74.125.239.189'
-      '173.194.120.86'
-      '74.125.133.95'
-      '173.194.120.75'
-      '173.194.195.120'
-      '173.194.193.141'
-      '74.125.201.82'
-    ]
-    if url.indexOf('www.google.com') > -1
+    if url.indexOf('www.google.com') > -1 and gHosts.length
       url.replace 'www.google.com', gHosts[ Math.floor(gHosts.length * Math.random()) ]
     else
       url
@@ -240,7 +226,7 @@ $ ->
     $("#search-cat>li[data-type='#{typeName}'] input").prop 'checked', true
     $engineList.find('>ul.current').removeClass 'current'
     $newType.addClass 'current'
-    
+
     if engineName?
       $newEngine = $newType.find ">li[data-engine-name='#{engineName}']"
     if not engineName or not $newEngine.length
@@ -272,7 +258,7 @@ $ ->
     currentEngineType = typeName
     currentEngineName = engineName
     return
-  
+
   # load image
   loadImg = (imgUrl, done, fail)->
     img = new Image
@@ -296,15 +282,20 @@ $ ->
     do e.stopPropagation
     $('#isa,#search-btn').addClass 'box-shadow'
     return
+
   # init
   do ->
     lang = cookie.attr 'lang'
-    if lang is undefined
+    unless lang
       lang = if window.navigator.language? then window.navigator.language else window.navigator.browserLanguage
       lang = if lang.toLowerCase() is 'zh-cn' then 'zh' else 'en'
     changeLang lang
     changeSearchEngine cookie.attr('defaultEngine'), cookie.attr('defaultType')
     setBgImg cookie.attr 'bgimg'
+    # 从服务器端获取最新的google ip
+    $.getJSON 'assets/google.json', (res)->
+      gHosts = res if $.isArray res
+      return
     setTimeout ->
       do $('#isa').focus
       if navigator.userAgent.indexOf('Chrome') > -1
@@ -369,8 +360,8 @@ $ ->
     do $('#isa').focus
     do $('#sug').hide
     return
-  
-  
+
+
   # search box click
   $('#isa').on 'click', (e)->
     do e.stopPropagation
@@ -525,8 +516,8 @@ $ ->
       if e.keyCode is 27
         $('#overlay').trigger 'click'
     return
-    
-    
+
+
   # switch language
   $('#switch-lang').on 'click', 'b', ->
     changeLang $(this).attr 'lang'
@@ -594,7 +585,7 @@ $ ->
   $(window).on 'blur', ->
     do $('#sug').hide
     return
-  
+
   return
-      
-      
+
+

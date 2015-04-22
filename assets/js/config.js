@@ -265,8 +265,8 @@ var config = {
 			"en":"Map",
 			"engines":{
 				"google":{
-					"link":"https://maps.google.com.hk",
-					"url":"https://maps.google.com.hk/maps",
+					"link":"http://www.google.cn/maps",
+					"url":"http://www.google.cn/maps",
 					"key":"q",
 					"zh":"谷歌地图",
 					"en":"Goolge Map"
