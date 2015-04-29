@@ -286,6 +286,7 @@ $ ->
   # init
   do ->
     lang = cookie.attr 'lang'
+    gHosts = $.parseJSON cookie.attr('ghosts') or '[]'
     unless lang
       lang = if window.navigator.language? then window.navigator.language else window.navigator.browserLanguage
       lang = if lang.toLowerCase() is 'zh-cn' then 'zh' else 'en'
@@ -294,7 +295,9 @@ $ ->
     setBgImg cookie.attr 'bgimg'
     # 从服务器端获取最新的google ip
     $.getJSON 'assets/google.json', (res)->
-      gHosts = res if $.isArray res
+      if $.isArray res
+        gHosts = res
+        cookie.attr 'ghosts', $.toJSONString res
       return
     setTimeout ->
       do $('#isa').focus
