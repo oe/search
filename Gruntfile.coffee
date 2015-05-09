@@ -16,6 +16,7 @@ module.exports = (grunt)->
             src: [
               './assets/**'
               '!./assets/**/*.coffee'
+              '!./assets/**/*.less'
               '!./assets/**/*.map'
               '!./assets/libs/underscore.js'
               '!./assets/js/config.js'
@@ -52,6 +53,17 @@ module.exports = (grunt)->
             replacement: ->
               Date.now()
           }
+          {
+            # 移除css的sourcemap
+            match: /\/\*[^*]+\*\/$/
+            replacement: ''
+          }
+          {
+            # 移除js的sourcemap
+            match: /\/\/.+\.map$/
+            replacement: ''
+          }
+
         ]
 
       main:
@@ -61,15 +73,19 @@ module.exports = (grunt)->
             dest: "#{BUILD_PATH}/index.html"
           }
           {
-            src: 'build/cache.manifest'
-            dest: 'build/cache.manifest'
+            src: "#{BUILD_PATH}/cache.manifest"
+            dest: "#{BUILD_PATH}/cache.manifest"
+          }
+          {
+            src: "#{BUILD_PATH}/assets/css/style.css"
+            dest: "#{BUILD_PATH}/assets/css/style.css"
+          }
+          {
+            src: "#{BUILD_PATH}/assets/js/app.js"
+            dest: "#{BUILD_PATH}/assets/js/app.js"
           }
         ]
 
-    cssmin:
-      main:
-        src: "#{BUILD_PATH}/assets/css/style.css"
-        dest: "#{BUILD_PATH}/assets/css/style.css"
 
     htmlmin:
       main:
@@ -79,17 +95,10 @@ module.exports = (grunt)->
         src: "#{BUILD_PATH}/index.html"
         dest: "#{BUILD_PATH}/index.html"
 
-    uglify:
-      main:
-        src: "#{BUILD_PATH}/assets/js/app.js"
-        dest: "#{BUILD_PATH}/assets/js/app.js"
-
   grunt.loadNpmTasks 'grunt-contrib-clean'
   grunt.loadNpmTasks 'grunt-replace'
   grunt.loadNpmTasks 'grunt-contrib-copy'
-  grunt.loadNpmTasks 'grunt-contrib-cssmin'
   grunt.loadNpmTasks 'grunt-contrib-htmlmin'
-  grunt.loadNpmTasks 'grunt-contrib-uglify'
 
 
-  grunt.registerTask 'default', ['clean:beforeBuild', 'copy', 'replace', 'clean:afterBuild', 'cssmin', 'htmlmin', 'uglify']
+  grunt.registerTask 'default', ['clean:beforeBuild', 'copy', 'replace', 'clean:afterBuild', 'htmlmin']
