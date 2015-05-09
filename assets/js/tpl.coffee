@@ -70,7 +70,7 @@ do ->
           </label></li>
         {{ }) }}
       </ul>
-      <div class="search-with">
+      <div class="search-with" id="search-with">
         <span class="zh">由 <strong class="search-powered-by"></strong> 提供搜索结果</span>
           <span class="en">Search with <strong class="search-powered-by"></strong></span>
       </div>

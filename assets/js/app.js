@@ -630,6 +630,9 @@ $(function() {
     $('#search-cat').addClass('show');
     return false;
   });
+  $('#search-with').on('click', function() {
+    $('#hamburger').trigger('click');
+  });
   $(window).on('resize', function() {
     isMobile = window.innerWidth < MOBILE_BREAK_POINT;
     isMobile && $('#search-form').attr('target', '_self');

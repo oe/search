@@ -569,6 +569,11 @@ $ ->
     $('#search-cat').addClass 'show'
     return false
 
+  # click search-with
+  $('#search-with').on 'click', ->
+    $('#hamburger').trigger 'click'
+    return
+
   # reset suglist pos when window resize
   $(window).on 'resize', ->
     isMobile = window.innerWidth < MOBILE_BREAK_POINT

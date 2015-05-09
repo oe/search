@@ -263,8 +263,10 @@ kbd {
 	padding: 0;
 	border: none;
 	color: inherit;
+	outline: 0;
 	background-color: transparent;
 	font-size: 20px;
+	white-space: nowrap;
 }
 
 #ico{
@@ -474,7 +476,7 @@ kbd {
 	.hamburger {
 		display: block;
 	}
-	.search-container, .footer {
+	.search-container {
 		margin-top: 30px;
 	}
 	.search-wrapper, .footer {
@@ -486,6 +488,15 @@ kbd {
 		width: -webkit-calc(100% - 50px);
 		width: calc(100% - 50px);
 	}
+
+	/* 移除移动设备上的阴影 */
+	.input .input-box.box-shadow {
+		box-shadow: 0 1px 4px #bdbdbd inset;
+	}
+	.input .submit.box-shadow {
+		box-shadow: none;
+	}
+
 	.search-cat, .search-engine-list {
 		visibility: hidden;
 		opacity: 0;
