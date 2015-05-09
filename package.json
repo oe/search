@@ -1,0 +1,34 @@
+{
+  "name": "search",
+  "version": "0.1.0",
+  "description": "union search",
+  "main": "build/index.html",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://evecalm@github.com/evecalm/search.git"
+  },
+  "keywords": [
+    "search",
+    "union search"
+  ],
+  "devDependencies": {
+    "grunt": "~0.4.5",
+    "grunt-contrib-clean": "~0.6.0",
+    "grunt-contrib-coffee": "~0.7.0",
+    "grunt-contrib-compress": "~0.12.0",
+    "grunt-contrib-concat": "~0.3.0",
+    "grunt-contrib-copy": "~0.8.0",
+    "grunt-contrib-uglify": "~0.5.0",
+    "grunt-contrib-watch": "~0.5.3",
+    "grunt-replace": "~0.8.0"
+  },
+  "author": "Saiya",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/evecalm/search/issues"
+  },
+  "homepage": "https://github.com/evecalm/search#readme"
+}

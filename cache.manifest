@@ -1,0 +1,10 @@
+CACHE MANIFEST
+# @@$$TIMESTAMP$$
+CACHE:
+    index.html
+    assets/img/bg.gif
+    assets/js/app.js
+    assets/libs/jquery.min.js
+    assets/css/style.css
+NETWORK:
+    *

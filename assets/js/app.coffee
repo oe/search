@@ -3,6 +3,16 @@ $ ->
   currentEngineName = ''
   currentKwd = ''
 
+  # 当前语言
+  appLang = '';
+
+  # 移动设备屏幕宽度断点
+  MOBILE_BREAK_POINT = 680
+
+  isMobile = window.innerWidth < MOBILE_BREAK_POINT
+
+  isMobile and $('#search-form').attr 'target', '_self'
+
   gHosts = []
   # enable JSONString for old browser
   $.toJSONString = (window.JSON and window.JSON.stringify ) or ( toJSONString = (obj)->
@@ -105,9 +115,10 @@ $ ->
 
   # change language
   changeLang = (lang)->
-    langArr = ['en','zh']
+    langArr = ['en', 'zh']
     if langArr.indexOf(lang) > -1
-      cls = document.documentElement.className.replace /lang\-[a-z]+/,''
+      appLang = lang
+      cls = document.documentElement.className.replace /lang\-[a-z]+/, ''
       cls += " lang-#{lang}"
       document.documentElement.className = cls.replace /^\s+|\s+$/g, ''
       cookie?.attr 'lang', lang
@@ -196,7 +207,7 @@ $ ->
           when 'map'
             # remove '$' and trailing numbers
             for i in res.s
-              data.push $.trim $.trim(i.replace(/(\$+)/g, ' ')).replace(/\d+$/,'')
+              data.push $.trim $.trim(i.replace(/(\$+)/g, ' ')).replace(/\d+$/, '')
           else
             data = res.s
         cb? kwd, data
@@ -223,10 +234,12 @@ $ ->
       if not $newType.length
         $newType = $engineList.find '>ul:first'
     typeName = $newType.data 'engine-type'
-    $("#search-cat>li[data-type='#{typeName}'] input").prop 'checked', true
+    $engineType = $ "#search-cat>li[data-type='#{typeName}']"
+    $engineType.addClass 'current'
+    $('#ico').attr 'class', 'ico ico-' + typeName
+    $engineType.find('input').prop 'checked', true
     $engineList.find('>ul.current').removeClass 'current'
     $newType.addClass 'current'
-
     if engineName?
       $newEngine = $newType.find ">li[data-engine-name='#{engineName}']"
     if not engineName or not $newEngine.length
@@ -236,6 +249,10 @@ $ ->
     engineName = $newEngine.data 'engine-name'
     $newType.find('>li.current').removeClass 'current'
     $newEngine.addClass 'current'
+
+    console.log $engineType
+
+    $('.search-powered-by').text $engineType.find('span.' + appLang).text() + ' / ' + $newEngine.find('span.' + appLang).text()
 
     $form = $ '#search-form'
     data = $newEngine.data()
@@ -283,37 +300,18 @@ $ ->
     $('#isa,#search-btn').addClass 'box-shadow'
     return
 
-  # init
-  do ->
-    lang = cookie.attr 'lang'
-    gHosts = $.parseJSON cookie.attr('ghosts') or '[]'
-    unless lang
-      lang = if window.navigator.language? then window.navigator.language else window.navigator.browserLanguage
-      lang = if lang.toLowerCase() is 'zh-cn' then 'zh' else 'en'
-    changeLang lang
-    changeSearchEngine cookie.attr('defaultEngine'), cookie.attr('defaultType')
-    setBgImg cookie.attr 'bgimg'
-    # 从服务器端获取最新的google ip
-    $.getJSON 'assets/google.json', (res)->
-      if $.isArray res
-        gHosts = res
-        cookie.attr 'ghosts', $.toJSONString res
-      return
-    setTimeout ->
-      do $('#isa').focus
-      if navigator.userAgent.indexOf('Chrome') > -1
-        heartString = ("l2v2l6v2e1l1v3l2v3e1v7e1v7e1v7e1l2v6e1l4v5e1l6v4e1l8v3e1l7l3v2e1l9l3v1").replace /[lve]\d/g,(a)-> Array(-~a[1]).join({l:" ",v:"Love",e:"\n"}[a[0]])
-        console.log '%c%s\n%cThanks for your attention!\nYou can visit https://github.com/evecalm/search for uncompressed source code.\nHere is my website http://www.evecalm.com.','color: #ed5565;', heartString,'font-size: 18px;color:#068;font-weight: 400;'
-      return
-    , 0
-    do setSugPos
-    return
-
+  
   # switch engine
   $('#search-engine-list').on 'click', 'li', (e)->
     $this = $ this
     unless $this.hasClass('current')
       changeSearchEngine $this.data 'engine-name'
+
+    if isMobile
+      do $('#overlay').hide
+      do $('#search-engine-list').hide
+      do $('#search-cat').hide
+
     do $('#isa').focus
     do e.stopPropagation
     return false
@@ -322,8 +320,12 @@ $ ->
   $('#search-cat').on 'click', 'input', (e)->
     $this = $ this
     # unless $this.prop 'checked'
-    changeSearchEngine null, $this.closest('li').data 'type'
-    do $('#isa').focus
+    engineType = $this.closest('li').data 'type'
+    $li = $this.closest 'li'
+    changeSearchEngine null, $li.data 'type'
+    $li.siblings().removeClass 'current'
+    $li.addClass 'current'
+    not isMobile and do $('#isa').focus
     do e.stopPropagation
     return
 
@@ -358,12 +360,6 @@ $ ->
       return
 
 
-  $('#search-wrapper').on 'click', (e)->
-    do e.stopPropagation
-    do $('#isa').focus
-    do $('#sug').hide
-    return
-
 
   # search box click
   $('#isa').on 'click', (e)->
@@ -375,16 +371,14 @@ $ ->
     return
   # input box value change realtime event, Emulate html5 palceholder
   #   event 'propertychange' is for ie, 'input' is for others
-  $('#isa').on 'input propertychange',(e)->
+  $('#isa').on 'input propertychange', (e)->
     val = do $(this).val
     if val is ''
-      do $('#ph').show
       do $('#sug').hide
       $('#suglist').html ''
       # update current kwd
       currentKwd = val
     else
-      do $('#ph').hide
       if $.trim(val) isnt ''
         # update current kwd
         currentKwd = val
@@ -429,10 +423,6 @@ $ ->
           else
             kwd = currentKwd
           kwd = $.trim kwd
-          if kwd is ''
-            do $('#ph').show
-          else
-            do $('#ph').hide
           $('#isa').val kwd
         else
           if $('#suglist li').length
@@ -457,10 +447,6 @@ $ ->
           else
             kwd = currentKwd
           kwd = $.trim kwd
-          if kwd is ''
-            do $('#ph').show
-          else
-            do $('#ph').hide
           $('#isa').val kwd
         else
           if $('#suglist li').length
@@ -473,7 +459,6 @@ $ ->
   $('#suglist').on 'click', 'li', ->
     $this = $ this
     $this.addClass 'current'
-    do $('#ph').hide
     $('#isa').val $.trim $this.text()
     do $('#search-form').submit
     return false
@@ -495,10 +480,6 @@ $ ->
   $('#clear-history').on 'hover', (e)->
     $('#suglist li').removeClass 'current'
     return
-  # placelholder click for browser not support css pointer-event
-  $('#ph').on 'click', (e)->
-    $('#isa').focus()
-    return false
 
   # remove box-shadow when blur
   $(document).on 'click', (e)->
@@ -507,7 +488,7 @@ $ ->
     return
   # bind shortcut key 'home' key and 's' 'f' key to focus on search box
   #     when search box blured
-  $(document).on 'keydown',(e)->
+  $(document).on 'keydown', (e)->
     if $('#overlay').is ':hidden'
       # 36 for "Home" key
       # 83 for "s" key
@@ -562,12 +543,18 @@ $ ->
   $('#overlay').on 'click', ->
     $('#setting-panel').fadeOut 'fast'
     $('#usage-content').fadeOut 'fast'
+
+    if isMobile
+      do $('#search-engine-list').hide
+      do $('#search-cat').hide
+
     $(this).fadeOut 'fast'
     setTimeout ->
       do $('#isa').focus
       return
     , 0
     return
+  
   $('#usage').on 'click', ->
     $('#overlay').fadeIn 'fast'
     $('#usage-content').fadeIn 'fast'
@@ -575,8 +562,18 @@ $ ->
   $('#usage-close').on 'click', ->
     $('#overlay').trigger 'click'
     return
+
+  # hamburger menu
+  $('#hamburger').on 'click', ->
+    do $('#overlay').show
+    do $('#search-engine-list').show
+    do $('#search-cat').show
+    return false
+
   # reset suglist pos when window resize
   $(window).on 'resize', ->
+    isMobile = window.innerWidth < MOBILE_BREAK_POINT
+    isMobile and $('#search-form').attr 'target', '_self'
     do setSugPos
     return
   # focus on search box when window actived
@@ -587,6 +584,31 @@ $ ->
   # focus on search box when window actived
   $(window).on 'blur', ->
     do $('#sug').hide
+    return
+  # init
+  do ->
+    lang = cookie.attr 'lang'
+    gHosts = $.parseJSON cookie.attr('ghosts') or '[]'
+    unless lang
+      lang = if window.navigator.language? then window.navigator.language else window.navigator.browserLanguage
+      lang = if lang.toLowerCase() is 'zh-cn' then 'zh' else 'en'
+    changeLang lang
+    changeSearchEngine cookie.attr('defaultEngine'), cookie.attr('defaultType')
+    setBgImg cookie.attr 'bgimg'
+    # 从服务器端获取最新的google ip
+    $.getJSON 'assets/google.json', (res)->
+      if $.isArray res
+        gHosts = res
+        cookie.attr 'ghosts', $.toJSONString res
+      return
+    setTimeout ->
+      do $('#isa').focus
+      if navigator.userAgent.indexOf('Chrome') > -1
+        heartString = ("l2v2l6v2e1l1v3l2v3e1v7e1v7e1v7e1l2v6e1l4v5e1l6v4e1l8v3e1l7l3v2e1l9l3v1").replace /[lve]\d/g, (a)-> Array(-~a[1]).join({l:" ", v:"Love", e:"\n"}[a[0]])
+        console.log '%c%s\n%cThanks for your attention!\nYou can visit https://github.com/evecalm/search for uncompressed source code.\nHere is my website http://www.evecalm.com.', 'color: #ed5565;', heartString, 'font-size: 18px;color:#068;font-weight: 400;'
+      return
+    , 0
+    do setSugPos
     return
 
   return

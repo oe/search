@@ -13,6 +13,7 @@ do ->
 
   tpl = '''
   <div class="overlay" id="overlay"></div>
+  <div class="hamburger" id="hamburger"></div>
   <div class="setting-container">
     <div id="switch-lang" class="switch-lang">
       {{=getLan(config.langswitch)}}
@@ -50,9 +51,11 @@ do ->
         <div class="hide" id="hiddens"></div>
         <div class="input">
           <span class="ico ico-search" id="ico"></span>
-          <input type="text" class="input-box" name="q" id="isa" autocomplete="off" autofocus speech="speech" x-webkit-speech="x-webkit-speech" x-webkit-grammar="builtin:search">
-          <button class="submit" type="submit" id="search-btn">{{=getLan(config.submit)}}</button>
-          <label class="ph" for="isa" id="ph">{{=getLan(config.placeholder)}}</label>
+          <input type="text" class="input-box" name="q" id="isa" autocomplete="off" autofocus speech>
+          <span class="submit" id="search-btn">
+            <button type="submit" >{{=getLan(config.submit)}}</button>
+          </span>
+          
         </div>
       </form>
       <div class="hide">
@@ -67,6 +70,10 @@ do ->
           </label></li>
         {{ }) }}
       </ul>
+      <div class="search-with">
+        <span class="zh">由 <strong class="search-powered-by"></strong> 提供搜索结果</span>
+          <span class="en">Search with <strong class="search-powered-by"></strong></span>
+      </div>
     </div>
     <div class="sug" id="sug">
       <ul id="suglist" class="suglist"></ul>
@@ -75,7 +82,7 @@ do ->
   </div>
   <div class="usage-content" id="usage-content">
     <div class="usage-close" id="usage-close">&times;</div>
-    <h3><span class="en">Usage</span><span class="zh">使用帮助</span></h3>
+    <h3><span class="en">Usage<small>(for desktop only)</small></span><span class="zh">使用帮助<small>(仅应用于桌面端)</small></span></h3>
     <h4><span class="en">Shortcuts</span><span class="zh">快捷键</span></h4>
     <ol>
       <li>
@@ -114,13 +121,19 @@ do ->
     </p>
   </div>
   <div class="footer" id="footer">
-    Copyright © <a href="http://www.evecalm.com" target="_blank">夏影 ❤ 2011-{{=new Date().getFullYear()}}</a> /
+    Copyright © <a href="http://www.evecalm.com" target="_blank" class="official-site">夏影 ❤ 2011-{{=new Date().getFullYear()}}</a> /
     <a class="usage" id="usage">{{=getLan(config.usage)}}</a> /
     <a href="http://www.evecalm.com/2013/04/union-search.html" target="_blank">{{=getLan(config.feedback)}}</a>
   </div>
   '''
-
-  document.getElementById('content').innerHTML = _.template tpl, config:config,obj2String:obj2String, getLan:getLan
+  if typeof module is undefined
+    document.getElementById('content').innerHTML = _.template tpl, config:config, obj2String:obj2String, getLan:getLan
+  else
+    _ = require '../libs/underscore.js'
+    config = require 'config.js'
+    module.exports = ->
+      _.template tpl, config: config, obj2String: obj2String, getLan: getLan
+  
 
 
 
