@@ -51,7 +51,7 @@ module.exports = (grunt)->
           {
             match: '$$TIMESTAMP$$'
             replacement: ->
-              Date.now()
+              grunt.template.today 'yyyy-mm-dd.HH-MM-ss'
           }
           {
             # 移除css的sourcemap
