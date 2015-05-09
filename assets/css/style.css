@@ -486,16 +486,26 @@ kbd {
 		width: -webkit-calc(100% - 50px);
 		width: calc(100% - 50px);
 	}
-	.search-cat {
-		display: none;
+	.search-cat, .search-engine-list {
+		visibility: hidden;
+		opacity: 0;
 		position: fixed;
 		top: 0;
-		left: 0;
 		bottom: 0;
+		-webkit-transition: all .2s linear;
+		transition: all .2s linear;
+	}
+	.search-cat.show, .search-engine-list.show {
+		opacity: 1;
+		visibility: visible;
+	}
+	.search-cat {
+		left: 0;
 		overflow: auto;
 		background-color: #fefefe;
 		width: 80px;
 		z-index: 1120;
+
 	}
 	.search-cat > li {
 		float: none;
@@ -513,11 +523,7 @@ kbd {
 	}
 
 	.search-engine-list {
-		display: none;
-		position: fixed;
-		top: 0;
 		left: 80px;
-		bottom: 0;
 		width: 120px;
 		z-index: 1100;
 		background-color: #fafafa;

@@ -370,8 +370,8 @@ $(function() {
     }
     if (isMobile) {
       $('#overlay').hide();
-      $('#search-engine-list').hide();
-      $('#search-cat').hide();
+      $('#search-engine-list').removeClass('show');
+      $('#search-cat').removeClass('show');
     }
     $('#isa').focus();
     e.stopPropagation();
@@ -609,8 +609,8 @@ $(function() {
     $('#setting-panel').fadeOut('fast');
     $('#usage-content').fadeOut('fast');
     if (isMobile) {
-      $('#search-engine-list').hide();
-      $('#search-cat').hide();
+      $('#search-engine-list').removeClass('show');
+      $('#search-cat').removeClass('show');
     }
     $(this).fadeOut('fast');
     setTimeout(function() {
@@ -626,8 +626,8 @@ $(function() {
   });
   $('#hamburger').on('click', function() {
     $('#overlay').show();
-    $('#search-engine-list').show();
-    $('#search-cat').show();
+    $('#search-engine-list').addClass('show');
+    $('#search-cat').addClass('show');
     return false;
   });
   $(window).on('resize', function() {

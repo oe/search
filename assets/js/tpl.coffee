@@ -126,13 +126,13 @@ do ->
     <a href="http://www.evecalm.com/2013/04/union-search.html" target="_blank">{{=getLan(config.feedback)}}</a>
   </div>
   '''
-  if typeof module is undefined
+  if typeof module is 'undefined'
     document.getElementById('content').innerHTML = _.template tpl, config:config, obj2String:obj2String, getLan:getLan
   else
-    _ = require '../libs/underscore.js'
-    config = require './config.js'
+    underscore = require '../libs/underscore.js'
+    node_config = require './config.js'
     module.exports = ->
-      _.template tpl, config: config, obj2String: obj2String, getLan: getLan
+      underscore.template tpl, config: node_config, obj2String: obj2String, getLan: getLan
 
   return
   

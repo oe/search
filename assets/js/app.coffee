@@ -308,8 +308,8 @@ $ ->
 
     if isMobile
       do $('#overlay').hide
-      do $('#search-engine-list').hide
-      do $('#search-cat').hide
+      $('#search-engine-list').removeClass 'show'
+      $('#search-cat').removeClass 'show'
 
     do $('#isa').focus
     do e.stopPropagation
@@ -544,8 +544,8 @@ $ ->
     $('#usage-content').fadeOut 'fast'
 
     if isMobile
-      do $('#search-engine-list').hide
-      do $('#search-cat').hide
+      $('#search-engine-list').removeClass 'show'
+      $('#search-cat').removeClass 'show'
 
     $(this).fadeOut 'fast'
     setTimeout ->
@@ -565,8 +565,8 @@ $ ->
   # hamburger menu
   $('#hamburger').on 'click', ->
     do $('#overlay').show
-    do $('#search-engine-list').show
-    do $('#search-cat').show
+    $('#search-engine-list').addClass 'show'
+    $('#search-cat').addClass 'show'
     return false
 
   # reset suglist pos when window resize
