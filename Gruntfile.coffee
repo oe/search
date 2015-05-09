@@ -21,6 +21,8 @@ module.exports = (grunt)->
               '!./assets/js/config.js'
               '!./assets/js/tpl.*'
               'index-template.html'
+              'googlelink.user.js'
+              'README.md'
               'cache.manifest'
             ]
             dest: BUILD_PATH + '/'
