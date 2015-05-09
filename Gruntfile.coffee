@@ -1,56 +1,87 @@
 module.exports = (grunt)->
+  # SDK的发布目录地址
+  BUILD_PATH = 'build'
+  # path = require 'path'
+  # console.log path.resolve 'assets/libs/underscore.js'
+  # html = require './assets/js/tpl.js'
+  # console.log html()
 
-  buildPath = 'build'
-
-  grunt.initConfig =
+  grunt.initConfig
     pkg: grunt.file.readJSON 'package.json'
-    copy:
-      src: [
-        'cache.manifest'
-        'googlelink.user.js'
-        'index-template.html'
-        'assets/**'
-        '!assets/**.coffee'
-        '!assets/**.map'
-        '!assets/js/tpl.*'
-        '!assets/js/config.js'
-      ]
-      dest: buildPath + '/'
 
-    replace:
+    copy:
       main:
-        options:
-          patterns: [
-            {
-              match: '$$APP_HTML$$'
-              replacement: ->
-                do require 'assets/js/config.js'
-            }
-            {
-              match: '$$TIMESTAMP$$'
-              replacement: ->
-                Date.now()
-            }
-          ]
         files: [
           {
-            src: "#{buildPath}/index-template.html"
-            dest: "#{buildPath}/index.html"
+            src: [
+              './assets/**'
+              '!./assets/**/*.coffee'
+              '!./assets/**/*.map'
+              '!./assets/libs/underscore.js'
+              '!./assets/js/config.js'
+              '!./assets/js/tpl.*'
+              'index-template.html'
+              'cache.manifest'
+            ]
+            dest: BUILD_PATH + '/'
+            filter: 'isFile'
+            expand: true
           }
-          {
-            src: "#{buildPath}/cache.manifest"
-          }
-
         ]
 
+    # 清理文件夹
     clean:
+      options:
+        # 强制清理
+        force: true
+      afterBuild: "#{BUILD_PATH}/index-template.html"
+      beforeBuild: "#{BUILD_PATH}/"
+
+    replace:
+      options:
+        patterns: [
+          {
+            match: '$$APP_HTML$$'
+            replacement: ->
+              do require './assets/js/tpl.js'
+          }
+          {
+            match: '$$TIMESTAMP$$'
+            replacement: ->
+              Date.now()
+          }
+        ]
+
       main:
-        src: "#{buildPath}/index-template.html"
+        files: [
+          {
+            src: "#{BUILD_PATH}/index-template.html"
+            dest: "#{BUILD_PATH}/index.html"
+          }
+          {
+            src: 'build/cache.manifest'
+            dest: 'build/cache.manifest'
+          }
+        ]
 
+    cssmin:
+      main:
+        src: "#{BUILD_PATH}/assets/css/style.css"
+        dest: "#{BUILD_PATH}/assets/css/style.css"
 
+    htmlmin:
+      main:
+        options:
+          removeComments: true
+          collapseWhitespace: true
+        src: "#{BUILD_PATH}/index.html"
+        dest: "#{BUILD_PATH}/index.html"
 
   grunt.loadNpmTasks 'grunt-contrib-clean'
   grunt.loadNpmTasks 'grunt-replace'
   grunt.loadNpmTasks 'grunt-contrib-copy'
+  grunt.loadNpmTasks 'grunt-contrib-cssmin'
+  grunt.loadNpmTasks 'grunt-contrib-htmlmin'
 
-  grunt.registerTask 'default', ['copy', 'replace', 'clean']
+
+  grunt.registerTask 'default', ['clean:beforeBuild', 'copy', 'replace', 'clean:afterBuild', 'cssmin', 'htmlmin']

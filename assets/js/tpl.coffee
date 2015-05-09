@@ -130,9 +130,11 @@ do ->
     document.getElementById('content').innerHTML = _.template tpl, config:config, obj2String:obj2String, getLan:getLan
   else
     _ = require '../libs/underscore.js'
-    config = require 'config.js'
+    config = require './config.js'
     module.exports = ->
       _.template tpl, config: config, obj2String: obj2String, getLan: getLan
+
+  return
   
 
 
