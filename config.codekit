@@ -28,7 +28,7 @@
 		"ignore": 0,
 		"ignoreWasSetByUser": 0,
 		"inputAbbreviatedPath": "\/assets\/js\/app.coffee",
-		"minifyOutput": 1,
+		"minifyOutput": 0,
 		"outputAbbreviatedPath": "\/assets\/js\/app.js",
 		"outputPathIsOutsideProject": 0,
 		"outputPathIsSetByUser": 0,
@@ -58,12 +58,12 @@
 		"syntaxCheckerStyle": 1
 		},
 	"\/assets\/js\/tpl.coffee": {
-		"createSourceMap": 0,
+		"createSourceMap": 1,
 		"fileType": 32,
 		"ignore": 0,
 		"ignoreWasSetByUser": 0,
 		"inputAbbreviatedPath": "\/assets\/js\/tpl.coffee",
-		"minifyOutput": 1,
+		"minifyOutput": 0,
 		"outputAbbreviatedPath": "\/assets\/js\/tpl.js",
 		"outputPathIsOutsideProject": 0,
 		"outputPathIsSetByUser": 0,
@@ -115,13 +115,24 @@
 		"syntaxCheckerStyle": 1
 		},
 	"\/Gruntfile.coffee": {
-		"createSourceMap": 0,
+		"createSourceMap": 1,
 		"fileType": 32,
 		"ignore": 1,
 		"ignoreWasSetByUser": 1,
 		"inputAbbreviatedPath": "\/Gruntfile.coffee",
 		"minifyOutput": 0,
 		"outputAbbreviatedPath": "\/Gruntfile.js",
+		"outputPathIsOutsideProject": 0,
+		"outputPathIsSetByUser": 0,
+		"outputStyle": 1,
+		"syntaxCheckerStyle": 1
+		},
+	"\/Gruntfile.js": {
+		"fileType": 64,
+		"ignore": 1,
+		"ignoreWasSetByUser": 0,
+		"inputAbbreviatedPath": "\/Gruntfile.js",
+		"outputAbbreviatedPath": "\/Gruntfile-min.js",
 		"outputPathIsOutsideProject": 0,
 		"outputPathIsSetByUser": 0,
 		"outputStyle": 1,
@@ -202,7 +213,7 @@
 	"coffeeAutoOutputPathReplace1": "",
 	"coffeeAutoOutputPathReplace2": "",
 	"coffeeAutoOutputPathStyle": 0,
-	"coffeeCreateSourceMap": 0,
+	"coffeeCreateSourceMap": 1,
 	"coffeeLintFlags2": {
 		"arrow_spacing": {
 			"active": 0,
@@ -329,7 +340,7 @@
 			"flagValue": -1
 			}
 		},
-	"coffeeMinifyOutput": 1,
+	"coffeeMinifyOutput": 0,
 	"coffeeOutputStyle": 1,
 	"coffeeSyntaxCheckerStyle": 1,
 	"externalServerAddress": "http:\/\/localhost:8888",

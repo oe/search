@@ -250,7 +250,6 @@ $ ->
     $newType.find('>li.current').removeClass 'current'
     $newEngine.addClass 'current'
 
-    console.log $engineType
 
     $('.search-powered-by').text $engineType.find('span.' + appLang).text() + ' / ' + $newEngine.find('span.' + appLang).text()
 

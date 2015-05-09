@@ -79,11 +79,17 @@ module.exports = (grunt)->
         src: "#{BUILD_PATH}/index.html"
         dest: "#{BUILD_PATH}/index.html"
 
+    uglify:
+      main:
+        src: "#{BUILD_PATH}/assets/js/app.js"
+        dest: "#{BUILD_PATH}/assets/js/app.js"
+
   grunt.loadNpmTasks 'grunt-contrib-clean'
   grunt.loadNpmTasks 'grunt-replace'
   grunt.loadNpmTasks 'grunt-contrib-copy'
   grunt.loadNpmTasks 'grunt-contrib-cssmin'
   grunt.loadNpmTasks 'grunt-contrib-htmlmin'
+  grunt.loadNpmTasks 'grunt-contrib-uglify'
 
 
-  grunt.registerTask 'default', ['clean:beforeBuild', 'copy', 'replace', 'clean:afterBuild', 'cssmin', 'htmlmin']
+  grunt.registerTask 'default', ['clean:beforeBuild', 'copy', 'replace', 'clean:afterBuild', 'cssmin', 'htmlmin', 'uglify']
