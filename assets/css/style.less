@@ -392,7 +392,7 @@ kbd {
 }
 .search-engine-list ul li.current{
 	cursor: default;
-	color:#eee;
+	color: #fff;
 	background-color: #6ab8e6;
 	border-radius: 4px 4px 0 0 ;
 	box-shadow:0 0 8px 2px rgba(82,168,236,0.7);
@@ -527,12 +527,16 @@ kbd {
 	.search-cat > li {
 		float: none;
 		text-align: center;
+		text-shadow: none;
 	}
 	.search-cat > li > label {
 		padding: 15px 10px;
 	}
 	.search-cat > li > label > input {
 		display: none;
+	}
+	.search-cat li:active {
+		background-color: lighten(#6ab8e6, 10%);
 	}
 	.search-cat li.current{
 		background-color: #6ab8e6;
@@ -553,7 +557,9 @@ kbd {
 		text-shadow: none;
 		font-size: 14px;
 	}
-
+	.search-engine-list ul li:active {
+		background-color: lighten(skyblue, 10%);
+	}
 	.search-engine-list ul li.current {
 		box-shadow: none;
 		border-radius: 0;

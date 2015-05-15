@@ -2,7 +2,12 @@ $ ->
   currentEngineType = ''
   currentEngineName = ''
   currentKwd = ''
-
+  ###*
+   * 修正触屏设备css的active伪类无效果的问题
+  ###
+  document.addEventListener 'touchstart', ->
+    return
+  , true
   # 当前语言
   appLang = '';
 
