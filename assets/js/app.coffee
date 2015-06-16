@@ -224,8 +224,8 @@ $ ->
 
   # adjust url, mainly for google
   adjustUrl = (url)->
-    if url.indexOf('www.google.com') > -1 and gHosts.length
-      url.replace 'www.google.com', gHosts[ Math.floor(gHosts.length * Math.random()) ]
+    if url.indexOf('http://www.google.com') > -1 and gHosts.length
+      url.replace 'http://www.google.com', gHosts[ Math.floor(gHosts.length * Math.random()) ]
     else
       url
 
