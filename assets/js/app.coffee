@@ -304,6 +304,9 @@ $ ->
     do e.stopPropagation
     $('#isa,#search-btn').addClass 'box-shadow'
     return
+  .on 'blur', ->
+    $('#isa,#search-btn').removeClass 'box-shadow'
+    return
 
   
   # switch engine
@@ -488,7 +491,7 @@ $ ->
 
   # remove box-shadow when blur
   $(document).on 'click', (e)->
-    $('#isa,#search-btn').removeClass 'box-shadow'
+    # $('#isa,#search-btn').removeClass 'box-shadow'
     do $('#sug').hide
     return
   # bind shortcut key 'home' key and 's' 'f' key to focus on search box
