@@ -51,7 +51,7 @@ do ->
         <div class="hide" id="hiddens"></div>
         <div class="input">
           <span class="ico ico-search" id="ico"></span>
-          <input type="text" class="input-box" name="q" id="isa" autocomplete="off" autofocus speech>
+          <input type="search" class="input-box" name="q" id="isa" autocomplete="off" autofocus speech>
           <span class="submit" id="search-btn">
             <button type="submit" >{{=getLan(config.submit)}}</button>
           </span>
@@ -116,8 +116,8 @@ do ->
     </p>
     <h4><span class="en">Set Backgrount Image</span><span class="zh">设置背景图片</span></h4>
     <p>
-      <span class="en">Click "☸" at the right top corner, then paste image's url into then input box and press enter key!</span>
-      <span class="zh">点击右上角的“☸”, 在显示出来的输入框中输入图片地址按回车键即可.</span>
+      <span class="en">Click "Settings" at the right top corner, then paste image's url into then input box and press enter key!</span>
+      <span class="zh">点击右上角的“设置”, 在显示出来的输入框中输入图片地址按回车键即可.</span>
     </p>
   </div>
   <div class="footer" id="footer">

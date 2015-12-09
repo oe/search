@@ -4,8 +4,9 @@ $ ->
   currentKwd = ''
   ###*
    * 修正触屏设备css的active伪类无效果的问题
+   * ＊IE 9以下不支持 addEventListener 方法
   ###
-  document.addEventListener 'touchstart', ->
+  document.addEventListener and document.addEventListener 'touchstart', ->
     return
   , true
   # 当前语言
@@ -121,7 +122,7 @@ $ ->
   # change language
   changeLang = (lang)->
     langArr = ['en', 'zh']
-    if langArr.indexOf(lang) > -1
+    if lang in langArr
       appLang = lang
       cls = document.documentElement.className.replace /lang\-[a-z]+/, ''
       cls += " lang-#{lang}"
