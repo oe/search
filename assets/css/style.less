@@ -71,26 +71,34 @@ kbd {
 	position: absolute;
 	top: 20px;
 	left: 10px;
-	width: 20px;
-	height: 3px;
-	background-color: #bbb;
-}
-.hamburger:active {
-	background-color: #777;
-}
-.hamburger:before, .hamburger:after {
-	content: ' ';
-	position: relative;
-	display: block;
-	width: 20px;
-	height: 3px;
-	background-color: inherit;
-}
-.hamburger:before {
-	top: -5px;
-}
-.hamburger:after {
-	bottom: -2px;
+	
+
+	&:active > i  {
+		background-color: #777;
+	}
+
+	& > i {
+		display: inline-block;
+		width: 20px;
+		height: 3px;
+		background-color: #bbb;
+
+		&:before, &:after {
+			content: ' ';
+			position: relative;
+			display: block;
+			width: 20px;
+			height: 3px;
+			background-color: inherit;
+		}
+		
+		&:before {
+			top: -5px;
+		}
+		&:after {
+			bottom: -2px;
+		}
+	}
 }
 .trsprt-bg{
 	background-color: rgba(255,255,255,.4);
@@ -132,11 +140,7 @@ kbd {
 	cursor: pointer;
 }
 .setting-icon{
-	font-size: 24px;
-	font-size: 20px \0;
-	vertical-align: middle;
-	font-weight: 700;
-	text-shadow: none;
+	margin-left: 12px;
 }
 .setting-panel{
 	display: none;

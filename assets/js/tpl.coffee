@@ -13,12 +13,12 @@ do ->
 
   tpl = '''
   <div class="overlay" id="overlay"></div>
-  <div class="hamburger" id="hamburger"></div>
+  <div class="hamburger" id="hamburger"><i></i></div>
   <div class="setting-container">
     <div id="switch-lang" class="switch-lang">
       {{=getLan(config.langswitch)}}
     </div>
-    <div class="setting-icon" id="setting-icon">☸</div>
+    <div class="setting-icon" id="setting-icon">{{=getLan(config.configTitle)}}</div>
     <div class="setting-panel" id="setting-panel">
       <div id="setting-tip" class="setting-tip">
         <a href="http://desk.zol.com.cn" target="_blank">
