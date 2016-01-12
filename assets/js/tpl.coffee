@@ -121,7 +121,7 @@ do ->
     </p>
   </div>
   <div class="footer" id="footer">
-    Copyright © <a href="http://www.evecalm.com" target="_blank" class="official-site">夏影 ❤ 2011-{{=new Date().getFullYear()}}</a> /
+    Copyright © <a href="http://www.evecalm.com" target="_blank" class="official-site">夏影 ❤ 2011-<script>document.write((new Date()).getFullYear())</script></a> /
     <a class="usage" id="usage">{{=getLan(config.usage)}}</a> /
     <a href="http://www.evecalm.com/2013/04/union-search.html" target="_blank">{{=getLan(config.feedback)}}</a>
   </div>
