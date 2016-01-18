@@ -16,8 +16,9 @@ $ ->
   MOBILE_BREAK_POINT = 680
 
   isMobile = window.innerWidth < MOBILE_BREAK_POINT
+  isiOs = /(iPad|iPhone|iPod)/.test navigator.userAgent
 
-  isMobile and $('#search-form').attr 'target', '_self'
+  isiOs and $('#search-form').attr 'target', '_self'
 
   gHosts = []
   # enable JSONString for old browser
