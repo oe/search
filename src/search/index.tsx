@@ -1,4 +1,5 @@
 import React, { useRef } from 'react'
+import { doSearch } from './utils'
 import './style.scss'
 
 
@@ -6,7 +7,6 @@ import './style.scss'
 export default function SearchInput () {
   const inputRef = useRef<HTMLInputElement>(null)
   
-
   return (
   <div className="search">
     <input type="text" autoFocus className="search-term" ref={inputRef} onKeyUp={onKeyUp} placeholder="searching for power!" />
@@ -26,4 +26,5 @@ function onSumbit(val?: string) {
   if (!val || !val.trim()) return
   const kwd = val.trim()
   console.warn(kwd)
+  doSearch('google', kwd)
 }
