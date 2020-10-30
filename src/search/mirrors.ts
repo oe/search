@@ -10,8 +10,6 @@ const mirrors = [
       'https://gogoo.ml',
       'https://www.lovec.ltd',
       'https://g.jnkip.cn',
-      'http://map.cnmaps.cn',
-      'http://g.histsci.org',
       'https://gug1.icu',
       'https://g.caduo.ml',
       'https://so.roy233.com',
@@ -29,7 +27,7 @@ const mirrors = [
     name: 'scholar',
     urls: [
       'https://scholar.google.com',
-      'http://so.hiqq.com.cn',
+      'https://so.hiqq.com.cn',
       'https://sc.panda321.com',
       'https://xueshu.lanfanshu.cn',
       'https://xueshu.soogle.top',
