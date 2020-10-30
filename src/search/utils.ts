@@ -33,6 +33,47 @@ let taskID = 0
 // task info, including task count, official url, promise resolve
 let taskInfos: {[k: number]: {taskCount: number, resolve: Function, officialUrl: string}} = {}
 
+const doCallback = (result?: any) => {
+  // release checking task resource
+  --resInUse
+  // task is unresolved
+  if (taskInfos[result.taskID]) {
+    // decrease task count
+    --taskInfos[result.taskID].taskCount
+    // success
+    if (result.url) {
+      const cID = result.taskID
+      taskInfos[result.taskID].resolve(result)
+      // remove all pending task in the queue with the resolved taskID
+      URLS_QUEUE = URLS_QUEUE.filter(itm => itm.taskID !== cID)
+      delete taskInfos[result.taskID]
+      // failed and no more tasks to wait
+    } else if (!taskInfos[result.taskID].taskCount) {
+      // mark as failed and return the official url
+      taskInfos[result.taskID].resolve({fallback: taskInfos[result.taskID].officialUrl})
+      delete taskInfos[result.taskID]
+    }
+  }
+  // do rest task in queue by rest resource amount
+  if (URLS_QUEUE.length) {
+    URLS_QUEUE.splice(0, MAX_PARALLEL - resInUse).forEach(checkUrl)
+  }
+}
+
+const checkUrl = (task: ITask) => {
+  // occupy a resource
+  ++resInUse
+
+  isUrlAccessible(task.url)
+  .then(res => {
+    const result = Object.assign(res, {taskID: task.taskID})
+    doCallback(result)
+  })
+  .catch(e => {
+    doCallback({taskID: task.taskID})
+  })
+}
+
 export function isUrlsAccessible(urls: string[]) {
   ++taskID
   URLS_QUEUE.push(...urls.map(url => ({taskID, url})))
@@ -43,48 +84,9 @@ export function isUrlsAccessible(urls: string[]) {
       officialUrl: urls[0]
     }
 
-    const doCallback = (result?: any) => {
-      // release checking task resource
-      --resInUse
-      // task is unresolved
-      if (taskInfos[result.taskID]) {
-        // decrease task count
-        --taskInfos[result.taskID].taskCount
-        // success
-        if (result.url) {
-          const cID = result.taskID
-          taskInfos[result.taskID].resolve(result)
-          // remove all pending task in the queue with the resolved taskID
-          URLS_QUEUE = URLS_QUEUE.filter(itm => itm.taskID !== cID)
-          delete taskInfos[result.taskID]
-          // failed and no more tasks to wait
-        } else if (!taskInfos[result.taskID].taskCount) {
-          // mark as failed and return the official url
-          resolve({fallback: taskInfos[result.taskID].officialUrl})
-          delete taskInfos[result.taskID]
-        }
-      }
-      // do rest task in queue by rest resource amount
-      if (URLS_QUEUE.length) {
-        URLS_QUEUE.splice(0, MAX_PARALLEL - resInUse).forEach(checkUrl)
-      }
-    }
 
-    const checkUrl = (task: ITask) => {
-      // occupy a resource
-      ++resInUse
-
-      isUrlAccessible(task.url)
-      .then(res => {
-        const result = Object.assign(res, {taskID: task.taskID})
-        doCallback(result)
-      })
-      .catch(e => {
-        doCallback({taskID: task.taskID})
-      })
-    }
     // run
-    URLS_QUEUE.splice(0, MAX_PARALLEL).forEach(checkUrl)
+    URLS_QUEUE.splice(0, MAX_PARALLEL - resInUse).forEach(checkUrl)
   })
 }
 
