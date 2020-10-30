@@ -6,7 +6,7 @@
   "author": "Saiya <okarl@outlook.com>",
   "license": "MIT",
   "scripts": {
-    "dev": "parcel ./src/index.html --open",
+    "dev": "rm -rf dist && parcel ./src/index.html --open",
     "build": "rm -rf dist && parcel build ./src/index.html --no-source-maps",
     "postbuild": "node scripts/postbuild.js"
   },
