@@ -124,7 +124,6 @@ const mirrorsResult: { [k: string]: Promise<IMirrorResult> } = {};
 function encodeQuery (kwd: string) {
   return encodeURIComponent(kwd).replace(/%20/g, "+")
 }
-// runAllMirrorsCheck
 
 export async function doSearch(type: string, kwd: string) {
   if (!mirrors.some(mirror => mirror.name === type)) type = 'google'
@@ -134,5 +133,12 @@ export async function doSearch(type: string, kwd: string) {
   // @ts-ignore
   const url = (result.url || result.fallback) + mirror.path
   console.log(result, url, url.replace('%q', encodedKwd))
-  location.href = url.replace('%q', encodedKwd)
+  openUrl(url.replace('%q', encodedKwd))
+}
+
+export function openUrl(url: string) {
+  const link = document.createElement('a')
+  link.setAttribute('rel', 'noopener noreferrer')
+  link.href = url
+  link.click()
 }
