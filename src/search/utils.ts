@@ -10,7 +10,6 @@ export function isUrlAccessible(url: string) {
       resolve({url, time: Date.now() - startedAt})
     }
     img.onerror = (e) => {
-      console.log(e)
       reject({url, time: Date.now() - startedAt, e})
     }
     img.src = imageUrl
@@ -43,6 +42,7 @@ const doCallback = (result?: any) => {
     // success
     if (result.url) {
       const cID = result.taskID
+      console.info('official result', result)
       taskInfos[result.taskID].resolve(result)
       // remove all pending task in the queue with the resolved taskID
       URLS_QUEUE = URLS_QUEUE.filter(itm => itm.taskID !== cID)
@@ -106,7 +106,7 @@ type IMirrorResult = {url: string} | {fallback: string}
 
 const mirrorsResult: { [k: string]: Promise<IMirrorResult> } = {};
 
-(function runAllMirrorsCheck() {
+function runAllMirrorsCheck() {
   const allMirrors = mirrors.slice()
   if (initialSearchParams.type) {
     const idx = allMirrors.findIndex(mirror => mirror.name === initialSearchParams.type)
@@ -119,7 +119,9 @@ const mirrorsResult: { [k: string]: Promise<IMirrorResult> } = {};
     const promise = isUrlsAccessible(mirror.urls) as Promise<IMirrorResult>
     mirrorsResult[mirror.name] = promise
   })
-})()
+}
+
+setTimeout(runAllMirrorsCheck, 200)
 
 function encodeQuery (kwd: string) {
   return encodeURIComponent(kwd).replace(/%20/g, "+")
