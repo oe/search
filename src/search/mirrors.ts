@@ -18,6 +18,7 @@ const mirrors = [
   },
   {
     name: 'wiki',
+    path: '/wiki/Special:Search/%q',
     urls: [
       'https://www.wikipedia.org',
       'https://www.wikipedia.iwiki.eu.org',
@@ -25,6 +26,7 @@ const mirrors = [
   },
   {
     name: 'scholar',
+    path: '/scholar?q=%q',
     urls: [
       'https://scholar.google.com',
       'https://so.hiqq.com.cn',

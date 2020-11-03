@@ -7,6 +7,18 @@
   max-width: 600px;
   position: relative;
   font-size: 18px;
+
+  .help {
+    font-size: 14px;
+    color: #999;
+    margin-top: 4px;
+
+    a { color:  rgba(24, 144, 255, .4); }
+  }
+}
+
+.search-field {
+  position: relative;
   box-sizing: border-box;
 
   .search-term {
@@ -40,6 +52,32 @@
     color: #fff;
     background-color: #1890ff;
     text-shadow: 0 -1px 0 rgba(0,0,0,.12);
-    box-shadow: 0 2px 0 rgba(0,0,0,.045);
+    margin: 0;
+  }
+}
+
+.search-cat {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  margin-left: 10px;
+  margin-bottom: 10px;
+  font-size: 16px;
+  color: #333;
+
+  li {
+    display: inline-block;
+    margin-right: 15px;
+    text-transform: capitalize;
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    &:hover {
+      border-color: rgba(24, 144, 255, .6);
+    }
+
+    &.active {
+      color: rgba(24, 144, 255, .6);
+      border-color: rgba(24, 144, 255, .6);
+    }
   }
 }

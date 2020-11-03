@@ -92,12 +92,19 @@ export function isUrlsAccessible(urls: string[]) {
 
 export function getCurrentSearchParams() {
   const search = location.search.replace(/^\?/, '')
-  if (!search) return {}
+  if (!search) return {
+    type: 'google'
+  }
   const searchParams = new URLSearchParams(search)
-  return {
-    type: searchParams.get('type'),
+  
+  const result = {
+    type: searchParams.get('type') || 'google',
     q: searchParams.get('q')
   }
+  if (mirrors.every(mirror => mirror.name !== result.type)) {
+    result.type = 'google'
+  }
+  return result
 }
 
 export const initialSearchParams = getCurrentSearchParams()
@@ -123,8 +130,24 @@ function runAllMirrorsCheck() {
 
 setTimeout(runAllMirrorsCheck, 200)
 
+
 function encodeQuery (kwd: string) {
   return encodeURIComponent(kwd).replace(/%20/g, "+")
+}
+
+export async function getAvailableMirrorOf(type: string) {
+  const promise = mirrorsResult[type]
+  if (promise) {
+    const result = await promise
+    // @ts-ignore
+    return result.url || result.fallback
+  } else {
+    return new Promise((resolve, reject) =>{
+      setTimeout(() => {
+        getAvailableMirrorOf(type).then(resolve)
+      }, 200)
+    })
+  }
 }
 
 export async function doSearch(type: string, kwd: string) {
@@ -134,7 +157,6 @@ export async function doSearch(type: string, kwd: string) {
   const result = await mirrorsResult[type]
   // @ts-ignore
   const url = (result.url || result.fallback) + mirror.path
-  console.log(result, url, url.replace('%q', encodedKwd))
   openUrl(url.replace('%q', encodedKwd))
 }
 
