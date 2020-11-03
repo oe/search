@@ -1,94 +1,59 @@
+import { Interface } from 'readline'
 import mirrors from './mirrors'
+
+const APP_START_AT = Date.now()
 
 export function isUrlAccessible(url: string) {
   const u = new URL(url)
   const imageUrl = u.origin + '/favicon.ico'
   const startedAt = Date.now()
   const img = new Image()
-  return new Promise<{url: string, time: number}>((resolve, reject) => {
+  return new Promise<{url: string, time: number, isFailed?: boolean}>((resolve) => {
     img.onload = () => {
       resolve({url, time: Date.now() - startedAt})
     }
     img.onerror = (e) => {
-      reject({url, time: Date.now() - startedAt, e})
+      resolve({isFailed: true, url, time: Date.now() - startedAt})
     }
     img.src = imageUrl
   })
 }
 
-interface ITask {
-  url: string
-  taskID: number
-}
-
-// all urls need to check
-let URLS_QUEUE: ITask[] = []
-// max checking task at the same time
-const MAX_PARALLEL = 5
-// checking task count which are undone
-let resInUse = 0
-// batch task id
-let taskID = 0
-// task info, including task count, official url, promise resolve
-let taskInfos: {[k: number]: {taskCount: number, resolve: Function, officialUrl: string}} = {}
-
-const doCallback = (result?: any) => {
-  // release checking task resource
-  --resInUse
-  // task is unresolved
-  if (taskInfos[result.taskID]) {
-    // decrease task count
-    --taskInfos[result.taskID].taskCount
-    // success
-    if (result.url) {
-      const cID = result.taskID
-      console.info('official result', result)
-      taskInfos[result.taskID].resolve(result)
-      // remove all pending task in the queue with the resolved taskID
-      URLS_QUEUE = URLS_QUEUE.filter(itm => itm.taskID !== cID)
-      delete taskInfos[result.taskID]
-      // failed and no more tasks to wait
-    } else if (!taskInfos[result.taskID].taskCount) {
-      // mark as failed and return the official url
-      taskInfos[result.taskID].resolve({fallback: taskInfos[result.taskID].officialUrl})
-      delete taskInfos[result.taskID]
+export function isUrlsAccessible(urls: string[], maxParallel = 5) {
+  const tasks = urls.slice(0).reverse()
+  let isFullFilled = false
+  return new Promise<{isFailed: boolean, url: string}>((resolve) => {
+    const doCallback = (result: any) => {
+      if (isFullFilled) return
+      isFullFilled = true
+      resolve(result)
     }
-  }
-  // do rest task in queue by rest resource amount
-  if (URLS_QUEUE.length) {
-    URLS_QUEUE.splice(0, MAX_PARALLEL - resInUse).forEach(checkUrl)
-  }
-}
-
-const checkUrl = (task: ITask) => {
-  // occupy a resource
-  ++resInUse
-
-  isUrlAccessible(task.url)
-  .then(res => {
-    const result = Object.assign(res, {taskID: task.taskID})
-    doCallback(result)
-  })
-  .catch(e => {
-    doCallback({taskID: task.taskID})
-  })
-}
-
-export function isUrlsAccessible(urls: string[]) {
-  ++taskID
-  URLS_QUEUE.push(...urls.map(url => ({taskID, url})))
-  return new Promise((resolve) => {
-    taskInfos[taskID] = {
-      taskCount: urls.length,
-      resolve,
-      officialUrl: urls[0]
+  
+    const doNext = () => {
+      if (isFullFilled) return
+      const nextUrl = urls.pop()
+      if (nextUrl) {
+        checkUrl(nextUrl)
+      } else {
+        resolve({isFailed: true, url: urls[0]})
+      }
     }
-
-
-    // run
-    URLS_QUEUE.splice(0, MAX_PARALLEL - resInUse).forEach(checkUrl)
+  
+    const checkUrl = (url: string) => {
+      isUrlAccessible(url)
+      .then(res => {
+        doCallback(res)
+        doNext()
+      })
+      .catch(e => {
+        doNext()
+      })
+    }
+  
+    tasks.splice(-maxParallel).forEach(checkUrl)
   })
 }
+
 
 export function getCurrentSearchParams() {
   const search = location.search.replace(/^\?/, '')
@@ -101,7 +66,8 @@ export function getCurrentSearchParams() {
     type: searchParams.get('type') || 'google',
     q: searchParams.get('q')
   }
-  if (mirrors.every(mirror => mirror.name !== result.type)) {
+  // @ts-ignore
+  if (!mirrors[result.type]) {
     result.type = 'google'
   }
   return result
@@ -109,54 +75,39 @@ export function getCurrentSearchParams() {
 
 export const initialSearchParams = getCurrentSearchParams()
 
-type IMirrorResult = {url: string} | {fallback: string}
-
-const mirrorsResult: { [k: string]: Promise<IMirrorResult> } = {};
-
-function runAllMirrorsCheck() {
-  const allMirrors = mirrors.slice()
-  if (initialSearchParams.type) {
-    const idx = allMirrors.findIndex(mirror => mirror.name === initialSearchParams.type)
-    if (idx > 0) {
-      const first = allMirrors.splice(idx, 1)
-      allMirrors.unshift(first[0])
-    }
-  }
-  allMirrors.map(mirror => {
-    const promise = isUrlsAccessible(mirror.urls) as Promise<IMirrorResult>
-    mirrorsResult[mirror.name] = promise
-  })
-}
-
-setTimeout(runAllMirrorsCheck, 200)
-
-
 function encodeQuery (kwd: string) {
   return encodeURIComponent(kwd).replace(/%20/g, "+")
 }
 
-export async function getAvailableMirrorOf(type: string) {
+export interface IMirrorResult {
+  isFailed?: boolean,
+  url: string
+}
+
+const mirrorsResult: { [k: string]: Promise<IMirrorResult> } = {};
+
+export function getAvailableMirrorOf(type: string): Promise<IMirrorResult> {
   const promise = mirrorsResult[type]
-  if (promise) {
-    const result = await promise
-    // @ts-ignore
-    return result.url || result.fallback
-  } else {
-    return new Promise((resolve, reject) =>{
-      setTimeout(() => {
-        getAvailableMirrorOf(type).then(resolve)
-      }, 200)
-    })
-  }
+  if (promise) return promise
+  // @ts-ignore
+  const mirror = mirrors[type]
+  const result = new Promise<IMirrorResult>((resolve) =>{
+    setTimeout(() => {
+      isUrlsAccessible(mirror.urls).then(resolve)
+    }, Math.max(200 - (Date.now() - APP_START_AT), 0) )
+  })
+  // @ts-ignore
+  mirrorsResult[type] = result
+  return result
 }
 
 export async function doSearch(type: string, kwd: string) {
-  if (!mirrors.some(mirror => mirror.name === type)) type = 'google'
-  const mirror = mirrors.find(mirror => mirror.name === type)
-  const encodedKwd = encodeQuery(kwd)
-  const result = await mirrorsResult[type]
   // @ts-ignore
-  const url = (result.url || result.fallback) + mirror.path
+  const mirror = mirrors[type] || mirrors.google
+  const encodedKwd = encodeQuery(kwd)
+  const result = await getAvailableMirrorOf(mirror.name)
+  // @ts-ignore
+  const url = result.url + mirror.path
   openUrl(url.replace('%q', encodedKwd))
 }
 

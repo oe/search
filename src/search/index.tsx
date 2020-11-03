@@ -1,5 +1,5 @@
 import React, { useRef, useState, useEffect } from 'react'
-import { doSearch, getAvailableMirrorOf, initialSearchParams } from './utils'
+import { doSearch, getAvailableMirrorOf, initialSearchParams, IMirrorResult } from './utils'
 import './style.scss'
 
 
@@ -9,13 +9,20 @@ const searchCategories = [
     help: () => {
       const [url, setUrl] = useState('')
       useEffect(() => {
-        getAvailableMirrorOf('google').then(u => setUrl(u))
+        getAvailableMirrorOf('google').then(u => setUrl(u.url))
       }, [])
       return <span>using mirror for Google search: {!url ? 'detecting' : <a href={url} target="_blank">{url}</a>}</span>
     }
   },
   {
     name: 'wiki',
+    help: () => {
+      const [url, setUrl] = useState('')
+      useEffect(() => {
+        getAvailableMirrorOf('wiki').then(u => setUrl(u.url))
+      }, [])
+      return <span>using mirror for Wiki search: {!url ? 'detecting' : <a href={url} target="_blank">{url}</a>}</span>
+    }
   },
   {
     name: 'scholar',
@@ -23,8 +30,8 @@ const searchCategories = [
       const [url, setUrl] = useState('')
       const [sci, setSci] = useState('')
       useEffect(() => {
-        getAvailableMirrorOf('scholar').then(u => setUrl(u))
-        getAvailableMirrorOf('sci-hub').then(u => setSci(u))
+        getAvailableMirrorOf('scholar').then(u => setUrl(u.url))
+        getAvailableMirrorOf('sci-hub').then(u => setSci(u.url))
       }, [])
       return (<span>using mirror for Scholar search: {!url ? 'detecting' : <a href={url} target="_blank">{url}</a>} {sci ? <>, or you can try <a href={sci} target="_blank">sci-hub</a> instead</> : '' }</span>)
     }
@@ -52,6 +59,11 @@ export default function SearchInput () {
   </div>
   )
 }
+
+
+// function SLink(props: IMirrorResult) {
+
+// }
 
 
 function HelpInfo (props: {cat: string}) {

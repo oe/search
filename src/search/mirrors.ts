@@ -1,5 +1,5 @@
-const mirrors = [
-  {
+const mirrors = {
+  google: {
     name: 'google',
     path: '/search?q=%q',
     urls: [
@@ -16,15 +16,16 @@ const mirrors = [
     ],
     alternative: 'https://www.library.ac.cn'
   },
-  {
+  wiki: {
     name: 'wiki',
     path: '/wiki/Special:Search/%q',
     urls: [
       'https://www.wikipedia.org',
       'https://www.wikipedia.iwiki.eu.org',
+      'https://wiki.ry4.me'
     ],
   },
-  {
+  scholar: {
     name: 'scholar',
     path: '/scholar?q=%q',
     urls: [
@@ -36,7 +37,7 @@ const mirrors = [
       'https://x.sci-hub.org.cn',
     ]
   },
-  {
+  'sci-hub': {
     name: 'sci-hub',
     urls: [
       'https://sci-hub.tf',
@@ -45,7 +46,7 @@ const mirrors = [
       'https://sci-hub.se',
     ]
   }
-]
+}
 
 console.log('Google mirrors form Universities: https://www.library.ac.cn/')
 
