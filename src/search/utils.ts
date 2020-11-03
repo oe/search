@@ -5,7 +5,7 @@ const APP_START_AT = Date.now()
 
 export function isUrlAccessible(url: string) {
   const u = new URL(url)
-  const imageUrl = u.origin + '/favicon.ico'
+  const imageUrl = u.origin + '/favicon.ico?t=' + Math.random()
   const startedAt = Date.now()
   const img = new Image()
   return new Promise<{url: string, time: number, isFailed?: boolean}>((resolve) => {

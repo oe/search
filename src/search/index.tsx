@@ -44,6 +44,7 @@ export default function SearchInput () {
   const [cat, setCat] = useState(initialSearchParams.type)
   const onChnageCat = (c: string) => {
     setCat(c)
+    history?.replaceState({}, '', `?type=${c}`)
     inputRef.current?.focus()
   }
   return (
@@ -52,7 +53,7 @@ export default function SearchInput () {
     {searchCategories.map(category => <li className={category.name === cat ? 'active' : ''} key={category.name} onClick={e => onChnageCat(category.name)}>{category.name}</li>)}
     </ul>
     <div className="search-field">
-      <input type="text" autoFocus className="search-term" ref={inputRef} onKeyUp={e => onKeyUp(e, cat)} placeholder="searching for power!" />
+      <input type="search" autoFocus className="search-term" ref={inputRef} onKeyUp={e => onKeyUp(e, cat)} placeholder="searching the world" />
       <button type="button" className="search-button" onClick={e => onSumbit(cat, inputRef.current?.value) }>Search</button>
     </div>
     <HelpInfo cat={cat} />

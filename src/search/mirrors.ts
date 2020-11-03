@@ -5,7 +5,7 @@ const mirrors = {
     urls: [
       'https://www.google.com',
       'https://goo.gle.workers.dev',
-      'https://gl.ry4.me',
+      // 'https://gl.ry4.me',
       'https://chacha.design',
       'https://gogoo.ml',
       'https://www.lovec.ltd',
