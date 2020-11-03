@@ -42,10 +42,7 @@ export function isUrlsAccessible(urls: string[], maxParallel = 5) {
     const checkUrl = (url: string) => {
       isUrlAccessible(url)
       .then(res => {
-        doCallback(res)
-        doNext()
-      })
-      .catch(e => {
+        res.isFailed || doCallback(res)
         doNext()
       })
     }
