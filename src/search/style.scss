@@ -31,6 +31,14 @@
   }
 }
 
+@media (max-width: 480px) {
+  .search {
+    width: auto;
+    margin-left: 10px;
+    margin-right: 10px;
+  }
+}
+
 .search-field {
   position: relative;
   box-sizing: border-box;
