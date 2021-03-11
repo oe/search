@@ -34,8 +34,9 @@ jobs:
     - name: copy cname
       run: cp CNAME ./dist
     - name: Deploy to GitHub Pages
-      uses: Cecilapp/GitHub-Pages-deploy@master
+      uses: Cecilapp/GitHub-Pages-deploy@3.1.0
       env:
-        EMAIL: okarl@outlook.com
         GH_TOKEN: ${{ secrets.ACCESS_TOKEN }}
-        BUILD_DIR: dist # folder the action should deploy.
+      with:
+        email: okarl@outlook.com
+        build_dir: dist # folder the action should deploy.
