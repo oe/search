@@ -1,7 +1,6 @@
 import React, { useRef, useState, useEffect } from 'react'
-import { doSearch, getAvailableMirrorOf, initialSearchParams, IMirrorResult } from './utils'
+import { doSearch, getAvailableMirrorOf, initialSearchParams } from './utils'
 import './style.scss'
-
 
 const searchCategories = [
   {
@@ -39,34 +38,41 @@ const searchCategories = [
   }
 ]
 
-
 export default function SearchInput () {
   const inputRef = useRef<HTMLInputElement>(null)
   const [cat, setCat] = useState(initialSearchParams.type)
-  const onChnageCat = (c: string) => {
+
+  useEffect(() => {
+    if (!initialSearchParams.q) return
+    doSearch(initialSearchParams.type, initialSearchParams.q)
+    if (inputRef.current) {
+      inputRef.current.value = initialSearchParams.q
+    }
+  }, [])
+
+  const onChangeCat = (c: string) => {
     setCat(c)
-    history?.replaceState({}, '', `?type=${c}`)
+    history.replaceState({}, '', `?type=${c}`)
     inputRef.current?.focus()
   }
+
   return (
   <div className="search">
     <ul className="search-cat">
-    {searchCategories.map(category => <li className={category.name === cat ? 'active' : ''} key={category.name} onClick={e => onChnageCat(category.name)}>{category.name}</li>)}
+    {searchCategories.map(category => <li className={category.name === cat ? 'active' : ''} key={category.name} onClick={e => onChangeCat(category.name)}>{category.name}</li>)}
     </ul>
     <div className="search-field">
       <input type="search" autoFocus className="search-term" ref={inputRef} onKeyUp={e => onKeyUp(e, cat)} placeholder="searching the world" />
-      <button type="button" className="search-button" onClick={e => onSumbit(cat, inputRef.current?.value) }>Search</button>
+      <button type="button" className="search-button" onClick={e => onSubmit(cat, inputRef.current?.value) }>Search</button>
     </div>
     <HelpInfo cat={cat} />
   </div>
   )
 }
 
-
 function SLink(props: {isFailed?: boolean, url?: string, title?: string}) {
-return props.url ? <a className={props.isFailed ? 'is-failed' : ''} href={props.url} target="_blank">{props.title || props.url}</a> : <>detecting...</>
+  return props.url ? <a className={props.isFailed ? 'is-failed' : ''} href={props.url} target="_blank">{props.title || props.url}</a> : <>detecting...</>
 }
-
 
 function HelpInfo (props: {cat: string}) {
   const Tip = searchCategories.find(category => category.name === props.cat)?.help
@@ -76,11 +82,11 @@ function HelpInfo (props: {cat: string}) {
 function onKeyUp(e: React.KeyboardEvent<HTMLInputElement>, cat: string) {
   if (e.keyCode === 13) {
     // @ts-ignore
-    onSumbit(cat, e.target.value)
+    onSubmit(cat, e.target.value)
   }
 }
 
-function onSumbit(cat: string, val?: string) {
+function onSubmit(cat: string, val?: string) {
   if (!val || !val.trim()) return
   const kwd = val.trim()
   console.warn(kwd)

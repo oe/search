@@ -1,4 +1,3 @@
-import { Interface } from 'readline'
 import mirrors from './mirrors'
 
 const APP_START_AT = Date.now()
@@ -55,7 +54,8 @@ export function isUrlsAccessible(urls: string[], maxParallel = 5) {
 export function getCurrentSearchParams() {
   const search = location.search.replace(/^\?/, '')
   if (!search) return {
-    type: 'google'
+    type: 'google',
+    q: ''
   }
   const searchParams = new URLSearchParams(search)
   
