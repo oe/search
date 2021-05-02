@@ -7,6 +7,7 @@ export function isUrlAccessible(url: string) {
   const imageUrl = u.origin + '/favicon.ico?t=' + Math.random()
   const startedAt = Date.now()
   const img = new Image()
+  img.referrerPolicy = 'no-referrer'
   return new Promise<{url: string, time: number, isFailed?: boolean}>((resolve) => {
     img.onload = () => {
       resolve({url, time: Date.now() - startedAt})
