@@ -29,6 +29,7 @@ async function getPhoto() {
     let photo: IPhoto
     let page = 1
     if (result && result.photos && result.photos.length) {
+      page = result.page
       photos = result.photos
     } else {
       photos = await fetchPhotos({ path: 'curated', query: { per_page: 20, page }})
