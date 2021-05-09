@@ -1,4 +1,5 @@
 import mirrors from './mirrors'
+import { getCache, saveCache } from '../common/utils'
 
 const APP_START_AT = Date.now()
 
@@ -11,12 +12,13 @@ export function isUrlAccessible(url: string, isImg?: boolean) {
   }
   const img = new Image()
   img.referrerPolicy = 'no-referrer'
-  return new Promise<{url: string, time: number, isFailed?: boolean}>((resolve) => {
+  return new Promise<IMirrorResult>((resolve) => {
     img.onload = () => {
-      resolve({url, time: Date.now() - startedAt})
+      const now = Date.now()
+      resolve({url, duration: now - startedAt, time: now})
     }
     img.onerror = (e) => {
-      resolve({isFailed: true, url, time: Date.now() - startedAt})
+      resolve({isFailed: true, url, time: Date.now()})
     }
     img.src = imageUrl
   })
@@ -25,7 +27,7 @@ export function isUrlAccessible(url: string, isImg?: boolean) {
 export function isUrlsAccessible(urls: string[], maxParallel = 5) {
   const tasks = urls.slice(0).reverse()
   let isFullFilled = false
-  return new Promise<{isFailed: boolean, url: string}>((resolve) => {
+  return new Promise<IMirrorResult>((resolve) => {
     const doCallback = (result: any) => {
       if (isFullFilled) return
       isFullFilled = true
@@ -38,7 +40,7 @@ export function isUrlsAccessible(urls: string[], maxParallel = 5) {
       if (nextUrl) {
         checkUrl(nextUrl)
       } else {
-        resolve({isFailed: true, url: urls[0]})
+        resolve({isFailed: true, time: Date.now(), url: urls[0]})
       }
     }
   
@@ -80,9 +82,16 @@ function encodeQuery (kwd: string) {
   return encodeURIComponent(kwd).replace(/%20/g, "+")
 }
 
-export interface IMirrorResult {
-  isFailed?: boolean,
+export type IMirrorResult = {
+  isFailed?: false,
   url: string
+  duration: number
+  /** result time */
+  time: number
+} | {
+  isFailed: true,
+  url: string
+  time: number
 }
 
 const mirrorsResult: { [k: string]: Promise<IMirrorResult> } = {};
@@ -90,12 +99,26 @@ const mirrorsResult: { [k: string]: Promise<IMirrorResult> } = {};
 export function getAvailableMirrorOf(type: string): Promise<IMirrorResult> {
   const promise = mirrorsResult[type]
   if (promise) return promise
+  const cached = getCache('search') as Record<string, IMirrorResult>
+  const current = cached && cached[type]
+  // result cached in 3 mins
+  if (current && Date.now() - current.time < 5 * 60 * 1000) {
+    const timeCached = getCache('time') as Record<string, number>
+    if (!timeCached || !timeCached[type] || Date.now() - timeCached[type] > 6 * 1000) {
+      mirrorsResult[type] = Promise.resolve(current)
+      saveCache('time', {[type]: Date.now()})
+      return mirrorsResult[type]
+    }
+  }
   // @ts-ignore
   const mirror = mirrors[type]
   const result = new Promise<IMirrorResult>((resolve) =>{
     setTimeout(() => {
       isUrlsAccessible(mirror.urls).then(resolve)
     }, Math.max(200 - (Date.now() - APP_START_AT), 0) )
+  })
+  result.then(res => {
+    saveCache('search', {[type]: res})
   })
   // @ts-ignore
   mirrorsResult[type] = result

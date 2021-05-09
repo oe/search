@@ -1,30 +1,56 @@
-import React, { useEffect, useRef } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
+import { getCache, saveCache } from '../common/utils'
 import './style.scss'
 
 const IS_MOBILE = window.screen.width <= 640
-const CACHE_KEY = '__background_cache__'
 const TOKEN = '563492ad6f91700001000001f3033fed2e21442a8816554456902bc5'
 const BASE_URL = 'https://api.pexels.com/v1/'
+const TIME_GAP = 5 * 60 * 1000
 
 export default function Bg() {
   const ref = useRef<HTMLDivElement>(null)
+  const timeRef = useRef<any>({tid: 0, tid2: 0})
+  const [photo, setPhoto] = useState<IPhoto | undefined>()
+
   useEffect(() => {
-    const setPhoto = async () => {
-      const url = await getPhoto()
-      if (!ref.current || !url) return
-      ref.current.style.backgroundImage = `url(${url})`
+    const updatePhoto = async () => {
+      const pho = await getPhoto()
+      timeRef.current.lastTime = Date.now()
+      timeRef.current.duration = 0
+      if (!ref.current || !pho) return
+      setPhoto(pho)
+      ref.current.style.backgroundImage = `url(${getPhotoUrl(pho)})`
     }
-    setPhoto()
-    setInterval(setPhoto, 5 * 60 * 1000)
+    updatePhoto()
+    window.addEventListener('blur', () => {
+      if (!timeRef.current.duration) timeRef.current.duration = 0
+      timeRef.current.duration += timeRef.current.lastTime 
+        ? Date.now() - (timeRef.current.lastActive || timeRef.current.lastTime) : 0
+      clearTimeout(timeRef.current.tid2)
+      clearInterval(timeRef.current.tid)
+    })
+    window.addEventListener('focus', () => {
+      timeRef.current.lastActive = Date.now()
+      const timeout = TIME_GAP - timeRef.current.duration
+      timeRef.current.tid2 = setTimeout(updatePhoto, timeout < 0 || !timeout ? 0 : timeout)
+      timeRef.current.tid = setInterval(updatePhoto, TIME_GAP)
+    })
+    timeRef.current.tid = setInterval(updatePhoto, TIME_GAP)
   }, [])
   return (
-    <div ref={ref} className="bg" />
+    <div ref={ref} className="bg">
+      {photo ? <div className="author">
+        <a target="_blank" href={photo.url}> Photo </a> 
+         by <a href={photo.photographer_url} target="_blank"> {photo.photographer} </a>
+        from <a target="_blank" href="https://www.pexels.com/">Pexels</a>
+      </div> : null}
+    </div>
   )
 }
 
 async function getPhoto() {
   try {
-    const result = getCache()
+    const result = getCache('bg') as ICache | undefined
     let photos: IPhoto[] = []
     let photo: IPhoto
     let page = 1
@@ -51,13 +77,18 @@ async function getPhoto() {
     } else {
       photo = photos[0]
     }
-    saveCache({ photos, page, id: photo && photo.id })
+    saveCache('bg', { photos, page, id: photo && photo.id })
     if (!photo) return
-    const srcs = photo.src
-    return IS_MOBILE && srcs.portrait || srcs.landscape || srcs.original
+    return photo
   } catch (error) {
     console.warn('failed to get wallpaper', error)
   }
+}
+
+function getPhotoUrl(photo?: IPhoto) {
+  if (!photo) return
+  const srcs = photo.src
+  return IS_MOBILE && srcs.portrait || srcs.landscape || srcs.original
 }
 
 interface ICache {
@@ -66,19 +97,6 @@ interface ICache {
   id: number
 }
 
-function getCache() {
-  try {
-    const valStr = localStorage.getItem(CACHE_KEY)
-    return valStr ? JSON.parse(valStr) as ICache : undefined
-  } catch (error) {
-    return
-  }
-}
-
-function saveCache(obj: any) {
-  const existing = getCache()
-  localStorage.setItem(CACHE_KEY, JSON.stringify(Object.assign({}, existing, obj)))
-}
 
 
 interface IPhotoOptions {
