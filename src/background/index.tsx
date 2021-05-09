@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react'
 import { getCache, saveCache } from '../common/utils'
+import { isUrlAccessible } from '../search/utils'
 import './style.scss'
 
 const IS_MOBILE = window.screen.width <= 640
@@ -18,8 +19,14 @@ export default function Bg() {
       timeRef.current.lastTime = Date.now()
       timeRef.current.duration = 0
       if (!ref.current || !pho) return
-      setPhoto(pho)
-      ref.current.style.backgroundImage = `url(${getPhotoUrl(pho)})`
+      const imgUrl = getPhotoUrl(pho)
+      if (!imgUrl) return
+      isUrlAccessible(imgUrl, true).then(() => {
+        setPhoto(pho)
+        ref.current!.style.backgroundImage = `url(${imgUrl})`
+        ref.current!.style.display = 'block'
+      })
+
     }
     updatePhoto()
     window.addEventListener('blur', () => {
