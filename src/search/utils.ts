@@ -101,10 +101,11 @@ export function getAvailableMirrorOf(type: string): Promise<IMirrorResult> {
   if (promise) return promise
   const cached = getCache('search') as Record<string, IMirrorResult>
   const current = cached && cached[type]
-  // result cached in 3 mins
+  // result cached in 5 mins
   if (current && Date.now() - current.time < 5 * 60 * 1000) {
     const timeCached = getCache('time') as Record<string, number>
-    if (!timeCached || !timeCached[type] || Date.now() - timeCached[type] > 6 * 1000) {
+    // page not refresh in 2 seconds
+    if (!timeCached || !timeCached[type] || Date.now() - timeCached[type] > 2 * 1000) {
       mirrorsResult[type] = Promise.resolve(current)
       saveCache('time', {[type]: Date.now()})
       return mirrorsResult[type]
