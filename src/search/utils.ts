@@ -2,10 +2,13 @@ import mirrors from './mirrors'
 
 const APP_START_AT = Date.now()
 
-export function isUrlAccessible(url: string) {
-  const u = new URL(url)
-  const imageUrl = u.origin + '/favicon.ico?t=' + Math.random()
+export function isUrlAccessible(url: string, isImg?: boolean) {
+  let imageUrl = url
   const startedAt = Date.now()
+  if (!isImg) {
+    const u = new URL(url)
+    imageUrl = u.origin + '/favicon.ico?t=' + Math.random()
+  }
   const img = new Image()
   img.referrerPolicy = 'no-referrer'
   return new Promise<{url: string, time: number, isFailed?: boolean}>((resolve) => {
