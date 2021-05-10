@@ -24,7 +24,7 @@ export default function Bg() {
       isUrlAccessible(imgUrl, true).then(() => {
         setPhoto(pho)
         ref.current!.style.backgroundImage = `url(${imgUrl})`
-        ref.current!.style.display = 'block'
+        ref.current!.style.opacity = '1'
       })
 
     }
