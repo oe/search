@@ -10,7 +10,7 @@ const searchCategories = [
       useEffect(() => {
         getAvailableMirrorOf('google').then(u => setUrl(u))
       }, [])
-      return <span>using mirror for Google search: <SLink {...url} /></span>
+      return <span>using mirror for Google search: <SLink {...url} />, for more visit <SLink url='https://www.library.ac.cn' title='Mirrors' /></span>
     }
   },
   {
