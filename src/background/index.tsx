@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react'
 import { getCache, saveCache } from '../common/utils'
 import { isUrlAccessible } from '../search/utils'
+import { changeThemeColor } from './theme-color'
 import './style.scss'
 
 const IS_MOBILE = window.screen.width <= 640
@@ -23,6 +24,7 @@ export default function Bg() {
       if (!imgUrl) return
       isUrlAccessible(imgUrl, true).then(() => {
         setPhoto(pho)
+        changeThemeColor(imgUrl)
         ref.current!.style.backgroundImage = `url(${imgUrl})`
         ref.current!.style.opacity = '1'
       })
