@@ -7,8 +7,10 @@ import './app.scss'
 const App: React.FC = function App() {
   return (<div className="app">
     <Bg />
-    <Title />
-    <Search />
+    <div id="app-content">
+      <Title />
+      <Search />
+    </div>
   </div>
   )
 }

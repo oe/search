@@ -16,3 +16,8 @@ body {
   position: relative;
   padding: 10px;
 }
+
+.invert-color {
+  filter: invert(100%);
+}
+

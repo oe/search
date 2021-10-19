@@ -3,6 +3,10 @@ export async function changeThemeColor(imageSrc: string) {
     const color = await getImageAverageColor(imageSrc)
     const metaElement = document.querySelector('meta[name="theme-color"]')!
     metaElement.setAttribute('content', color)
+    // @ts-ignore
+    document.querySelector('.title')!.style = `color: ${color}`
+    // titleContent.classList.add('')
+    document.getElementById('app-content')!.classList.add('invert-color')
   } catch (error) {
       console.error(error)
   }
