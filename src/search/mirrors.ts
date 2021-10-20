@@ -4,17 +4,12 @@ const mirrors = {
     path: '/search?q=%q',
     urls: [
       'https://www.google.com',
+      'https://search.iwiki.uk',
+      'https://search.みさか.tw',
+      'https://search.サクラ.tw',
       'https://txt.guoqiangti.ga',
       'https://www.google-fix.com',
       'https://txt.guoqiangti.ga',
-      'https://search.njuu.cf',
-      'https://search.ahau.cf',
-      'https://search.hfut.cf',
-      'https://search.ahut.cf',
-      'https://search.aufe.cf',
-      'https://search.ahnu.cf',
-      'https://goo.gle.workers.dev',
-      'https://g.caduo.ml'
     ],
     alternative: 'https://www.library.ac.cn'
   },
@@ -28,7 +23,8 @@ const mirrors = {
       'https://www.wikipedia.hfut.cf',
       'https://www.wikipedia.ahut.cf',
       'https://www.wikipedia.iwiki.eu.org',
-      'https://wiki.ry4.me'
+      'https://www.wikipedia.iwiki.uk',
+      'https://www.wikipedia.維基.台灣',
     ]
   },
   scholar: {
@@ -36,9 +32,6 @@ const mirrors = {
     path: '/scholar?q=%q',
     urls: [
       'https://scholar.google.com',
-      'https://scholar.seuu.cf',
-      'https://scholar.njuu.cf',
-      'https://g0.nuaa.cf/extdomains/scholar.google.com',
       'https://so.hiqq.com.cn',
       'https://sc.panda321.com',
       'https://xueshu.lanfanshu.cn',
