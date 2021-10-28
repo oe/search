@@ -44,12 +44,3 @@ jobs:
         branch: gh-pages   # optional
         build_dir: dist # folder the action should deploy.
         jekyll: no
-    # remove extra file for tcb
-    - name: remove cname
-      run: rm -rf ./dist/CNAME
-    - name: Deploy to Tencent CloudBase
-      uses: TencentCloudBase/cloudbase-action@v2
-      with:
-        secretId: ${{secrets.SECRET_ID}}
-        secretKey: ${{secrets.SECRET_KEY}}
-        envId: ${{secrets.ENV_ID}}
