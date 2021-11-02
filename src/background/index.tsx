@@ -11,12 +11,15 @@ const TIME_GAP = 5 * 60 * 1000
 
 export default function Bg() {
   const ref = useRef<HTMLDivElement>(null)
-  const timeRef = useRef<any>({tid: 0, tid2: 0})
+  const timeRef = useRef<any>({tid: 0})
   const [photo, setPhoto] = useState<IPhoto | undefined>()
 
   useEffect(() => {
     const updatePhoto = async () => {
+      clearTimeout(timeRef.current.tid)
       const pho = await getPhoto()
+      // set next task
+      timeRef.current.tid = setTimeout(updatePhoto, TIME_GAP)
       timeRef.current.lastTime = Date.now()
       timeRef.current.duration = 0
       if (!ref.current || !pho) return
@@ -35,16 +38,13 @@ export default function Bg() {
       if (!timeRef.current.duration) timeRef.current.duration = 0
       timeRef.current.duration += timeRef.current.lastTime 
         ? Date.now() - (timeRef.current.lastActive || timeRef.current.lastTime) : 0
-      clearTimeout(timeRef.current.tid2)
-      clearInterval(timeRef.current.tid)
+      clearTimeout(timeRef.current.tid)
     })
     window.addEventListener('focus', () => {
       timeRef.current.lastActive = Date.now()
       const timeout = TIME_GAP - timeRef.current.duration
-      timeRef.current.tid2 = setTimeout(updatePhoto, timeout < 0 || !timeout ? 0 : timeout)
-      timeRef.current.tid = setInterval(updatePhoto, TIME_GAP)
+      timeRef.current.tid = setTimeout(updatePhoto, timeout < 0 || !timeout ? 0 : timeout)
     })
-    timeRef.current.tid = setInterval(updatePhoto, TIME_GAP)
   }, [])
   return (
     <div ref={ref} className="bg">
