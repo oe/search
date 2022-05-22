@@ -7,8 +7,8 @@ name: CI
 on:
   schedule:
     # https://crontab.guru/
-    # At 03:00 on Tuesday, Friday, and Sunday.
-    - cron: '0 3 * * 2,5,7'
+    # At 03:00 on Tuesday and Saturday.
+    - cron: '0 3 * * 2,6'
   push:
     branches:
       - master
