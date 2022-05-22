@@ -1,43 +1,21 @@
+import urlConfig from './url-config.json'
+
 const mirrors = {
   google: {
     name: 'google',
     path: '/search?q=%q',
-    urls: [
-      'https://www.google.com',
-      'https://search.iwiki.uk',
-      'https://search.みさか.tw',
-      'https://search.サクラ.tw',
-      'https://txt.guoqiangti.ga',
-      'https://www.google-fix.com',
-      'https://txt.guoqiangti.ga',
-    ],
+    urls: ["https://www.google.com"].concat(urlConfig.google),
     alternative: 'https://www.library.ac.cn'
   },
   wiki: {
     name: 'wiki',
     path: '/wiki/Special:Search/%q',
-    urls: [
-      'https://www.wikipedia.org',
-      'https://www.wikipedia.ahmu.cf',
-      'https://www.wikipedia.ahau.cf',
-      'https://www.wikipedia.hfut.cf',
-      'https://www.wikipedia.ahut.cf',
-      'https://www.wikipedia.iwiki.eu.org',
-      'https://www.wikipedia.iwiki.uk',
-      'https://www.wikipedia.維基.台灣',
-    ]
+    urls: ["https://www.wikipedia.org"].concat(urlConfig.wiki)
   },
   scholar: {
     name: 'scholar',
     path: '/scholar?q=%q',
-    urls: [
-      'https://scholar.google.com',
-      'https://so.hiqq.com.cn',
-      'https://sc.panda321.com',
-      'https://xueshu.lanfanshu.cn',
-      'https://xueshu.soogle.top',
-      'https://x.sci-hub.org.cn'
-    ]
+    urls: ["https://scholar.google.com"].concat(urlConfig.scholar)
   },
   'sci-hub': {
     name: 'sci-hub',

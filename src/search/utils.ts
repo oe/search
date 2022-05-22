@@ -3,6 +3,9 @@ import { getCache, saveCache } from '../common/utils'
 
 const APP_START_AT = Date.now()
 
+// 5 minutes
+const MAX_CACHE_TIME = 1000 * 60 * 5
+
 export function isUrlAccessible(url: string, isImg?: boolean) {
   let imageUrl = url
   const startedAt = Date.now()
@@ -27,6 +30,7 @@ export function isUrlAccessible(url: string, isImg?: boolean) {
 export function isUrlsAccessible(urls: string[], maxParallel = 5) {
   const tasks = urls.slice(0).reverse()
   let isFullFilled = false
+  let taskCount = urls.length
   return new Promise<IMirrorResult>((resolve) => {
     const doCallback = (result: any) => {
       if (isFullFilled) return
@@ -36,10 +40,10 @@ export function isUrlsAccessible(urls: string[], maxParallel = 5) {
   
     const doNext = () => {
       if (isFullFilled) return
-      const nextUrl = urls.pop()
+      const nextUrl = tasks.pop()
       if (nextUrl) {
         checkUrl(nextUrl)
-      } else {
+      } else if (!taskCount) {
         resolve({isFailed: true, time: Date.now(), url: urls[0]})
       }
     }
@@ -47,7 +51,8 @@ export function isUrlsAccessible(urls: string[], maxParallel = 5) {
     const checkUrl = (url: string) => {
       isUrlAccessible(url)
       .then(res => {
-        res.isFailed || doCallback(res)
+        if (!res.isFailed) doCallback(res)
+        --taskCount
         doNext()
       })
     }
@@ -102,7 +107,7 @@ export function getAvailableMirrorOf(type: string): Promise<IMirrorResult> {
   const cached = getCache('search') as Record<string, IMirrorResult>
   const current = cached && cached[type]
   // result cached in 5 mins
-  if (current && Date.now() - current.time < 5 * 60 * 1000) {
+  if (current && Date.now() - current.time < MAX_CACHE_TIME && !current.isFailed) {
     const timeCached = getCache('time') as Record<string, number>
     // page not refresh in 2 seconds
     if (!timeCached || !timeCached[type] || Date.now() - timeCached[type] > 2 * 1000) {

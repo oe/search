@@ -5,6 +5,10 @@ name: CI
 # Controls when the action will run. Triggers the workflow on push or pull request
 # events but only for the master branch
 on:
+  schedule:
+    # https://crontab.guru/
+    # At 03:00 on Tuesday, Friday, and Sunday.
+    - cron: "0 3 * * 2,5,7"
   push:
     branches:
       - master
@@ -26,7 +30,7 @@ jobs:
     - name: Use Node.js
       uses: actions/setup-node@v1
       with:
-        node-version: '12.x'
+        node-version: '18.x'
 
     - name: install deps
       run: yarn
