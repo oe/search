@@ -8,7 +8,7 @@ on:
   schedule:
     # https://crontab.guru/
     # At 03:00 on Tuesday, Friday, and Sunday.
-    - cron: "0 3 * * 2,5,7"
+    - cron: '0 3 * * 2,5,7'
   push:
     branches:
       - master
