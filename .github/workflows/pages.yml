@@ -37,6 +37,8 @@ jobs:
 
     - name: build site
       run: yarn build
+      env:
+        PEXELS_TOKEN: ${{ secrets.PEXELS_TOKEN }}
     - name: copy cname
       run: cp CNAME ./dist
     - name: Deploy to GitHub Pages
