@@ -4,7 +4,11 @@ const mirrors = {
   google: {
     name: 'google',
     path: '/search?q=%q',
-    urls: ["https://www.google.com"].concat(urlConfig.google),
+    urls: [
+      "https://www.google.com",
+      'https://googlehnzyc.azurewebsites.net/',
+      'https://g20.i-research.edu.eu.org/',
+    ].concat(urlConfig.google),
     alternative: 'https://www.library.ac.cn'
   },
   wiki: {

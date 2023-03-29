@@ -5,7 +5,7 @@ import { changeThemeColor } from './theme-color'
 import './style.scss'
 
 const IS_MOBILE = window.screen.width <= 640
-const TOKEN = '563492ad6f91700001000001f3033fed2e21442a8816554456902bc5'
+const TOKEN = process.env.PEXELS_TOKEN!
 const BASE_URL = 'https://api.pexels.com/v1/'
 const TIME_GAP = 5 * 60 * 1000
 
