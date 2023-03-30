@@ -6,20 +6,32 @@ const mirrors = {
     path: '/search?q=%q',
     urls: [
       "https://www.google.com",
-      'https://googlehnzyc.azurewebsites.net/',
-      'https://g20.i-research.edu.eu.org/',
+      'https://googlehnzyc.azurewebsites.net',
+      'https://g20.i-research.edu.eu.org',
+      'https://g.damfu.com',
+      'https://jsapi.usthk.cn',
+      'https://g63.i-research.edu.eu.org',
     ].concat(urlConfig.google),
     alternative: 'https://www.library.ac.cn'
   },
   wiki: {
     name: 'wiki',
     path: '/wiki/Special:Search/%q',
-    urls: ["https://www.wikipedia.org"].concat(urlConfig.wiki)
+    urls: [
+      "https://www.wikipedia.org",
+      'https://www.jinzhao.wiki',
+      'https://zh-one.iwiki.icu',
+    ].concat(urlConfig.wiki)
   },
   scholar: {
     name: 'scholar',
     path: '/scholar?q=%q',
-    urls: ["https://scholar.google.com"].concat(urlConfig.scholar)
+    urls: [
+      "https://scholar.google.com",
+      'https://scholar.lanfanshu.cn',
+      'https://x.sci-hub.org.cn',
+      'https://sc.panda321.com',
+    ].concat(urlConfig.scholar)
   },
   'sci-hub': {
     name: 'sci-hub',

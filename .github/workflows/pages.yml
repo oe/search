@@ -29,6 +29,10 @@ jobs:
       with:
         node-version: '18.x'
 
+    - name: set env
+      if: github.event.schedule=='0 3 * * 2,6'
+      run: |
+        echo "IS_SCHEDULED=true" >> $GITHUB_ENV
     - name: install deps
       run: yarn
 
