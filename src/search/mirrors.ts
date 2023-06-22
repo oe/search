@@ -7,10 +7,6 @@ const mirrors = {
     urls: [
       "https://www.google.com",
       'https://googlehnzyc.azurewebsites.net',
-      'https://g20.i-research.edu.eu.org',
-      'https://g.damfu.com',
-      'https://jsapi.usthk.cn',
-      'https://g63.i-research.edu.eu.org',
     ].concat(urlConfig.google),
     alternative: 'https://www.library.ac.cn'
   },
@@ -19,7 +15,6 @@ const mirrors = {
     path: '/wiki/Special:Search/%q',
     urls: [
       "https://www.wikipedia.org",
-      'https://www.jinzhao.wiki',
       'https://zh-one.iwiki.icu',
     ].concat(urlConfig.wiki)
   },
@@ -36,7 +31,6 @@ const mirrors = {
   'sci-hub': {
     name: 'sci-hub',
     urls: [
-      'https://sci-hub.tf',
       'https://sci-hub.ren',
       'https://sci-hub.st',
       'https://sci-hub.se'
