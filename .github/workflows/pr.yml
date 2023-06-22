@@ -35,3 +35,14 @@ jobs:
       run: yarn build
       env:
         PEXELS_TOKEN: ${{ secrets.PEXELS_TOKEN }}
+    - name: copy cname
+      run: cp CNAME ./dist
+    - name: Deploy to GitHub Pages
+      uses: Cecilapp/GitHub-Pages-deploy@3.1.0
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        email: okarl@outlook.com
+        branch: gh-pages   # optional
+        build_dir: dist # folder the action should deploy.
+        jekyll: no
