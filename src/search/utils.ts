@@ -147,3 +147,10 @@ export function openUrl(url: string) {
   link.href = url
   link.click()
 }
+
+export function getAlternativeMirrorOf(type: string) {
+  // @ts-ignore
+  const mirror = mirrors[type]
+  if (!mirror) return null
+  return mirror.alternative
+}

@@ -6,16 +6,23 @@ const mirrors = {
     path: '/search?q=%q',
     urls: [
       "https://www.google.com",
-      'https://googlehnzyc.azurewebsites.net',
+      'http://45.32.251.247/',
+      'https://so.niostack.com/',
+      'https://g.savalone.com/',
+      'https://xn--flw351e.mc-serve.cf/',
+      'https://ge2.azurewebsites.net/',
+      'https://g.luciaz.me/',
+      'https://xgoogle.xyz/',
     ].concat(urlConfig.google),
-    alternative: 'https://www.library.ac.cn'
+    alternative: 'https://mirror.js.org/'
   },
   wiki: {
     name: 'wiki',
     path: '/wiki/Special:Search/%q',
     urls: [
-      "https://www.wikipedia.org",
-      'https://zh-one.iwiki.icu',
+      "https://www.wikipedia.org/",
+      'https://zh-one.iwiki.icu/',
+      'https://www.baidu.wikimirror.net/',
     ].concat(urlConfig.wiki)
   },
   scholar: {
@@ -23,21 +30,27 @@ const mirrors = {
     path: '/scholar?q=%q',
     urls: [
       "https://scholar.google.com",
+      "https://xueshu.lanfanshu.cn/",
+      "https://xs.hiqq.com.cn/",
+      "https://x.sci-hub.org.cn/",
+      "https://sc.panda985.com/",
       'https://scholar.lanfanshu.cn',
-      'https://x.sci-hub.org.cn',
-      'https://sc.panda321.com',
-    ].concat(urlConfig.scholar)
+      'https://sc.panda321.com/',
+      'https://so2.pismin.com/',
+    ].concat(urlConfig.scholar),
+    alternative: 'https://ac.scmor.com/'
   },
   'sci-hub': {
     name: 'sci-hub',
     urls: [
-      'https://sci-hub.ren',
-      'https://sci-hub.st',
-      'https://sci-hub.se'
+      'https://sci-hub.ren/',
+      'https://sci-hub.mobi/',
+      'https://sci-hub.ee/',
+      'https://www.sci-hub.live/'
     ]
   }
 };
 
-console.log('Google mirrors form Universities: https://www.library.ac.cn/')
+console.log('more Google mirrors: https://mirror.js.org/')
 
 export default mirrors

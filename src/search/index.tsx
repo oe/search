@@ -1,5 +1,5 @@
 import React, { useRef, useState, useEffect } from 'react'
-import { doSearch, getAvailableMirrorOf, initialSearchParams } from './utils'
+import { doSearch, getAvailableMirrorOf, initialSearchParams, getAlternativeMirrorOf } from './utils'
 import './style.scss'
 
 const searchCategories = [
@@ -10,7 +10,10 @@ const searchCategories = [
       useEffect(() => {
         getAvailableMirrorOf('google').then(u => setUrl(u))
       }, [])
-      return <span>using mirror for Google search: <SLink {...url} />, for more visit <SLink url='https://www.library.ac.cn' title='Mirrors' /></span>
+      return (<span>
+        using mirror for Google search: <SLink {...url} />,
+        for more visit <SLink url={getAlternativeMirrorOf('google')} title='Mirrors' />
+        </span>)
     }
   },
   {

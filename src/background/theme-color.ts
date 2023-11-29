@@ -12,6 +12,8 @@ export async function changeThemeColor(imageSrc: string) {
   }
 }
 
+const MAX_POINT_COUNT = 1000
+
 async function getImageAverageColor(imageSrc: string) {
   const canvas = document.createElement('canvas')
   const context = canvas.getContext('2d')!
@@ -25,15 +27,15 @@ async function getImageAverageColor(imageSrc: string) {
 
   const pixelCount = imagePixelData.length / 4
   const averRgba = {r: 0, g: 0, b: 0, a: 0}
-
-  for (let i = 0; i < pixelCount; ++i) {
+  // step to calculate average color, to avoid too many calculations
+  const step = Math.ceil(pixelCount / MAX_POINT_COUNT)
+  for (let i = 0; i < pixelCount; i += step) {
     let idx = i * 4
     averRgba.r += imagePixelData[idx]
     averRgba.g += imagePixelData[idx + 1]
     averRgba.b += imagePixelData[idx + 2]
     averRgba.a += imagePixelData[idx + 3]
   }
-
   averRgba.r = Math.floor(averRgba.r / pixelCount)
   averRgba.g = Math.floor(averRgba.g / pixelCount)
   averRgba.b = Math.floor(averRgba.b / pixelCount)
