@@ -92,6 +92,5 @@ function onKeyUp(e: React.KeyboardEvent<HTMLInputElement>, cat: string) {
 function onSubmit(cat: string, val?: string) {
   if (!val || !val.trim()) return
   const kwd = val.trim()
-  console.warn(kwd)
   doSearch(cat, kwd)
 }

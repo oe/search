@@ -49,8 +49,8 @@ const mirrors = {
       'https://www.sci-hub.live/'
     ]
   }
-};
+}
 
-console.log('more Google mirrors: https://mirror.js.org/')
+console.log(`more Google mirrors: ${mirrors.google.alternative}`)
 
 export default mirrors
