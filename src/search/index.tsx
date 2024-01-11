@@ -1,4 +1,4 @@
-import React, { useRef, useState, useEffect } from 'react'
+import React, { useRef, useState, useEffect, useCallback } from 'react'
 import { doSearch, getAvailableMirrorOf, initialSearchParams, getAlternativeMirrorOf } from './utils'
 import './style.scss'
 
@@ -45,19 +45,43 @@ export default function SearchInput () {
   const inputRef = useRef<HTMLInputElement>(null)
   const [cat, setCat] = useState(initialSearchParams.type)
 
-  useEffect(() => {
-    if (!initialSearchParams.q) return
-    doSearch(initialSearchParams.type, initialSearchParams.q)
-    if (inputRef.current) {
-      inputRef.current.value = initialSearchParams.q
-    }
-  }, [])
-
-  const onChangeCat = (c: string) => {
+  const onChangeCat = useCallback((c: string) => {
     setCat(c)
     history.replaceState({}, '', `?type=${c}`)
     inputRef.current?.focus()
-  }
+  }, [])
+
+  useEffect(() => {
+    if (initialSearchParams.q) {
+      doSearch(initialSearchParams.type, initialSearchParams.q)
+    }
+    if (!inputRef.current) return
+    inputRef.current.value = initialSearchParams.q || ''
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Tab') {
+        e.preventDefault()
+        setCat((prev) => {
+          const next = searchCategories[(searchCategories.findIndex(c => c.name === prev) + 1) % searchCategories.length]
+          history.replaceState({}, '', `?type=${next.name}`)
+          return next.name
+        })
+      }
+    }
+    const onGlobalKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 's') {
+        if (e.target === inputRef.current) return
+        e.stopPropagation()
+        e.preventDefault()
+        inputRef.current?.focus()
+      }
+    }
+    document.addEventListener('keydown', onGlobalKeyDown, { capture: true })
+    inputRef.current.addEventListener('keydown', onKeyDown)
+    return () => {
+      document.removeEventListener('keydown', onGlobalKeyDown, { capture: true })
+      inputRef.current?.removeEventListener('keydown', onKeyDown)
+    }
+  }, [])  
 
   return (
   <div className="search">
