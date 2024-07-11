@@ -8,7 +8,7 @@
   "scripts": {
     "predev": "yarn update-mirror --dev",
     "dev": "rm -rf dist && parcel --open",
-    "update-mirror": "node ./scripts/update-mirror.js",
+    "update-mirror": "tsx ./scripts/update-mirror.ts",
     "prebuild": "yarn update-mirror",
     "build": "rm -rf dist && parcel build --no-source-maps",
     "postbuild": "node scripts/postbuild.js"
@@ -17,17 +17,19 @@
     "@parcel/packager-xml": "2.10.3",
     "@parcel/transformer-sass": "2.10.3",
     "@parcel/transformer-xml": "2.10.3",
+    "@types/jsdom": "^21.1.7",
     "@types/node": "^14.14.6",
     "@types/react": "^16.9.55",
     "@types/react-dom": "^16.9.9",
     "@types/react-router-dom": "^5.1.6",
     "glob": "^7.2.0",
-    "jsdom": "^19.0.0",
+    "jsdom": "^24.1.0",
     "node-fetch": "^3.2.4",
     "parcel": "2.10.3",
     "process": "^0.11.10",
     "sass": "^1.27.1",
-    "typescript": "^4.0.5"
+    "tsx": "^4.16.2",
+    "typescript": "^5.5.3"
   },
   "dependencies": {
     "@parcel/service-worker": "2.10.3",

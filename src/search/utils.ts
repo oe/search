@@ -1,6 +1,6 @@
-import mirrors from './mirrors'
+import mirrors from './mirrors.json'
 import { getCache, saveCache } from '../common/utils'
-
+console.log(mirrors)
 const APP_START_AT = Date.now()
 
 // 5 minutes
@@ -137,7 +137,7 @@ export async function doSearch(type: string, kwd: string) {
   const encodedKwd = encodeQuery(kwd)
   const result = await getAvailableMirrorOf(mirror.name)
   // @ts-ignore
-  const url = result.url + mirror.path
+  const url = result.url.replace(/\/$/, '') + mirror.path
   openUrl(url.replace('%q', encodedKwd))
 }
 
