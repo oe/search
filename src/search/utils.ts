@@ -1,6 +1,6 @@
 import mirrors from './mirrors.json'
 import { getCache, saveCache } from '../common/utils'
-console.log(mirrors)
+
 const APP_START_AT = Date.now()
 
 // 5 minutes
